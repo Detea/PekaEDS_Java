@@ -1,0 +1,41 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+group 'pk.pekaeds'
+version '0.2-beta'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    implementation 'org.tinylog:tinylog-api:2.6.0'
+    implementation 'org.tinylog:tinylog-impl:2.6.0'
+    implementation 'com.formdev:flatlaf:2.6'
+    implementation 'com.miglayout:miglayout-swing:11.0'
+}
+
+application {
+    mainClass = 'pk.pekaeds.PekaEDS'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes "Main-Class": "pk.pekaeds.PekaEDS"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

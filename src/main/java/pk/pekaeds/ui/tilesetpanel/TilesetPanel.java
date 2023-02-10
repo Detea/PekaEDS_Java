@@ -1,0 +1,178 @@
+package pk.pekaeds.ui.tilesetpanel;
+
+import pk.pekaeds.pk2.map.PK2Map;
+import pk.pekaeds.settings.Settings;
+import pk.pekaeds.ui.listeners.PK2MapConsumer;
+import pk.pekaeds.ui.listeners.RepaintListener;
+import pk.pekaeds.ui.main.PekaEDSGUI;
+import pk.pekaeds.util.TileUtils;
+
+import javax.swing.*;
+import java.awt.*;
+
+// TODO Clean up this class. Probably should create a TilesetPanelPainter
+public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListener {
+    private TilesetPanelModel model;
+    
+    private Rectangle selectionRect = new Rectangle(0, 0, 1, 1);
+    
+    private int selectionWidth = 1;
+    private int selectionHeight = 1;
+    
+    private PekaEDSGUI edsUI;
+    
+    private Point mousePosition = new Point();
+    
+    private FontMetrics fontMetrics = null;
+    
+    private boolean isMouseInsidePanel = false;
+    
+    private boolean useBackgroundTileset = false;
+    
+    public TilesetPanel(PekaEDSGUI mainUI) {
+        this.model = new TilesetPanelModel();
+
+        this.edsUI = mainUI;
+        
+        setup();
+    }
+    
+    private void setup() {
+        var mouseHandler = new TilesetPanelMouseHandler(this);
+        
+        addMouseListener(mouseHandler);
+        addMouseMotionListener(mouseHandler);
+        
+        setPreferredSize(new Dimension(320, 480));
+        setMinimumSize(new Dimension(320, 480));
+        setMaximumSize(new Dimension(320, 480));
+    }
+    
+    private final Font tileIDFont = new Font(getFont().getName(), Font.BOLD, 12);
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        
+        if (model.getMap() != null) {
+            var g2 = (Graphics2D) g;
+    
+            if (fontMetrics == null) fontMetrics = getFontMetrics(getFont());
+    
+            g2.setColor(Color.GRAY);
+            g2.fillRect(0, 0, model.getMap().getTilesetImage().getWidth(), model.getMap().getTilesetImage().getHeight());
+    
+            if (Settings.useBGTileset() && useBackgroundTileset && model.getMap().getBackgroundTilesetImage() != null) {
+                g2.drawImage(model.getMap().getBackgroundTilesetImage(), 0, 0, null);
+            } else {
+                g2.drawImage(model.getMap().getTilesetImage(), 0, 0, null);
+            }
+    
+            if (selectionRect.width == 1 && selectionRect.height == 1) {
+                drawSelectionRectangle(g2, new Point(selectionRect.x, selectionRect.y));
+                drawTileId(g2, new Point(selectionRect.x, selectionRect.y)); // Draw the tile id of the selected tile.
+        
+                if (isMouseInsidePanel) {
+                    drawSelectionRectangle(g2, mousePosition);
+                    drawTileId(g2, mousePosition); // Draw the tile id of the tile at the mouse coordinates.
+                }
+            } else {
+                drawSelectionRectangle(g2, getSelectionRectStart());
+            }
+        }
+    }
+   
+    private void drawTileId(Graphics2D g2, Point position) {
+        g2.setFont(tileIDFont);
+        g2.setColor(Color.WHITE);
+        
+        String tileIDStr = Integer.toString(TileUtils.getTileIdFromTilesetPosition(position));
+        int fontWidth = fontMetrics.stringWidth(tileIDStr);
+       
+        /*
+            Hacky! If the width is 18, that means the number is something over 100, make the middle point 14 pixels, instead of 16.
+            This needs to be done because for some reason the string won't center correctly when it has a (font) width of 18.
+            
+            It's hacky, but it works. That's the way she goes!
+        */
+        int middlePos = fontWidth == 18 ? 14 : 16;
+        int offset = middlePos - (fontWidth / 2);
+   
+        // TODO Maybe draw an outline around the text to make it more visible.
+        g2.drawString(tileIDStr, position.x + offset, position.y + 20); // The y offset (20) gets hard coded because that's good enough.
+    }
+    
+    public TilesetPanelModel getModel() {
+        return model;
+    }
+    
+    PekaEDSGUI getEdsUI() {
+        return edsUI;
+    }
+    
+    void setMousePosition(Point pos) {
+        TileUtils.alignPointToGrid(pos);
+        
+        this.mousePosition = pos;
+    }
+    
+    private void drawSelectionRectangle(Graphics2D g, Point position) {
+        if (position.x != -1) {
+            //g.setXORMode(Color.BLACK);
+
+            g.setColor(Color.BLACK);
+            g.drawRect(position.x, position.y, selectionRect.width * 32, selectionRect.height * 32);
+            
+            g.setColor(Color.WHITE);
+            g.drawRect(position.x + 1, position.y + 1, (selectionRect.width * 32) - 2, (selectionRect.height * 32) - 2);
+            
+            g.setColor(Color.BLACK);
+            g.drawRect(position.x + 2, position.y + 2, (selectionRect.width * 32) - 4, (selectionRect.height * 32) - 4);
+        }
+    }
+    
+    public void resetSelection() {
+        //selectionRect.setBounds(0, 0, 1, 1);
+
+        //selectionStart.setLocation(0, 0);
+        
+        //mousePosition.setLocation(0, 0);
+    }
+    
+    /*
+        Methods used by TilesetPanelMouseHandler
+     */
+    void setSelectionRect(Rectangle rect) {
+        this.selectionRect = rect;
+    }
+    
+    void setSelectionRect(int x, int y, int width, int height) {
+        selectionRect.x = x / 32 * 32;
+        selectionRect.y = y / 32 * 32;
+        
+        selectionRect.width = width;
+        selectionRect.height = height;
+    }
+    
+    Point getSelectionRectStart() {
+        return new Point(selectionRect.x, selectionRect.y);
+    }
+    
+    @Override
+    public void setMap(PK2Map map) {
+        model.setMap(map);
+        
+        repaint();
+    }
+    
+    @Override
+    public void doRepaint() {
+        repaint();
+    }
+    
+    public void setMouseInsidePanel(boolean inside) {
+        this.isMouseInsidePanel = inside;
+    }
+    
+    public void useBackgroundTileset(boolean use) {
+        this.useBackgroundTileset = use;
+    }
+}
