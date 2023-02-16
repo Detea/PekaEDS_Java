@@ -1,6 +1,7 @@
 package pk.pekaeds.ui.spritelistpanel;
 
 import net.miginfocom.swing.MigLayout;
+import org.tinylog.Logger;
 import pk.pekaeds.pk2.sprite.PK2Sprite;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.misc.ImagePanel;
@@ -23,7 +24,7 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<P
     
     public void setSprite(PK2Sprite spr) {
         this.sprite = spr;
-        
+    
         setValues();
     }
     

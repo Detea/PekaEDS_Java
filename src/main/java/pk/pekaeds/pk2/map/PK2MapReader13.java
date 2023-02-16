@@ -22,21 +22,20 @@ public class PK2MapReader13 implements PK2MapReader {
     public PK2Map13 load(File filename) throws IOException {
         var map = new PK2Map13();
         
-        // TODO use try-with
         var in = new DataInputStream(new FileInputStream(filename));
-        
-        var versionId = new byte[5];
-        in.read(versionId);
         
         boolean validMap = true;
         
-        // TODO Should use VersionHandler for this
-        for (int i = 0; i < versionId.length; i++) {
-            if (versionId[i] != PK2Map13.ID.get(i)) validMap = false;
+        for (int i = 0; i < PK2Map13.ID.size(); i++) {
+            int by = in.readByte() & 0xFF; // Java doesn't have unsigned types and that makes me sad :(
+    
+            if (by != PK2Map13.ID.get(i)) validMap = false;
         }
         
-        if (validMap) {
+        if (!validMap) {
             Logger.warn("Unable to recognize file as a Pekka Kana 2 map of version 1.3.");
+            
+            return null;
         } else {
             String tileset = PK2FileUtils.readString(in, 13);
             String background = PK2FileUtils.readString(in, 13);
@@ -104,10 +103,7 @@ public class PK2MapReader13 implements PK2MapReader {
             map.setLayer(Layer.FOREGROUND, layerForeground);
             map.setSpritesLayer(layerSprites);
     
-            var tilesetImage = ImageIO.read(new File(Settings.getTilesetPath() + map.getTileset()));
-            var backgroundImage = ImageIO.read(new File(settings.getBackgroundsPath() + map.getBackground()));
-            
-            tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);
+            var backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
             
             map.setSpriteList(loadSpriteList(map.getSpriteFilenames(), backgroundImage, map.getPlayerSpriteId()));
         }

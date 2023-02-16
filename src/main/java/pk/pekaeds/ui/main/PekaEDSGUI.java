@@ -148,65 +148,86 @@ public class PekaEDSGUI implements ChangeListener {
         * Map related methods
      */
     public void loadMap(PK2Map map) {
-        try {
-            var tilesetImage = ImageIO.read(new File(Settings.getTilesetPath() + map.getTileset()));
-            var backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
-            
-            tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);
-    
-            if (Settings.useBGTileset()) {
-                // Check if the tileset has a _bg version, if it does load and set it to the background tileset.
-                BufferedImage bgTilesetImage = null;
-                var bgTilesetFileStr = PathUtils.getTilesetAsBackgroundTileset(Settings.getTilesetPath() + map.getTileset());
-                System.out.println("BG TILESET: " + bgTilesetFileStr);
-                
-                if (Files.exists(Path.of(bgTilesetFileStr))) {
-                    bgTilesetImage = ImageIO.read(new File(bgTilesetFileStr));
+        BufferedImage tilesetImage;
         
+        try {
+            tilesetImage = ImageIO.read(new File(Settings.getTilesetPath() + map.getTileset()));
+        } catch (IOException e) {
+            Logger.error(e, "Unable to load tileset image.");
+            
+            JOptionPane.showMessageDialog(null, "Unable to load tileset image file. File: '" + map.getTileset() + "'", "Unable to find tileset", JOptionPane.ERROR_MESSAGE);
+            
+            return;
+        }
+    
+        BufferedImage backgroundImage;
+        
+        try {
+            backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
+        } catch (IOException e) {
+            Logger.error(e, "Unable to load background image.");
+        
+            JOptionPane.showMessageDialog(null, "Unable to load background image file. File: '" + map.getBackground() + "'", "Unable to find background", JOptionPane.ERROR_MESSAGE);
+            
+            return;
+        }
+  
+        tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);
+    
+        if (Settings.useBGTileset()) {
+            // Check if the tileset has a _bg version, if it does load and set it to the background tileset.
+            BufferedImage bgTilesetImage = null;
+            var bgTilesetFileStr = PathUtils.getTilesetAsBackgroundTileset(Settings.getTilesetPath() + map.getTileset());
+        
+            if (Files.exists(Path.of(bgTilesetFileStr))) {
+                try {
+                    bgTilesetImage = ImageIO.read(new File(bgTilesetFileStr));
+                    
                     bgTilesetImage = GFXUtils.setPaletteToBackgrounds(bgTilesetImage, backgroundImage); // TODO Does the game do this?
-                }
     
-                if (bgTilesetImage != null) {
                     map.setBackgroundTilesetImage(bgTilesetImage);
-    
-                    System.out.println("Background tileset set");
+                } catch (IOException e) {
+                    Logger.warn("Unable to load background tileset image.");
+                    
+                    JOptionPane.showMessageDialog(null, "Unable to load background tileset image.");
                 }
             }
-            
-            map.setBackgroundImage(backgroundImage);
-            map.setTilesetImage(tilesetImage);
-    
-            map.setChangeListener(this);
-    
-            model.setCurrentMap(map);
-    
-            miniMapPanel.setMap(map);
-            
-            Tool.setMap(map);
-            
-            updateMapHolders();
-        } catch (IOException e) {
-            // TODO Handle this. What to do? Load defaults? What if the defaults don't exist either.
-            Logger.error(e, "Unable to load tileset and/or background image.");
         }
+    
+        map.setBackgroundImage(backgroundImage);
+        map.setTilesetImage(tilesetImage);
+    
+        map.setChangeListener(this);
+    
+        model.setCurrentMap(map);
+    
+        miniMapPanel.setMap(map);
+    
+        Tool.setMap(map);
+    
+        updateMapHolders();
     }
     
     public void loadMap(File file) {
         var r = (PK2MapReader13) MapIO.getReader(file);
-    
-        PK2Map13 map;
+        
+        PK2Map13 map = null;
         try {
             map = r.load(file);
             
-            loadMap(map);
-            model.setCurrentMapFile(file);
-            autosaveManager.setFile(model.getCurrentMapFile());
-            
-            UndoManager.setMap(map);
-            
-            unsavedChanges = false;
-            
-            updateFrameTitle();
+            if (map != null) {
+                loadMap(map);
+                model.setCurrentMapFile(file);
+                autosaveManager.setFile(model.getCurrentMapFile());
+    
+                UndoManager.setMap(map);
+    
+                unsavedChanges = false;
+    
+                updateFrameTitle();
+            } else {
+                JOptionPane.showMessageDialog(null, "'" + file.getName() + "' doesn't seem to be a 1.3 Pekka Kana 2 map file.", "Unable to recognize file", JOptionPane.ERROR_MESSAGE);
+            }
         } catch (IOException e) {
             Logger.warn(e, "Unable to load map file {}.", file.getAbsolutePath());
         }
