@@ -6,7 +6,6 @@ import pk.pekaeds.pk2.sprite.PK2Sprite13;
 
 import java.io.*;
 import java.util.*;
-import java.util.logging.Logger;
 
 // TODO VersionHandler Delete this class and put it's functionality in the Readers class.
 
@@ -18,8 +17,6 @@ import java.util.logging.Logger;
  * To retrieve the correct map/sprite object for a given file use {@link VersionHandler#isMapValid(File)} or {@link VersionHandler#isSpriteValid(File)} respectively.
  */
 public final class VersionHandler {
-    private static final Logger logger = Logger.getLogger(VersionHandler.class.getName());
-    
     public static final int SPRITE_1_2 = 1;
     public static final int SPRITE_1_3 = 2;
     
@@ -109,9 +106,7 @@ public final class VersionHandler {
                 id.add(in.readByte() & 0xFF);
             }
         } catch (FileNotFoundException e) {
-            logger.severe("File '" + file.getName() + "' not found.");
         } catch (IOException e) {
-            logger.severe(e.getMessage());
         }
         
         return id;
