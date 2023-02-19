@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Locale;
 import java.util.logging.FileHandler;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -17,6 +18,7 @@ public class PekaEDS {
         //System.setProperty( "flatlaf.menuBarEmbedded", "false" );
 
         System.setProperty("sun.java2d.noddraw", "true");
+        Locale.setDefault(Locale.ENGLISH);
         
         PekaEDSGUILauncher.launch();
     }
