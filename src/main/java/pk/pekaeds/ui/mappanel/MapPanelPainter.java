@@ -33,7 +33,7 @@ public class MapPanelPainter {
     // TODO I feel like this code could be cleaned up a bit, make it more readable
     public void drawLayers(Graphics2D g) {
         if (model.getMap() != null) {
-            if (model.getSelectedLayer() == Layer.BACKGROUND) {
+            if (model.getSelectedLayer() == Layer.BACKGROUND || model.getSelectedLayer() == Layer.BOTH) {
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
             } else {
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
