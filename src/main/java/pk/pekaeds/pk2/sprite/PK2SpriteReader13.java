@@ -10,7 +10,7 @@ import java.io.*;
 
 import org.tinylog.Logger;
 
-public class PK2SpriteReader13 implements PK2SpriteReader {
+public final class PK2SpriteReader13 implements PK2SpriteReader {
     private final static Settings settings = new Settings();
     
     @Override
@@ -136,9 +136,5 @@ public class PK2SpriteReader13 implements PK2SpriteReader {
     @Override
     public PK2Sprite loadImageData(File filename) {
         return loadImageData(filename, null);
-    }
-    
-    private BufferedImage cropImage(PK2Sprite spr, BufferedImage image) {
-        return image.getSubimage(spr.getFrameX(), spr.getFrameY(), spr.getFrameWidth(), spr.getFrameHeight());
     }
 }

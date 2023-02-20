@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class PK2Sprite {
+public class PK2Sprite {
     protected static List<Integer> ID = new ArrayList<>();
     
     public static final int TYPE_BACKGROUND = 5;
