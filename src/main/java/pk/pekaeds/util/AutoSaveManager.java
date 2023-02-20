@@ -49,7 +49,7 @@ public final class AutoSaveManager {
         this.saveFunction = saveFunc;
         this.originalFile = file;
         
-        timer = new Timer(1000, new SaveAction());
+        timer = new Timer(120000, new SaveAction());
 
         delay = Settings.getAutosaveInterval();
         fileCount = Settings.getAutosaveFileCount();
