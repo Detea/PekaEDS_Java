@@ -191,8 +191,8 @@ public abstract class Tool implements PropertyChangeListener {
         int spr = selectedSprite;
         
         if (map != null) {
-            if (position.x >= 0 && position.x <= Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y <= Settings.getMapProfile().getMapHeight()) {
-                spr = map.getSpritesLayer()[position.y][position.x];
+            if (position.x >= 0 && position.x < Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y < Settings.getMapProfile().getMapHeight()) {
+                spr = map.getSpritesLayer()[position.y][position.x]; // Should use map.getSpriteAt to check bounds, but whatever
             }
         }
         
