@@ -12,19 +12,21 @@ import java.awt.image.BufferedImage;
 
 // TODO Optimize drawing
 public class MapPanelPainter {
-    private MapPanelModel model;
+    private MapPanel mapPanel;
     
-    public void setMapPanelModel(MapPanelModel mp) {
-        this.model = mp;
+    public void setMapPanelModel(MapPanel mp) {
+        this.mapPanel = mp;
     }
 
     public void drawBackground(Graphics2D g) {
-        // TODO Optimization, don't redraw this every on repaint. Only repaint on resize.
-        // TODO Use viewport position to only draw the background as many times as is necessary.
-        if (model.getBackgroundImage() != null) {
-            for (int x = 0; x < model.getBgRepeatX(); x++) {
-                for (int y = 0; y < model.getBgRepeatY(); y++) {
-                    g.drawImage(model.getMap().getBackgroundImage(), model.getViewRect().x + (x * model.getMap().getBackgroundImage().getWidth()), model.getViewRect().y + (y * model.getMap().getBackgroundImage().getHeight()), null);
+        if (mapPanel.getModel().getBackgroundImage() != null) {
+            for (int x = 0; x < mapPanel.getModel().getBgRepeatX(); x++) {
+                for (int y = 0; y < mapPanel.getModel().getBgRepeatY(); y++) {
+                    // Using the viewport's viewRect makes for jittery movement, need to use scrollbar values
+                    g.drawImage(mapPanel.getModel().getMap().getBackgroundImage(),
+                            mapPanel.getScrollPane().getHorizontalScrollBar().getValue() + (x * mapPanel.getModel().getMap().getBackgroundImage().getWidth()),
+                            mapPanel.getScrollPane().getVerticalScrollBar().getValue() + (y * mapPanel.getModel().getMap().getBackgroundImage().getHeight()),
+                            null);
                 }
             }
         }
@@ -32,34 +34,35 @@ public class MapPanelPainter {
 
     // TODO I feel like this code could be cleaned up a bit, make it more readable
     public void drawLayers(Graphics2D g) {
-        if (model.getMap() != null) {
-            if (model.getSelectedLayer() == Layer.BACKGROUND || model.getSelectedLayer() == Layer.BOTH) {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-            } else {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-            }
-    
-            if (Settings.useBGTileset() && model.getMap().getBackgroundTilesetImage() != null) {
-                drawLayer(g, model.getMap().getLayers().get(Layer.BACKGROUND), model.getMap().getBackgroundTilesetImage());
-            } else {
-                drawLayer(g, model.getMap().getLayers().get(Layer.BACKGROUND), model.getMap().getTilesetImage());
-            }
-            
-            if (model.getSelectedLayer() == Layer.FOREGROUND || model.getSelectedLayer() == Layer.BOTH) {
+        if (mapPanel.getModel().getMap() != null) {
+            // Set alpha for background layer
+            if (mapPanel.getModel().getSelectedLayer() == Layer.BACKGROUND || mapPanel.getModel().getSelectedLayer() == Layer.BOTH) {
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
             } else {
                 g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
             }
             
-            drawLayer(g, model.getMap().getLayers().get(Layer.FOREGROUND), model.getMap().getTilesetImage());
+            // Check whether to use background tileset or the foreground one
+            if (Settings.useBGTileset() && mapPanel.getModel().getMap().getBackgroundTilesetImage() != null) {
+                drawLayer(g, Layer.BACKGROUND, mapPanel.getModel().getMap().getBackgroundTilesetImage());
+            } else {
+                drawLayer(g, Layer.BACKGROUND, mapPanel.getModel().getMap().getTilesetImage());
+            }
+            
+            if (mapPanel.getModel().getSelectedLayer() == Layer.FOREGROUND || mapPanel.getModel().getSelectedLayer() == Layer.BOTH) {
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+            } else {
+                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
+            }
+            
+            drawLayer(g, Layer.FOREGROUND, mapPanel.getModel().getMap().getTilesetImage());
         }
     }
     
-    public void drawLayer(Graphics2D g, int[][] layer, BufferedImage tileset) {
-        // TODO Only draw visible tiles
-        for (int x = model.getViewRect().x / 32; x < (model.getViewRect().x + model.getViewRect().width) / 32; x++) {
-            for (int y = model.getViewRect().y / 32; y < (model.getViewRect().y + model.getViewRect().height) / 32; y++) {
-                drawTile(g, x * 32, y * 32, layer[y][x], tileset);
+    public void drawLayer(Graphics2D g, int layerIndex, BufferedImage tileset) {
+        for (int x = mapPanel.getScrollPane().getHorizontalScrollBar().getValue() / 32; x < ((mapPanel.getScrollPane().getHorizontalScrollBar().getValue() + mapPanel.getModel().getViewRect().width) / 32) + 1; x++) {
+            for (int y = mapPanel.getScrollPane().getVerticalScrollBar().getValue() / 32; y < ((mapPanel.getScrollPane().getVerticalScrollBar().getValue() + mapPanel.getModel().getViewRect().height) / 32) + 1; y++) {
+                drawTile(g, x * 32, y * 32, mapPanel.getModel().getMap().getTileAt(layerIndex, x, y), tileset);
             }
         }
     }
@@ -67,14 +70,14 @@ public class MapPanelPainter {
     // TODO Code reuse, clean this up
     // Create a method drawSprites(boolean backgroundOnly)
     public void drawBackgroundSprites(Graphics2D g) {
-        if (model.getMap() != null) {
-            int[][] layerData = model.getMap().getSpritesLayer();
+        if (mapPanel.getModel().getMap() != null) {
+            int[][] layerData = mapPanel.getModel().getMap().getSpritesLayer();
     
             // TODO Don't use hard coded values
             for (int x = 0; x < 256; x++) {
                 for (int y = 0; y < 224; y++) {
-                    if (layerData[y][x] != 255 && layerData[y][x] < model.getMap().getSpriteList().size()) {
-                        var spr = model.getMap().getSprite(layerData[y][x]);
+                    if (layerData[y][x] != 255 && layerData[y][x] < mapPanel.getModel().getMap().getSpriteList().size()) {
+                        var spr = mapPanel.getModel().getMap().getSprite(layerData[y][x]);
                 
                         if (spr.getType() == PK2Sprite.TYPE_BACKGROUND) {
                             drawSprite(g, spr, x * 32, y * 32);
@@ -86,13 +89,13 @@ public class MapPanelPainter {
     }
     
     public void drawForegroundSprites(Graphics2D g) {
-        if (model.getMap() != null) {
-            int[][] layerData = model.getMap().getSpritesLayer();
+        if (mapPanel.getModel().getMap() != null) {
+            int[][] layerData = mapPanel.getModel().getMap().getSpritesLayer();
     
             for (int x = 0; x < 256; x++) {
                 for (int y = 0; y < 224; y++) {
-                    if (layerData[y][x] != 255 && layerData[y][x] < model.getMap().getSpriteList().size()) {
-                        var spr = model.getMap().getSprite(layerData[y][x]);
+                    if (layerData[y][x] != 255 && layerData[y][x] < mapPanel.getModel().getMap().getSpriteList().size()) {
+                        var spr = mapPanel.getModel().getMap().getSprite(layerData[y][x]);
                 
                         if (spr.getType() != PK2Sprite.TYPE_BACKGROUND) {
                             drawSprite(g, spr, x * 32, y * 32);
@@ -129,9 +132,9 @@ public class MapPanelPainter {
         observer - object to be notified as more of the image is scaled and converted.
      */
     public void drawTile(Graphics2D g, int x, int y, int tile, BufferedImage tileset) {
-        if (model.getMap() != null) {
+        if (mapPanel.getModel().getMap() != null) {
             if (tile != 255) { // 255 is the empty tile
-                if (x >= 0 && x <= PK2Map13.WIDTH * 32 && y >= 0 && y <= PK2Map13.HEIGHT * 32) {
+                if (x >= 0 && x < PK2Map13.WIDTH * 32 && y >= 0 && y < PK2Map13.HEIGHT * 32) {
                     // Position of the tile in the tileset image
                     int tileX = (tile % 10) * 32;
                     int tileY = (tile / 10) * 32;
@@ -143,17 +146,17 @@ public class MapPanelPainter {
     }
     
     public void drawTile(Graphics2D g, int x, int y, int tile) {
-        if (model.getMap() != null) {
+        if (mapPanel.getModel().getMap() != null) {
             if (tile != 255) { // 255 is the empty tile
                 if (x >= 0 && x <= PK2Map13.WIDTH * 32 && y >= 0 && y <= PK2Map13.HEIGHT * 32) {
                     // Position of the tile in the tileset image
                     int tileX = (tile % 10) * 32;
                     int tileY = (tile / 10) * 32;
                     
-                    if (Settings.useBGTileset() && model.getMap().getBackgroundTilesetImage() != null && model.getSelectedLayer() == Layer.BACKGROUND) {
-                        g.drawImage(model.getMap().getBackgroundTilesetImage(), x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
+                    if (Settings.useBGTileset() && mapPanel.getModel().getMap().getBackgroundTilesetImage() != null && mapPanel.getModel().getSelectedLayer() == Layer.BACKGROUND) {
+                        g.drawImage(mapPanel.getModel().getMap().getBackgroundTilesetImage(), x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
                     } else {
-                        g.drawImage(model.getMap().getTilesetImage(), x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
+                        g.drawImage(mapPanel.getModel().getMap().getTilesetImage(), x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
                     }
                 }
             }

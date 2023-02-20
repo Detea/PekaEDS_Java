@@ -36,7 +36,7 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
         
         model = new MapPanelModel();
         painter = new MapPanelPainter();
-        painter.setMapPanelModel(model);
+        painter.setMapPanelModel(this);
 
         mpMouseHandler = new MapPanelMouseHandler(this);
 
