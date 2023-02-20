@@ -8,8 +8,4 @@ public class PK2Sprite13 extends PK2Sprite {
     
     public PK2Sprite13() {
     }
-    
-    public void test() {
-        System.out.println("testsq");
-    }
 }

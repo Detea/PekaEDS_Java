@@ -113,6 +113,8 @@ public class PK2SpriteReader13 implements PK2SpriteReader {
             
             spr.setColor(in.readByte() & 0xFF);
             
+            spr.setFilename(filename.getName());
+            
             var spriteImageSheet = ImageIO.read(new File(settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
             GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
             
@@ -124,7 +126,6 @@ public class PK2SpriteReader13 implements PK2SpriteReader {
     
             spr.setImage(GFXUtils.getFirstSpriteFrame(spr, spriteImageSheet));
             
-            spr.setFilename(filename.getName());
         } catch (IOException e) {
             Logger.warn(e, "Unable to load sprite image data.");
         }

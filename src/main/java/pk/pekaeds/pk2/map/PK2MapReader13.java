@@ -125,22 +125,8 @@ public class PK2MapReader13 implements PK2MapReader {
             if (!spriteFile.exists()) {
                 Logger.warn("Unable to find sprite file {}.", filename);
             } else {
-                var version = new byte[5];
+                var sprReader = SpriteReaders.getReader(spriteFile);
                 
-                var in = new DataInputStream(new FileInputStream(spriteFile));
-                
-                in.read(version);
-                in.close();
-    
-                int spriteVersion = VersionHandler.isValidSprite(version);
-                
-                PK2SpriteReader sprReader = new PK2SpriteReader13(); // TODO Use SpriteReaders.getReader()
-                switch (spriteVersion) {
-                    case VersionHandler.SPRITE_1_2 -> sprReader = new PK2SpriteReader12();
-                    case VersionHandler.SPRITE_1_3 -> sprReader = new PK2SpriteReader13();
-                }
-                
-                int spritesAmount = 0;
                 if (sprReader == null) {
                     Logger.warn("Unable to recognize file as Pekka Kana 2 sprite.");
                 } else {

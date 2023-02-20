@@ -23,8 +23,8 @@ public class PK2SpriteReader12 implements PK2SpriteReader {
     
     // TODO Again, code reuse, but the other solution would be hacking this into the PK2SpriteReader13? Not sure. This works... lmao.
     @Override
-    public PK2Sprite12 loadImageData(File filename, BufferedImage backgroundImage) {
-        var spr = new PK2Sprite12();
+    public PK2Sprite13 loadImageData(File filename, BufferedImage backgroundImage) {
+        var spr = new PK2Sprite13();
     
         try (DataInputStream in = new DataInputStream(new FileInputStream(filename))) {
             in.readNBytes(4); // Skip the magic number
@@ -108,6 +108,8 @@ public class PK2SpriteReader12 implements PK2SpriteReader {
             in.readInt(); // loading time
         
             spr.setColor(in.readByte() & 0xFF);
+            
+            spr.setFilename(filename.getName());
         
             var spriteImageSheet = ImageIO.read(new File(settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
             GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
@@ -120,7 +122,6 @@ public class PK2SpriteReader12 implements PK2SpriteReader {
         
             spr.setImage(GFXUtils.getFirstSpriteFrame(spr, spriteImageSheet));
         
-            spr.setFilename(filename.getName());
         } catch (IOException e) {
             Logger.warn(e, "Unable to load sprite image data.");
         }

@@ -24,7 +24,7 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<P
     
     public void setSprite(PK2Sprite spr) {
         this.sprite = spr;
-    
+        
         setValues();
     }
     
