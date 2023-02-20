@@ -6,6 +6,10 @@ import java.util.*;
 import org.tinylog.Logger;
 
 public final class SpriteReaders {
+    private static final PK2SpriteReader11 reader1_1 = new PK2SpriteReader11();
+    private static final PK2SpriteReader12 reader1_2 = new PK2SpriteReader12();
+    private static final PK2SpriteReader13 reader1_3 = new PK2SpriteReader13();
+    
     private SpriteReaders() {}
     
     /**
@@ -24,11 +28,11 @@ public final class SpriteReaders {
             }
             
             if (Arrays.equals(SpriteVersions.ID_1_3, id)) {
-                reader = new PK2SpriteReader13();
+                reader = reader1_3;
             } else if (Arrays.equals(SpriteVersions.ID_1_2, id)) {
-                reader = new PK2SpriteReader12();
+                reader = reader1_2;
             } else if (Arrays.equals(SpriteVersions.ID_1_1, id)) {
-                reader = new PK2SpriteReader11();
+                reader = reader1_1;
             } else {
                 Logger.warn("Unable to find sprite version for id: {}", Arrays.toString(id));
             }
