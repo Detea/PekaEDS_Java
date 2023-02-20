@@ -71,7 +71,7 @@ public abstract class Tool implements PropertyChangeListener {
     
     public static boolean inTileMode() {
         return mode == MODE_TILE;
-    }
+    } // TODO Cleanup: delete this
     
     // TODO I don't think it's necessary to update the mouse position in these two methods. Check if it is, if not make them abstract
     public void mousePressed(MouseEvent e) {
@@ -97,7 +97,10 @@ public abstract class Tool implements PropertyChangeListener {
     }
     public void mouseDragged(MouseEvent e) {
         mousePosition = e.getPoint();
+        
         TileUtils.alignPointToGrid(mousePosition);
+        
+        updateToolInformation(e.getPoint());
     }
     
     public Point getMousePosition() {
