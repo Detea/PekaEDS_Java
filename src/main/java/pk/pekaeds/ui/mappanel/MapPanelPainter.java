@@ -54,6 +54,8 @@ public class MapPanelPainter {
             }
             
             drawLayer(g, Layer.FOREGROUND, mapPanel.getModel().getMap().getTilesetImage());
+    
+            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
         }
     }
     
