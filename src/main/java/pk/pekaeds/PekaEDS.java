@@ -3,14 +3,12 @@ package pk.pekaeds;
 import com.formdev.flatlaf.FlatDarkLaf;
 import pk.pekaeds.ui.PekaEDSGUILauncher;
 
-import javax.swing.*;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Locale;
-import java.util.logging.FileHandler;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import org.tinylog.Logger;
 
 public class PekaEDS {
     public static void main(String[] args) {
@@ -19,6 +17,10 @@ public class PekaEDS {
 
         System.setProperty("sun.java2d.noddraw", "true");
         Locale.setDefault(Locale.ENGLISH);
+        
+        Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
+            Logger.error(e);
+        });
         
         PekaEDSGUILauncher.launch();
     }
