@@ -241,7 +241,7 @@ public class Settings {
         return defaultBackground;
     }
 
-    public String getSpritesPath() {
+    public static String getSpritesPath() {
         return spritesPath;
     }
     
