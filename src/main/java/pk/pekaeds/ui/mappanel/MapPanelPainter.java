@@ -1,10 +1,8 @@
 package pk.pekaeds.ui.mappanel;
 
 import pk.pekaeds.data.Layer;
-import pk.pekaeds.data.MapData;
 import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.pk2.sprite.PK2Sprite;
-import pk.pekaeds.pk2.sprite.PK2Sprite12;
 import pk.pekaeds.settings.Settings;
 
 import java.awt.*;

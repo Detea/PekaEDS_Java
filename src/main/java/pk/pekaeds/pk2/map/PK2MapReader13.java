@@ -2,7 +2,6 @@ package pk.pekaeds.pk2.map;
 
 
 import pk.pekaeds.data.Layer;
-import pk.pekaeds.util.GFXUtils;
 import pk.pekaeds.util.PK2FileUtils;
 import pk.pekaeds.pk2.sprite.*;
 import pk.pekaeds.settings.Settings;
@@ -13,7 +12,6 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.tinylog.Logger;
-import pk.pekaeds.util.VersionHandler;
 
 public class PK2MapReader13 implements PK2MapReader {
     private final Settings settings = new Settings();

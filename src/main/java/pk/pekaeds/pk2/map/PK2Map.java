@@ -74,13 +74,6 @@ public abstract class PK2Map {
         return true;
     }
     
-    public void addSprite(File file) {
-        var sprReader = SpriteReaders.getReader(file);
-        var spr = sprReader.load(file);
-        
-        addSprite(spr);
-    }
-    
     public void addSprite(PK2Sprite sprite) {
         spritesAmount++;
         

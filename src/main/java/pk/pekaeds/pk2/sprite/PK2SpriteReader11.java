@@ -13,10 +13,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 public final class PK2SpriteReader11 implements PK2SpriteReader {
-    @Override
-    public PK2Sprite load(File filename) {
-        return null;
-    }
     
     @Override
     public PK2Sprite loadImageData(File filename, BufferedImage backgroundImage) {

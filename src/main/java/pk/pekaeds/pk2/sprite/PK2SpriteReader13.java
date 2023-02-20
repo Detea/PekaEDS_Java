@@ -11,15 +11,6 @@ import java.io.*;
 import org.tinylog.Logger;
 
 public final class PK2SpriteReader13 implements PK2SpriteReader {
-    private final static Settings settings = new Settings();
-    
-    @Override
-    public PK2Sprite13 load(File filename) {
-        var spr = new PK2Sprite13();
-        
-        return null;
-    }
-    
     /**
      * Reads only the necessary data from the sprites file. Use this in the level editor. Use load() in the sprite editor.
      * @param filename
@@ -27,8 +18,8 @@ public final class PK2SpriteReader13 implements PK2SpriteReader {
      * @return
      */
     @Override
-    public PK2Sprite13 loadImageData(File filename, BufferedImage backgroundImage) {
-        var spr = new PK2Sprite13();
+    public PK2Sprite loadImageData(File filename, BufferedImage backgroundImage) {
+        var spr = new PK2Sprite();
         
         try (DataInputStream in = new DataInputStream(new FileInputStream(filename))) {
             in.readNBytes(4); // Skip the magic number
@@ -115,7 +106,7 @@ public final class PK2SpriteReader13 implements PK2SpriteReader {
             
             spr.setFilename(filename.getName());
             
-            var spriteImageSheet = ImageIO.read(new File(settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
+            var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
             GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
             
             if (backgroundImage != null) {
