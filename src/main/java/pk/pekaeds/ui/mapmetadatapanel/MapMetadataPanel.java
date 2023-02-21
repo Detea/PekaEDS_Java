@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,7 +127,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     
         var lblTime = new JLabel("Time (sec):");
         spTime = new JSpinner();
-    
+        
         var lblWeather = new JLabel("Weather:");
         cbWeather = new JComboBox<>();
     
@@ -197,7 +198,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         
         p.add(lblTime);
         p.add(spTime, "span 2");
-    
+
         p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
         
         p.add(lblWeather);
@@ -220,6 +221,24 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         p.add(btnPositionMap);
         
         add(p, BorderLayout.CENTER);
+    }
+    
+    public void commitSpinnerValues() {
+        try {
+            spLevelNumber.commitEdit();
+            spTime.commitEdit();
+            spMapPosX.commitEdit();
+            spMapPosY.commitEdit();
+            
+            map.setLevelNumber((int) spLevelNumber.getValue());
+            map.setTime((int) spTime.getValue());
+            map.setMapX((int) spMapPosX.getValue());
+            map.setMapY((int) spMapPosY.getValue());
+            
+            changeListener.stateChanged(changeEvent);
+        } catch (ParseException e) {
+            // TODO Does this need to be logged?
+        }
     }
     
     private void setListeners() {

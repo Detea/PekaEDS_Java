@@ -252,7 +252,9 @@ public class PekaEDSGUI implements ChangeListener {
     }
     
     public void saveMap(File file) {
-        if (file != null && unsavedChanges) {
+        if (file != null) {
+            mapMetadataPanel.commitSpinnerValues();
+            
             try {
                 var writer = MapIO.getWriter();
         
