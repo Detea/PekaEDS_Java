@@ -69,6 +69,8 @@ public abstract class Tool implements PropertyChangeListener {
     
     private static TileChangeListener tileChangeListener;
     
+    private static ToolModeListener toolModeListener;
+    
     public static boolean inTileMode() {
         return mode == MODE_TILE;
     } // TODO Cleanup: delete this
@@ -341,5 +343,11 @@ public abstract class Tool implements PropertyChangeListener {
     
     public static void setMode(int m) {
         mode = m;
+        
+        toolModeListener.changeMode(mode);
+    }
+    
+    public static void setToolModeListener(ToolModeListener listener) {
+        toolModeListener = listener;
     }
 }

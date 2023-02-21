@@ -2,6 +2,7 @@ package pk.pekaeds.ui.main;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.settings.Settings;
+import pk.pekaeds.tools.ToolModeListener;
 import pk.pekaeds.ui.actions.NewMapAction;
 import pk.pekaeds.ui.actions.OpenMapAction;
 import pk.pekaeds.ui.actions.PlayMapAction;
@@ -11,7 +12,7 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-public class MainToolBar extends JToolBar implements PropertyChangeListener {
+public class MainToolBar extends JToolBar implements PropertyChangeListener, ToolModeListener {
     private JButton btnNew;
     private JButton btnOpen;
     private JButton btnSave;
@@ -129,6 +130,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener {
         });
     }
     
+    // TODO Delete this
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getSource() instanceof PekaEDSGUIModel) {
@@ -148,5 +150,10 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener {
         } else {
             cbLayer.setSelectedIndex(layer + 1);
         }
+    }
+    
+    @Override
+    public void changeMode(int mode) {
+        cbToolMode.setSelectedIndex(mode);
     }
 }

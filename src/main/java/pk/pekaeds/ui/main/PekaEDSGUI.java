@@ -70,6 +70,8 @@ public class PekaEDSGUI implements ChangeListener {
         registerRepaintListeners();
         registerPropertyListeners();
         
+        Tool.setToolModeListener(mainToolBar);
+        
         // This has to be done after setupComponents(), because View uses the components initialized in this method
         view.setupMainUI();
         
