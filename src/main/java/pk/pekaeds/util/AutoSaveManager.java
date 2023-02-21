@@ -2,6 +2,7 @@ package pk.pekaeds.util;
 
 import org.tinylog.Logger;
 import pk.pekaeds.settings.Settings;
+import pk.pekaeds.ui.main.PekaEDSGUI;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -32,7 +33,7 @@ import java.util.function.Consumer;
  */
 public final class AutoSaveManager {
     private final Timer timer;
-    private final Consumer<File> saveFunction; // The function to call to actually write the map to file.
+    private final PekaEDSGUI edsGUI; // I really don't like to make this class depend on PekaEDSGUI, but I don't see another way for now. This class needs to access unsavedChangesPresent().
     
     private File originalFile;
 
@@ -45,13 +46,14 @@ public final class AutoSaveManager {
     
     private String filename;
     
-    public AutoSaveManager(Consumer<File> saveFunc, File file) {
-        this.saveFunction = saveFunc;
+    public AutoSaveManager(PekaEDSGUI eds, File file) {
+        this.edsGUI = eds;
         this.originalFile = file;
         
-        timer = new Timer(120000, new SaveAction());
-
         delay = Settings.getAutosaveInterval();
+        timer = new Timer(delay, new SaveAction());
+        timer.setInitialDelay(delay);
+        
         fileCount = Settings.getAutosaveFileCount();
         generateFileRotation();
     }
@@ -64,6 +66,7 @@ public final class AutoSaveManager {
         this.delay = newDelay;
     
         timer.setDelay(delay);
+        timer.setInitialDelay(delay);
     
         timer.restart(); // Restart it with the new interval.
     }
@@ -121,20 +124,21 @@ public final class AutoSaveManager {
     private class SaveAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (originalFile != null && fileCount > 0 && delay > 0) {
-                // Copy the original file into the current autosave file
-                try {
-                    Files.copy(originalFile.toPath(), fileRotation.get(currentFile).toPath(), StandardCopyOption.REPLACE_EXISTING);
-                } catch (IOException ex) {
-                    Logger.warn("Unable to save autosave file: " + fileRotation.get(currentFile).getName());
-                }
-                
-                // Save the file
-                saveFunction.accept(originalFile);
-                
-                currentFile++;
-                if (currentFile >= fileCount) {
-                    currentFile = 0;
+            if (edsGUI.unsavedChangesPresent()) {
+                if (originalFile != null && fileCount > 0 && delay > 0) { // filecount > 0 && delay > 0 is to make sure auto saving isn't enabled. Should probably add an extra option in the settings dialog.
+                    // Copy the original file into the current auto save file
+                    try {
+                        Files.copy(originalFile.toPath(), fileRotation.get(currentFile).toPath(), StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException ex) {
+                        Logger.warn("Unable to save autosave file: " + fileRotation.get(currentFile).getName());
+                    }
+        
+                    edsGUI.saveMap(originalFile);
+        
+                    currentFile++;
+                    if (currentFile >= fileCount) {
+                        currentFile = 0;
+                    }
                 }
             }
         }

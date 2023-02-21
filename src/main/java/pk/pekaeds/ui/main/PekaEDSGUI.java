@@ -79,7 +79,7 @@ public class PekaEDSGUI implements ChangeListener {
         mapPanel.setLeftMouseTool(new BrushTool());
         mapPanel.setRightMouseTool(new SelectionTool());
         
-        autosaveManager = new AutoSaveManager(this::saveMap, model.getCurrentMapFile());
+        autosaveManager = new AutoSaveManager(this, model.getCurrentMapFile());
         autosaveManager.start();
         
         // TODO Do startup behavior saved in Settings
