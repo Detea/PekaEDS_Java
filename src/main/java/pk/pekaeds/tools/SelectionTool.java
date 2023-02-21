@@ -24,13 +24,16 @@ public class SelectionTool extends Tool {
         }
     }
     
-    // TODO Auto switch tile and sprite mode like in PekaED
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (getMode() == Tool.MODE_TILE) {
-            doTileSelection();
-        } else if (getMode() == Tool.MODE_SPRITE) {
+        if (getSpriteAt(e.getPoint()) != 255) {
+            setMode(MODE_SPRITE);
+            
             doSpriteSelection();
+        } else {
+            setMode(MODE_TILE);
+            
+            doTileSelection();
         }
     }
     
