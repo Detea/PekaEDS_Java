@@ -35,6 +35,7 @@ public final class MapPanelMouseHandler extends MouseAdapter {
         
         // TODO only repaint the affected areas.
         mapPanel.repaint();
+        mapPanel.requestFocus(); // This is needed to get the keyboard shortcuts to work.
     }
     
     @Override
@@ -86,7 +87,7 @@ public final class MapPanelMouseHandler extends MouseAdapter {
         mapPanel.repaint();
     }
     
-    // TODO Fix paning being weird
+    // TODO Fix panel not being redrawn when panning to the maximum height. Scrollbars work, panning doesn't.
     private void panView(int x, int y) {
         int panX = mapPanel.getModel().getLastPanPoint().x - x;
         int panY = mapPanel.getModel().getLastPanPoint().y - y;

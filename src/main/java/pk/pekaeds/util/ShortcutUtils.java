@@ -19,6 +19,6 @@ public final class ShortcutUtils {
     
     public static void install(JComponent target, String actionName, AbstractAction action) {
         target.getActionMap().put(actionName, action);
-        target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(Settings.getKeyboardShortcutFor(actionName), actionName);
+        target.getInputMap(JComponent.WHEN_FOCUSED).put(Settings.getKeyboardShortcutFor(actionName), actionName);
     }
 }
