@@ -136,7 +136,7 @@ public class MapPanelPainter {
     public void drawTile(Graphics2D g, int x, int y, int tile, BufferedImage tileset) {
         if (mapPanel.getModel().getMap() != null) {
             if (tile != 255) { // 255 is the empty tile
-                if (x >= 0 && x < PK2Map13.WIDTH * 32 && y >= 0 && y < PK2Map13.HEIGHT * 32) {
+                if (x >= 0 && x <= PK2Map13.WIDTH * 32 && y >= 0 && y <= PK2Map13.HEIGHT * 32) {
                     // Position of the tile in the tileset image
                     int tileX = (tile % 10) * 32;
                     int tileY = (tile / 10) * 32;
@@ -147,21 +147,12 @@ public class MapPanelPainter {
         }
     }
     
+    // Method used in the Tool subclasses, they don't care which tileset is supposed to be used.
     public void drawTile(Graphics2D g, int x, int y, int tile) {
-        if (mapPanel.getModel().getMap() != null) {
-            if (tile != 255) { // 255 is the empty tile
-                if (x >= 0 && x <= PK2Map13.WIDTH * 32 && y >= 0 && y <= PK2Map13.HEIGHT * 32) {
-                    // Position of the tile in the tileset image
-                    int tileX = (tile % 10) * 32;
-                    int tileY = (tile / 10) * 32;
-                    
-                    if (Settings.useBGTileset() && mapPanel.getModel().getMap().getBackgroundTilesetImage() != null && mapPanel.getModel().getSelectedLayer() == Layer.BACKGROUND) {
-                        g.drawImage(mapPanel.getModel().getMap().getBackgroundTilesetImage(), x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
-                    } else {
-                        g.drawImage(mapPanel.getModel().getMap().getTilesetImage(), x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
-                    }
-                }
-            }
+        if (Settings.useBGTileset() && mapPanel.getModel().getMap().getBackgroundTilesetImage() != null && mapPanel.getModel().getSelectedLayer() == Layer.BACKGROUND) {
+            drawTile(g, x, y, tile, mapPanel.getModel().getMap().getBackgroundTilesetImage());
+        } else {
+            drawTile(g, x, y, tile, mapPanel.getModel().getMap().getTilesetImage());
         }
     }
 }
