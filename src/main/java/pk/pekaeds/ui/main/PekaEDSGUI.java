@@ -26,8 +26,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalTime;
@@ -350,32 +349,12 @@ public class PekaEDSGUI implements ChangeListener {
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_RECT, new SetSelectedToolAction(this, Tools.getTool(RectangleTool.class)));
     }
     
-    private boolean loadDefaults() {
-        BufferedImage bgImg = null;
+    void setShowSprites(boolean show) {
+        mapPanel.getModel().setShowSprites(show);
+    }
     
-        try {
-            bgImg = ImageIO.read(new File(Settings.getBackgroundsPath() + Settings.getDefaultBackground()));
-        } catch (IOException e) {
-            Logger.error(e, "Unable to load default background image.");
-            
-            return false;
-        }
-        
-        BufferedImage tilesetImg = null;
-    
-        try {
-            tilesetImg = ImageIO.read(new File(Settings.getTilesetPath() + Settings.getDefaultTileset()));
-            
-            // TODO Set tileset
-        } catch (IOException e) {
-            Logger.error(e, "Unable to load default tileset image.");
-            
-            return false;
-        }
-    
-        mapPanel.repaint();
-
-        return true;
+    boolean shouldShowSprites() {
+        return mapPanel.getModel().shouldShowSprites();
     }
     
     private void updateMapHolders() {

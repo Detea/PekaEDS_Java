@@ -25,6 +25,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener {
     private JComboBox<String> cbToolMode;
     
     private JToggleButton tbHighlightSprites;
+    private JToggleButton tbShowSprites;
     
     private final Settings settings;
     
@@ -50,6 +51,9 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener {
         tbHighlightSprites = new JToggleButton("Highlight sprites");
         tbHighlightSprites.setSelected(Settings.highlightSprites());
         
+        tbShowSprites = new JToggleButton("Show sprites");
+        tbShowSprites.setSelected(gui.shouldShowSprites());
+        
         btnNew.addActionListener(new NewMapAction(gui));
         btnOpen.addActionListener(new OpenMapAction(gui));
         btnPlayTest.addActionListener(new PlayMapAction(gui));
@@ -57,6 +61,11 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener {
         tbHighlightSprites.addActionListener(e -> {
             Settings.setHighlightSprites(tbHighlightSprites.isSelected());
             
+            gui.getMapPanel().repaint();
+        });
+        
+        tbShowSprites.addActionListener(e -> {
+            gui.setShowSprites(tbShowSprites.isSelected());
             gui.getMapPanel().repaint();
         });
         
@@ -97,6 +106,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener {
         addSeparator();
         
         add(tbHighlightSprites);
+        add(tbShowSprites);
     }
     
     private void addListeners() {

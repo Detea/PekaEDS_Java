@@ -107,12 +107,14 @@ public class MapPanelPainter {
     }
     
     public void drawSprite(Graphics2D g, PK2Sprite spr, int x, int y) {
-        g.drawImage(spr.getImage(), x - (spr.getFrameWidth() / 2) + 16, y - (spr.getFrameHeight() - 32), null);
-        
-        // TODO Fix background sprites rectangle being painted over by foreground tiles
-        if (Settings.highlightSprites()) {
-            g.setColor(Color.WHITE);
-            g.drawRect(x, y, 32, 32);
+        if (mapPanel.getModel().shouldShowSprites()) {
+            g.drawImage(spr.getImage(), x - (spr.getFrameWidth() / 2) + 16, y - (spr.getFrameHeight() - 32), null);
+    
+            // TODO Fix background sprites rectangle being painted over by foreground tiles
+            if (Settings.highlightSprites()) {
+                g.setColor(Color.WHITE);
+                g.drawRect(x, y, 32, 32);
+            }
         }
     }
     
