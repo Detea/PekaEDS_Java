@@ -139,8 +139,6 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer {
         spriteList.addListSelectionListener(l -> {
             Tool.setSelectedSprite(spriteList.getSelectedValue());
             Tool.setMode(Tool.MODE_SPRITE);
-            
-            gui.switchMode(Tool.MODE_SPRITE);
         });
     }
     

@@ -418,22 +418,6 @@ public class PekaEDSGUI implements ChangeListener {
         toolPropertiesPanel.setSelectedTool(selectedTool);
     }
     
-    public void switchMode(int mode) {
-        switch (mode) {
-            case Tool.MODE_TILE -> {
-                Tool.setMode(Tool.MODE_TILE);
-
-                mainToolBar.setToolMode(Tool.MODE_TILE);
-            }
-            
-            case Tool.MODE_SPRITE -> {
-                Tool.setMode(Tool.MODE_SPRITE);
-                
-                mainToolBar.setToolMode(Tool.MODE_SPRITE);
-            }
-        }
-    }
-    
     /*
         Getters for components that get added to the frame in PekaEDSGUIView
      */

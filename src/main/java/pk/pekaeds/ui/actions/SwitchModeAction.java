@@ -1,5 +1,6 @@
 package pk.pekaeds.ui.actions;
 
+import pk.pekaeds.tools.Tool;
 import pk.pekaeds.ui.main.PekaEDSGUI;
 
 import javax.swing.*;
@@ -16,6 +17,6 @@ public class SwitchModeAction extends AbstractAction {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        gui.switchMode(mode);
+        Tool.setMode(mode);
     }
 }

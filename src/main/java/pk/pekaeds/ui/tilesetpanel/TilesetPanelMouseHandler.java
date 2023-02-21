@@ -77,7 +77,7 @@ public final class TilesetPanelMouseHandler extends MouseAdapter {
             Tool.setSelectionSize(rect.width, rect.height);
             Tool.setSelection(selection);
             
-            tilesetPanel.getEdsUI().switchMode(Tool.MODE_TILE);
+            Tool.setMode(Tool.MODE_TILE);
             
             tilesetPanel.repaint();
         }

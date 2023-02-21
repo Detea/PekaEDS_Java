@@ -2,6 +2,7 @@ package pk.pekaeds.ui.main;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.settings.Settings;
+import pk.pekaeds.tools.Tool;
 import pk.pekaeds.tools.ToolModeListener;
 import pk.pekaeds.ui.actions.NewMapAction;
 import pk.pekaeds.ui.actions.OpenMapAction;
@@ -126,7 +127,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         });
         
         cbToolMode.addActionListener(e -> {
-            gui.switchMode(cbToolMode.getSelectedIndex());
+            Tool.setMode(cbToolMode.getSelectedIndex());
         });
     }
     
