@@ -100,10 +100,6 @@ public class PK2MapReader13 implements PK2MapReader {
             map.setLayer(Layer.BACKGROUND, layerBackground);
             map.setLayer(Layer.FOREGROUND, layerForeground);
             map.setSpritesLayer(layerSprites);
-    
-            var backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
-            
-            if (backgroundImage != null) map.setSpriteList(loadSpriteList(map.getSpriteFilenames(), backgroundImage, map.getPlayerSpriteId()));
         }
         
         in.close();

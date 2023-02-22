@@ -217,6 +217,10 @@ public class PekaEDSGUI implements ChangeListener {
             
             if (map != null) {
                 loadMap(map);
+                var backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
+    
+                if (backgroundImage != null) map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), backgroundImage, map.getPlayerSpriteId()));
+                
                 model.setCurrentMapFile(file);
                 autosaveManager.setFile(model.getCurrentMapFile());
     
