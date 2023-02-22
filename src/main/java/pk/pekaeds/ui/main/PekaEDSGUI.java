@@ -75,6 +75,8 @@ public class PekaEDSGUI implements ChangeListener {
         // This has to be done after setupComponents(), because View uses the components initialized in this method
         view.setupMainUI();
         
+        mapPanel.getViewport().addChangeListener(miniMapPanel);
+        
         registerChangeListeners();
         installKeyboardShortcuts();
         

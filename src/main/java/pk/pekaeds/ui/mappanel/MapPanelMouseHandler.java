@@ -87,20 +87,16 @@ public final class MapPanelMouseHandler extends MouseAdapter {
         mapPanel.repaint();
     }
     
-    // TODO Fix panel not being redrawn when panning to the maximum height. Scrollbars work, panning doesn't.
     private void panView(int x, int y) {
         int panX = mapPanel.getModel().getLastPanPoint().x - x;
         int panY = mapPanel.getModel().getLastPanPoint().y - y;
         
-        var viewRect = mapPanel.getViewport().getVisibleRect();
+        var vp = (JViewport) SwingUtilities.getAncestorOfClass(JViewport.class, mapPanel);
+        var viewRect = vp.getViewRect();
         viewRect.x += panX;
         viewRect.y += panY;
-        
-        mapPanel.getModel().setViewPosition(mapPanel.getScrollPane().getHorizontalScrollBar().getValue() / 32, mapPanel.getScrollPane().getVerticalScrollBar().getValue() / 32);
-        
-        mapPanel.getViewport().scrollRectToVisible(viewRect);
-        
-        mapPanel.repaint();
+
+        mapPanel.scrollRectToVisible(viewRect);
     }
     
     public void setLeftMouseTool(Tool tool) {

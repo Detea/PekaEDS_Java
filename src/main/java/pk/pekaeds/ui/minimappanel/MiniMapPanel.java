@@ -10,6 +10,8 @@ import pk.pekaeds.ui.listeners.TileChangeListener;
 import pk.pekaeds.ui.mappanel.MapPanelModel;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
@@ -17,7 +19,7 @@ import java.beans.PropertyChangeListener;
 
 // TODO Reflect changes to the map on the mini map
 // TODO Reflect tileset and background change
-public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2MapConsumer, TileChangeListener {
+public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2MapConsumer, TileChangeListener, ChangeListener {
     private BufferedImage mapImage = new BufferedImage(256, 224, BufferedImage.TYPE_INT_ARGB);
     private BufferedImage bgImage = null;
     private BufferedImage tilesetImage;
@@ -123,13 +125,6 @@ public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2M
     
                     setViewportSize(size.width, size.height);
                 }
-                
-                case "viewPosition" -> {
-                    var vp = (Point) evt.getNewValue();
-                    
-                    viewX = vp.x;
-                    viewY = vp.y;
-                }
             }
             
             repaint();
@@ -139,5 +134,15 @@ public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2M
     @Override
     public void tileChanged(int x, int y, int tileID) {
         repaint(x, y, 1, 1);
+    }
+    
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        var vp = (JViewport) e.getSource();
+    
+        viewX = vp.getViewRect().x / 32;
+        viewY = vp.getViewRect().y / 32;
+        
+        repaint();
     }
 }

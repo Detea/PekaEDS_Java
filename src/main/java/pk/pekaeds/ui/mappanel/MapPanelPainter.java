@@ -60,8 +60,14 @@ public class MapPanelPainter {
     }
     
     public void drawLayer(Graphics2D g, int layerIndex, BufferedImage tileset) {
-        for (int x = mapPanel.getScrollPane().getHorizontalScrollBar().getValue() / 32; x < ((mapPanel.getScrollPane().getHorizontalScrollBar().getValue() + mapPanel.getModel().getViewRect().width) / 32) + 1; x++) {
-            for (int y = mapPanel.getScrollPane().getVerticalScrollBar().getValue() / 32; y < ((mapPanel.getScrollPane().getVerticalScrollBar().getValue() + mapPanel.getModel().getViewRect().height) / 32) + 1; y++) {
+        // TODO Optimization: Should make these values available to the whole class, so only the sprites within the viewport can be drawn.
+        int viewX = mapPanel.getViewport().getViewRect().x / 32;
+        int viewY = mapPanel.getViewport().getViewRect().y / 32;
+        int viewWidth = mapPanel.getViewport().getViewRect().width / 32;
+        int viewHeight = mapPanel.getViewport().getViewRect().height / 32;
+        
+        for (int x = viewX; x < viewX + viewWidth + 1; x++) {
+            for (int y = viewY; y < viewY + viewHeight + 1; y++) {
                 drawTile(g, x * 32, y * 32, mapPanel.getModel().getMap().getTileAt(layerIndex, x, y), tileset);
             }
         }
@@ -136,7 +142,7 @@ public class MapPanelPainter {
     public void drawTile(Graphics2D g, int x, int y, int tile, BufferedImage tileset) {
         if (mapPanel.getModel().getMap() != null) {
             if (tile != 255) { // 255 is the empty tile
-                if (x >= 0 && x <= PK2Map13.WIDTH * 32 && y >= 0 && y <= PK2Map13.HEIGHT * 32) {
+                if (x >= 0 && x <= PK2Map13.WIDTH * 32 && y >= 0 && y <= PK2Map13.HEIGHT * 32) { // TODO Delete this check
                     // Position of the tile in the tileset image
                     int tileX = (tile % 10) * 32;
                     int tileY = (tile / 10) * 32;
