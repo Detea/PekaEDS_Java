@@ -151,8 +151,8 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         cbWeather.addItem("Snow");
         
         cbScrollingType.addItem("None");
-        cbScrollingType.addItem("Horizontal");
         cbScrollingType.addItem("Vertical");
+        cbScrollingType.addItem("Horizontal");
         cbScrollingType.addItem("Horizontal & Vertical");
         
         for (var s : Settings.getMapProfile().getIconNames()) {
