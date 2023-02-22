@@ -174,7 +174,9 @@ public class PekaEDSGUI implements ChangeListener {
             return;
         }
   
-        tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);
+        if (tilesetImage != null && backgroundImage != null) {
+            tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);
+        }
     
         if (Settings.useBGTileset()) {
             // Check if the tileset has a _bg version, if it does load and set it to the background tileset.

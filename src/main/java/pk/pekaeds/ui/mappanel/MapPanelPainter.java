@@ -146,8 +146,10 @@ public class MapPanelPainter {
                     // Position of the tile in the tileset image
                     int tileX = (tile % 10) * 32;
                     int tileY = (tile / 10) * 32;
-    
-                    g.drawImage(tileset, x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
+
+                    if (tileset != null) {
+                        g.drawImage(tileset, x, y, x + 32, y + 32, tileX, tileY, tileX + 32, tileY + 32, null);
+                    }
                 }
             }
         }

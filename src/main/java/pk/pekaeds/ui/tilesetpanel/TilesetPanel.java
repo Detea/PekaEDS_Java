@@ -52,7 +52,7 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         
-        if (model.getMap() != null) {
+        if (model.getMap() != null && model.getMap().getTilesetImage() != null) {
             var g2 = (Graphics2D) g;
     
             if (fontMetrics == null) fontMetrics = getFontMetrics(getFont());

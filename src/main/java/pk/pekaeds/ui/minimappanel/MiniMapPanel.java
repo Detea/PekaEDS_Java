@@ -64,21 +64,23 @@ public class MiniMapPanel extends JPanel implements PK2MapConsumer, TileChangeLi
     }
     
     private void paintLayer(Graphics g, int layer) {
-        for (int x = 0; x < 256; x++) {
-            for (int y = 0; y < 224; y++) {
-                // TODO Don't use 256 and 224 magic numbers, use profile
-                int tile = map.getLayers().get(layer)[y][x];
+        if (tilesetImage != null) {
+            for (int x = 0; x < 256; x++) {
+                for (int y = 0; y < 224; y++) {
+                    // TODO Don't use 256 and 224 magic numbers, use profile
+                    int tile = map.getLayers().get(layer)[y][x];
             
-                if (tile >= 0 && tile <= 149) { // The tileid should not be able to go out of these bounds, but for some reason one custom map does that?
-                    int tileX = (tile % 10) * 32;
-                    int tileY = (tile / 10) * 32;
-                    
-                    if (Settings.useBGTileset() && layer == Layer.BACKGROUND && backgroundTilesetImage != null) {
-                        g.setColor(new Color(backgroundTilesetImage.getRGB(tileX, tileY))); // TODO Maybe don't create a new Color object every loop
-                    } else {
-                        g.setColor(new Color(tilesetImage.getRGB(tileX, tileY))); // TODO Maybe don't create a new Color object every loop
+                    if (tile >= 0 && tile <= 149) { // The tileid should not be able to go out of these bounds, but for some reason one custom map does that?
+                        int tileX = (tile % 10) * 32;
+                        int tileY = (tile / 10) * 32;
+                
+                        if (Settings.useBGTileset() && layer == Layer.BACKGROUND && backgroundTilesetImage != null) {
+                            g.setColor(new Color(backgroundTilesetImage.getRGB(tileX, tileY))); // TODO Maybe don't create a new Color object every loop
+                        } else {
+                            g.setColor(new Color(tilesetImage.getRGB(tileX, tileY))); // TODO Maybe don't create a new Color object every loop
+                        }
+                        g.drawLine(x, y, x + 1, y + 1);
                     }
-                    g.drawLine(x, y, x + 1, y + 1);
                 }
             }
         }
