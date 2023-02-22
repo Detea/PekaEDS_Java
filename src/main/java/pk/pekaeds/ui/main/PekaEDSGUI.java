@@ -101,7 +101,6 @@ public class PekaEDSGUI implements ChangeListener {
         mapMetadataPanel = new MapMetadataPanel(this);
         
         miniMapPanel = new MiniMapPanel();
-        mapPanel.getModel().addPropertyChangeListener(miniMapPanel);
         
         statusbar = new Statusbar();
     

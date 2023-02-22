@@ -19,9 +19,7 @@ import java.beans.PropertyChangeListener;
 
 // TODO Reflect changes to the map on the mini map
 // TODO Reflect tileset and background change
-public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2MapConsumer, TileChangeListener, ChangeListener {
-    private BufferedImage mapImage = new BufferedImage(256, 224, BufferedImage.TYPE_INT_ARGB);
-    private BufferedImage bgImage = null;
+public class MiniMapPanel extends JPanel implements PK2MapConsumer, TileChangeListener, ChangeListener {
     private BufferedImage tilesetImage;
     private BufferedImage backgroundTilesetImage;
     
@@ -58,9 +56,6 @@ public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2M
     
     public void setMap(PK2Map m) {
         this.map = m;
-        
-        mapImage.getGraphics().setColor(Color.DARK_GRAY);
-        mapImage.getGraphics().fillRect(0, 0, 256, 224);
         
         tilesetImage = m.getTilesetImage();
         backgroundTilesetImage = m.getBackgroundTilesetImage();
@@ -115,22 +110,7 @@ public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2M
         g.setColor(Color.white);
         g.drawRect(viewX, viewY, viewWidth, viewHeight);
     }
-    
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getSource() instanceof MapPanelModel) {
-            switch (evt.getPropertyName()) {
-                case "viewportSize" -> {
-                    var size = ((Dimension) evt.getNewValue());
-    
-                    setViewportSize(size.width, size.height);
-                }
-            }
-            
-            repaint();
-        }
-    }
-    
+
     @Override
     public void tileChanged(int x, int y, int tileID) {
         repaint(x, y, 1, 1);
@@ -142,6 +122,9 @@ public class MiniMapPanel extends JPanel implements PropertyChangeListener, PK2M
     
         viewX = vp.getViewRect().x / 32;
         viewY = vp.getViewRect().y / 32;
+        
+        viewWidth = vp.getViewRect().width / 32;
+        viewHeight = vp.getViewRect().height / 32;
         
         repaint();
     }
