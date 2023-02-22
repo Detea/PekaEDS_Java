@@ -106,17 +106,26 @@ public final class PK2SpriteReader13 implements PK2SpriteReader {
             
             spr.setFilename(filename.getName());
             
-            var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
-            GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
+            var spriteImageFile = new File(Settings.getSpritesPath() + File.separatorChar + spr.getImageFile());
             
-            if (backgroundImage != null) {
-                spriteImageSheet = GFXUtils.setPaletteToBackgrounds(spriteImageSheet, backgroundImage);
-            } else {
-                spriteImageSheet = GFXUtils.makeTransparent(spriteImageSheet);
-            }
+            if (spriteImageFile.exists()) {
+                var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
+                GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
     
-            spr.setImage(GFXUtils.getFirstSpriteFrame(spr, spriteImageSheet));
-            
+                if (backgroundImage != null) {
+                    spriteImageSheet = GFXUtils.setPaletteToBackgrounds(spriteImageSheet, backgroundImage);
+                } else {
+                    spriteImageSheet = GFXUtils.makeTransparent(spriteImageSheet);
+                }
+    
+                spr.setImage(GFXUtils.getFirstSpriteFrame(spr, spriteImageSheet));
+            } else {
+                spr.setImage(PK2SpriteMissing.getMissingImage());
+                spr.setFrameX(0);
+                spr.setFrameY(0);
+                spr.setFrameWidth(32);
+                spr.setFrameHeight(32);
+            }
         } catch (IOException e) {
             Logger.warn(e, "Unable to load sprite image data.");
         }

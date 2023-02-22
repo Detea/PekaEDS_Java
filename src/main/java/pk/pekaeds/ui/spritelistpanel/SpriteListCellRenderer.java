@@ -72,7 +72,12 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<P
         spriteName.setText(sprite.getName());
         filename.setText("(" + sprite.getFilename() + ")");
         
-        spriteTypeLbl.setText(Settings.getSpriteProfile().getTypes().get(sprite.getType() - 1));
+        String typeText = "Missing";
+        if (sprite.getType() > -1) {
+            typeText = Settings.getSpriteProfile().getTypes().get(sprite.getType() - 1);
+        }
+        
+        spriteTypeLbl.setText(typeText);
 
         if (sprite.isPlayerSprite()) {
             isPlayerLbl.setText("(Player)");

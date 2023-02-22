@@ -113,11 +113,13 @@ public class PK2MapReader13 implements PK2MapReader {
         
         // TODO Look for sprites in the currently loaded levels folder
         for (String filename : spriteFilenames) {
-            var spriteFile = new File(settings.getSpritesPath() + filename);
+            var spriteFile = new File(Settings.getSpritesPath() + filename);
             
             // TODO handle missing sprites?
             if (!spriteFile.exists()) {
                 Logger.warn("Unable to find sprite file {}.", filename);
+                
+                spriteList.add(new PK2SpriteMissing());
             } else {
                 var sprReader = SpriteReaders.getReader(spriteFile);
                 

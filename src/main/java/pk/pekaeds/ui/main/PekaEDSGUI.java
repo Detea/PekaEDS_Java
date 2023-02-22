@@ -202,8 +202,10 @@ public class PekaEDSGUI implements ChangeListener {
         model.setCurrentMap(map);
     
         miniMapPanel.setMap(map);
-    
+
         Tool.setMap(map);
+    
+        UndoManager.setMap(map);
     
         updateMapHolders();
     }
@@ -217,15 +219,16 @@ public class PekaEDSGUI implements ChangeListener {
             
             if (map != null) {
                 loadMap(map);
-                var backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
-    
-                if (backgroundImage != null) map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), backgroundImage, map.getPlayerSpriteId()));
+
+                if (map.getBackgroundImage() != null) {
+                    map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId()));
+                    
+                    spritesPanel.setMap(map);
+                }
                 
                 model.setCurrentMapFile(file);
                 autosaveManager.setFile(model.getCurrentMapFile());
-    
-                UndoManager.setMap(map);
-    
+                
                 unsavedChanges = false;
     
                 updateFrameTitle();
