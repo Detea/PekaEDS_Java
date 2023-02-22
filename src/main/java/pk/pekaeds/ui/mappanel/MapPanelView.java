@@ -15,7 +15,6 @@ import java.beans.PropertyChangeListener;
  * MapPanel needs this information to determine how often to repeat the background image.
  */
 public class MapPanelView extends JScrollPane implements ComponentListener {
-    private MapPanelBackground mapPanelBackground;
     private MapPanel mapPanel;
     //private JScrollPane scrollPane;
     

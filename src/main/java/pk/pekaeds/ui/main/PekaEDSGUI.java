@@ -7,7 +7,6 @@ import pk.pekaeds.settings.Shortcuts;
 import pk.pekaeds.tools.*;
 import pk.pekaeds.ui.actions.*;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
-import pk.pekaeds.ui.mappanel.MapPanelBackground;
 import pk.pekaeds.ui.toolpropertiespanel.ToolPropertiesPanel;
 import pk.pekaeds.util.*;
 import pk.pekaeds.settings.Settings;
@@ -40,7 +39,6 @@ public class PekaEDSGUI implements ChangeListener {
     private PekaEDSGUIModel model;
     
     private TilesetPanel tilesetPanel;
-    private MapPanelBackground mapPanelBackground;
     private MapPanel mapPanel;
     
     private MainToolBar mainToolBar;
@@ -92,7 +90,6 @@ public class PekaEDSGUI implements ChangeListener {
     
     private void setupComponents() {
         tilesetPanel = new TilesetPanel(this);
-        mapPanelBackground = new MapPanelBackground();
         mapPanel = new MapPanel();
         
         mainToolBar = new MainToolBar(this);
@@ -110,7 +107,6 @@ public class PekaEDSGUI implements ChangeListener {
     private void registerMapConsumers() {
         model.addMapConsumer(spritesPanel);
         model.addMapConsumer(miniMapPanel);
-        model.addMapConsumer(mapPanelBackground);
         model.addMapConsumer(mapPanel);
         model.addMapConsumer(tilesetPanel);
         model.addMapConsumer(mapMetadataPanel);
@@ -150,7 +146,7 @@ public class PekaEDSGUI implements ChangeListener {
         * Map related methods
      */
     public void loadMap(PK2Map map) {
-        BufferedImage tilesetImage;
+        BufferedImage tilesetImage = null;
         
         try {
             tilesetImage = ImageIO.read(new File(Settings.getTilesetPath() + map.getTileset()));
@@ -162,7 +158,7 @@ public class PekaEDSGUI implements ChangeListener {
             return;
         }
     
-        BufferedImage backgroundImage;
+        BufferedImage backgroundImage = null;
         
         try {
             backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
@@ -178,7 +174,7 @@ public class PekaEDSGUI implements ChangeListener {
             tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);
         }
     
-        if (Settings.useBGTileset()) {
+        if (Settings.useBGTileset() && backgroundImage != null) {
             // Check if the tileset has a _bg version, if it does load and set it to the background tileset.
             BufferedImage bgTilesetImage = null;
             var bgTilesetFileStr = PathUtils.getTilesetAsBackgroundTileset(Settings.getTilesetPath() + map.getTileset());
@@ -453,10 +449,6 @@ public class PekaEDSGUI implements ChangeListener {
     
     ToolPropertiesPanel getToolPropertiesPanel() {
         return toolPropertiesPanel;
-    }
-    
-    MapPanelBackground getMapPanelBackground() {
-        return mapPanelBackground;
     }
     
     public void updateAutosaveManager() {

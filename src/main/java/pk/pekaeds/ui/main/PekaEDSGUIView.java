@@ -2,12 +2,10 @@ package pk.pekaeds.ui.main;
 
 import net.miginfocom.swing.MigLayout;
 import pk.pekaeds.data.PekaEDSVersion;
-import pk.pekaeds.tools.Tool;
 import pk.pekaeds.ui.actions.NewMapAction;
 import pk.pekaeds.ui.actions.OpenMapAction;
 import pk.pekaeds.ui.actions.SaveMapAction;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
-import pk.pekaeds.ui.mappanel.MapPanelBackground;
 import pk.pekaeds.ui.mappanel.MapPanelView;
 import pk.pekaeds.ui.settings.SettingsDialog;
 import pk.pekaeds.ui.toolpropertiespanel.ToolPropertiesPanel;
@@ -64,7 +62,6 @@ public class PekaEDSGUIView {
         
         var miniMapPanel = edsUI.getMiniMapPanel();
 
-        var mapPanelBackground = edsUI.getMapPanelBackground();
         var mapView = new MapPanelView(edsUI.getMapPanel());
         miniMapPanel.setViewport(mapView.getViewport());
         

@@ -10,21 +10,23 @@ public final class GFXUtils {
     private GFXUtils() {}
     
     public static BufferedImage setPaletteToBackgrounds(BufferedImage targetImage, final BufferedImage backgroundImage) {
-        var palette = (IndexColorModel) backgroundImage.getColorModel();
-        
-        var rs = new byte[256];
-        var gs = new byte[256];
-        var bs = new byte[256];
-        palette.getReds(rs);
-        palette.getGreens(gs);
-        palette.getBlues(bs);
-        
-        // Make the last color in the palette transparent, like in the game.
-        var cm = new IndexColorModel(8, 256, rs, gs, bs, 255);
+        if (backgroundImage != null) {
+            var palette = (IndexColorModel) backgroundImage.getColorModel();
     
-        var raster = targetImage.getRaster();
-        targetImage = new BufferedImage(targetImage.getWidth(), targetImage.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, cm);
-        targetImage.setData(raster);
+            var rs = new byte[256];
+            var gs = new byte[256];
+            var bs = new byte[256];
+            palette.getReds(rs);
+            palette.getGreens(gs);
+            palette.getBlues(bs);
+    
+            // Make the last color in the palette transparent, like in the game.
+            var cm = new IndexColorModel(8, 256, rs, gs, bs, 255);
+    
+            var raster = targetImage.getRaster();
+            targetImage = new BufferedImage(targetImage.getWidth(), targetImage.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, cm);
+            targetImage.setData(raster);
+        }
         
         return targetImage;
     }

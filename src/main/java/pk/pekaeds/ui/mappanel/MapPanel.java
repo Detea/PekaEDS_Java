@@ -91,14 +91,17 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
         g2.setTransform(transform);*/
         
         painter.drawBackground(g2);
+        
         painter.drawBackgroundSprites(g2);
         
-        painter.drawLayers(g2);
+        if (model.getTilesetImage() != null) painter.drawLayers(g2);
         
         painter.drawForegroundSprites(g2);
         
-        leftMouseTool.draw(g2);
-        rightMouseTool.draw(g2);
+        if (model.getTilesetImage() != null) {
+            leftMouseTool.draw(g2);
+            rightMouseTool.draw(g2);
+        }
     }
     
     public MapPanelModel getModel() {
