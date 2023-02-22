@@ -56,8 +56,8 @@ public final class PekaEDSGUILauncher {
             If selectedFile is null that means the user clicked the close button of the dialog and wants to exit, so we don't do anything and just let the application stop on its own.
          */
         File selectedFile = pathDialog.showDialog();
-    
-        if (selectedFile != null) {
+        
+        if (selectedFile.exists()) {
             if (PathUtils.isPK2Directory(selectedFile)) {
                 Settings.reset();
                 Settings.setBasePath(selectedFile.getPath());
@@ -66,12 +66,16 @@ public final class PekaEDSGUILauncher {
                 
                 checkSettingsFile();
             } else {
-                JOptionPane.showMessageDialog(null, "The selected directory does not contain the necessary Pekka Kana 2 content.", "Invalid path", JOptionPane.ERROR_MESSAGE);
-        
-                // TODO Fix clicking on X after clicking ok?
-                
-                createNewSettingsFile();
+                createNewSettingsNonExistent();
             }
+        } else {
+            createNewSettingsNonExistent();
         }
+    }
+    
+    private static void createNewSettingsNonExistent() {
+        JOptionPane.showMessageDialog(null, "The selected directory does not contain the necessary Pekka Kana 2 content.", "Invalid path", JOptionPane.ERROR_MESSAGE);
+    
+        createNewSettingsFile();
     }
 }

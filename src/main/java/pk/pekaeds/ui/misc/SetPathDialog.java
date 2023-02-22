@@ -33,10 +33,12 @@ public class SetPathDialog extends JDialog {
         
         // selectedFile only gets set to a non-null value when the user clicks on the "OK" button, so that they can click on the X of the dialog to quit. See PekaEDSGUILauncher.createNewSettingsFile() for further information.
         btnOk.addActionListener(e -> {
-            selectedFile = new File(tfPath.getText());
-            
-            setVisible(false);
-            dispose();
+            if (!tfPath.getText().isBlank()) {
+                selectedFile = new File(tfPath.getText());
+    
+                setVisible(false);
+                dispose();
+            }
         });
         
         setLayout(new MigLayout());
