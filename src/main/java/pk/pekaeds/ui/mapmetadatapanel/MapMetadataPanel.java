@@ -143,17 +143,11 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         var lblMapY = new JLabel("Map Y:");
         spMapPosY = new JSpinner();
         
-        // TODO Use profile
-        cbWeather.addItem("None");
-        cbWeather.addItem("Rain");
-        cbWeather.addItem("Leaves");
-        cbWeather.addItem("Rain & Leaves");
-        cbWeather.addItem("Snow");
-        
-        cbScrollingType.addItem("None");
-        cbScrollingType.addItem("Vertical");
-        cbScrollingType.addItem("Horizontal");
-        cbScrollingType.addItem("Horizontal & Vertical");
+        var scrollingModel = (DefaultComboBoxModel<String>) cbScrollingType.getModel();
+        scrollingModel.addAll(Settings.getMapProfile().getScrollingTypes());
+    
+        var weatherModel = (DefaultComboBoxModel<String>) cbWeather.getModel();
+        weatherModel.addAll(Settings.getMapProfile().getWeatherTypes());
         
         for (var s : Settings.getMapProfile().getIconNames()) {
             cbIcons.addItem(s);
@@ -355,6 +349,23 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         cbScrollingType.addActionListener(e -> {
             fireChanges();
         });
+    }
+    
+    public void updateMapProfileData() {
+        var scrollingModel = (DefaultComboBoxModel<String>) cbScrollingType.getModel();
+        scrollingModel.removeAllElements();
+        
+        for (var str : Settings.getMapProfile().getScrollingTypes()) {
+            cbScrollingType.addItem(str);
+        }
+        
+        var weatherModel = (DefaultComboBoxModel<String>) cbWeather.getModel();
+        weatherModel.removeAllElements();
+        
+        for (var str : Settings.getMapProfile().getWeatherTypes()) {
+            cbWeather.addItem(str);
+        }
+        
     }
     
     // This seems pretty hacky, but this is a workaround for when the TextField values get set for the first time. This would cause the changeListener to fire, even though it isn't supposed to.

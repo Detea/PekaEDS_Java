@@ -115,6 +115,20 @@ public class Settings {
             autosaveInterval = dis.readInt();
             autosaveFileCount = dis.readInt();
             
+            mapProfile.getScrollingTypes().clear();
+            
+            int scrollingTypesAmount = dis.readInt();
+            for (int i = 0; i < scrollingTypesAmount; i++) {
+                mapProfile.getScrollingTypes().add(dis.readUTF());
+            }
+    
+            mapProfile.getWeatherTypes().clear();
+    
+            int weatherTypesAmount = dis.readInt();
+            for (int i = 0; i < weatherTypesAmount; i++) {
+                mapProfile.getWeatherTypes().add(dis.readUTF());
+            }
+            
             int shortcutAmount = dis.readInt();
             for (int i = 0; i < shortcutAmount; i++) {
                 setKeyboardShortcutFor(dis.readUTF(), KeyStroke.getKeyStroke(dis.readInt(), dis.readInt()));
@@ -147,6 +161,16 @@ public class Settings {
             
             dos.writeInt(autosaveInterval);
             dos.writeInt(autosaveFileCount);
+            
+            dos.writeInt(mapProfile.getScrollingTypes().size());
+            for (var str : mapProfile.getScrollingTypes()) {
+                dos.writeUTF(str);
+            }
+    
+            dos.writeInt(mapProfile.getWeatherTypes().size());
+            for (var str : mapProfile.getWeatherTypes()) {
+                dos.writeUTF(str);
+            }
             
             dos.writeInt(keyboardShortcuts.size());
             for (var e : keyboardShortcuts.entrySet()) {
@@ -183,6 +207,8 @@ public class Settings {
         
         autosaveInterval = 120000;
         autosaveFileCount = 3;
+        
+        mapProfile.reset();
         
         resetKeyboardShortcuts();
     }

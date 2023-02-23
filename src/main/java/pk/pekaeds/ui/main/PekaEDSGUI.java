@@ -462,4 +462,8 @@ public class PekaEDSGUI implements ChangeListener {
         autosaveManager.setInterval(Settings.getAutosaveInterval());
         autosaveManager.setFileCount(Settings.getAutosaveFileCount());
     }
+    
+    public void updateMapProfileData() {
+        mapMetadataPanel.updateMapProfileData();
+    }
 }

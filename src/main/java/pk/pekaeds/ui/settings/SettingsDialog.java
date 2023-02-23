@@ -13,6 +13,7 @@ public class SettingsDialog extends JDialog {
     private PanelGeneral panelGeneral;
     private PanelDefaults panelDefaults;
     private PanelShortcuts panelShortcuts;
+    private PanelMapProfile panelMapProfile;
     
     private PekaEDSGUI eds;
     
@@ -29,11 +30,13 @@ public class SettingsDialog extends JDialog {
         panelGeneral = new PanelGeneral();
         panelDefaults = new PanelDefaults();
         panelShortcuts = new PanelShortcuts();
+        panelMapProfile = new PanelMapProfile();
         
         tabbedPane.add("General", panelGeneral);
         tabbedPane.add("Defaults", panelDefaults);
         tabbedPane.add("Shortcuts", panelShortcuts);
-    
+        tabbedPane.add("Map profile", panelMapProfile);
+        
         JPanel panelButtons = new JPanel();
         var btnOk = new JButton("OK");
         var btnCancel = new JButton("Cancel");
@@ -89,8 +92,20 @@ public class SettingsDialog extends JDialog {
             Settings.setKeyboardShortcutFor(entry.getKey(), entry.getValue());
         }
         
+        Settings.getMapProfile().getScrollingTypes().clear();
+        for (int i = 0; i < panelMapProfile.getScrollingTypes().size(); i++) {
+            Settings.getMapProfile().getScrollingTypes().add(panelMapProfile.getScrollingTypes().get(i));
+        }
+    
+        Settings.getMapProfile().getWeatherTypes().clear();
+        for (int i = 0; i < panelMapProfile.getWeatherTypes().size(); i++) {
+            Settings.getMapProfile().getWeatherTypes().add(panelMapProfile.getWeatherTypes().get(i));
+        }
+        
         eds.installKeyboardShortcuts();
         eds.updateAutosaveManager();
+        
+        eds.updateMapProfileData();
         
         Settings.save();
     }
@@ -102,5 +117,6 @@ public class SettingsDialog extends JDialog {
         panelDefaults.resetValues();
         panelGeneral.resetValues();
         panelShortcuts.resetValues();
+        panelMapProfile.resetValues();
     }
 }

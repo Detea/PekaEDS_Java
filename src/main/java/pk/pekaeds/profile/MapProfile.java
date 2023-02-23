@@ -1,5 +1,6 @@
 package pk.pekaeds.profile;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -13,10 +14,14 @@ public class MapProfile {
     private int mapWidth = 256;
     private int mapHeight = 224;
     
+    private List<String> defaultScrollingTypes = new ArrayList<>();
+    private List<String> defaultWeatherTypes = new ArrayList<>();
+    
     private List<String> musicFormats = Arrays.asList("xm", "mod", "it", "s3m", "ogg", "mp3");
-    private List<String> scrollingTypes;
-    private List<String> weatherTypes;
-    private List<String> mapIconNames;
+    
+    private List<String> scrollingTypes = new ArrayList<>();
+    private List<String> weatherTypes = new ArrayList<>();
+    private List<String> mapIconNames = new ArrayList<>();
     
     private String[] iconNames = new String[] {
             "Question mark",
@@ -42,6 +47,25 @@ public class MapProfile {
             "Custom Icon #21",
             "Custom Icon #22"
     };
+    
+    public void reset() {
+        defaultScrollingTypes.add("None");
+        defaultScrollingTypes.add("Vertical");
+        defaultScrollingTypes.add("Horizontal");
+        defaultScrollingTypes.add("Horizontal & Vertical");
+        
+        defaultWeatherTypes.add("None");
+        defaultWeatherTypes.add("Rain");
+        defaultWeatherTypes.add("Leaves");
+        defaultWeatherTypes.add("Rain & Leaves");
+        defaultWeatherTypes.add("Snow");
+        
+        scrollingTypes.clear();
+        scrollingTypes.addAll(defaultScrollingTypes);
+        
+        weatherTypes.clear();
+        weatherTypes.addAll(defaultWeatherTypes);
+    }
     
     @Override
     public String toString() {
@@ -94,6 +118,9 @@ public class MapProfile {
     public List<String> getWeatherTypes() {
         return weatherTypes;
     }
+    
+    public List<String> getDefaultScrollingTypes() { return defaultScrollingTypes; }
+    public List<String> getDefaultWeatherTypes() { return defaultWeatherTypes; }
     
     public List<String> getMapIconNames() {
         return mapIconNames;
