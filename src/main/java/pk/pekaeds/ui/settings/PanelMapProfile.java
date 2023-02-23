@@ -109,7 +109,6 @@ public final class PanelMapProfile extends JPanel {
         
         modelScrolling.addAll(Settings.getMapProfile().getScrollingTypes());
         modelWeather.addAll(Settings.getMapProfile().getWeatherTypes());
-        // TODO I'm to tired for this shit. Fix the fucking stagedshit not being loaded and whatever
     }
     
     private class AddToListAction extends AbstractAction {
