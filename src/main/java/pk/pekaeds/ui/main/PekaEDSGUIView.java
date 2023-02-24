@@ -148,8 +148,9 @@ public class PekaEDSGUIView {
         frame.add(edsUI.getStatusbar(), BorderLayout.SOUTH);
         
         frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        frame.setSize(new Dimension(1920, 1080)); // Set to lower size and maximize on startup
+        frame.setSize(new Dimension(1280, 720));
         frame.setLocationRelativeTo(null);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setVisible(true);
         
         setFrameIcon();
