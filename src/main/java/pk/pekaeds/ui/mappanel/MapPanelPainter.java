@@ -12,6 +12,9 @@ import java.awt.image.BufferedImage;
 public class MapPanelPainter {
     private MapPanel mapPanel;
     
+    private final Composite compAlphaHalf = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f);
+    private final Composite compAlphaFull = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);
+    
     public void setMapPanelModel(MapPanel mp) {
         this.mapPanel = mp;
     }
@@ -30,32 +33,43 @@ public class MapPanelPainter {
         }
     }
 
-    // TODO I feel like this code could be cleaned up a bit, make it more readable
     public void drawLayers(Graphics2D g) {
         if (mapPanel.getModel().getMap() != null) {
-            // Set alpha for background layer
-            if (mapPanel.getModel().getSelectedLayer() == Layer.BACKGROUND || mapPanel.getModel().getSelectedLayer() == Layer.BOTH) {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-            } else {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-            }
+            int currentLayer = mapPanel.getModel().getSelectedLayer();
             
-            // Check whether to use background tileset or the foreground one
-            if (Settings.useBGTileset() && mapPanel.getModel().getMap().getBackgroundTilesetImage() != null) {
-                drawLayer(g, Layer.BACKGROUND, mapPanel.getModel().getMap().getBackgroundTilesetImage());
-            } else {
-                drawLayer(g, Layer.BACKGROUND, mapPanel.getModel().getMap().getTilesetImage());
-            }
-            
-            if (mapPanel.getModel().getSelectedLayer() == Layer.FOREGROUND || mapPanel.getModel().getSelectedLayer() == Layer.BOTH) {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-            } else {
-                g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
-            }
-            
-            drawLayer(g, Layer.FOREGROUND, mapPanel.getModel().getMap().getTilesetImage());
+            switch (currentLayer) {
+                case Layer.FOREGROUND -> {
+                    g.setComposite(compAlphaHalf);
+                    drawBackgroundLayer(g);
     
-            g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+                    g.setComposite(compAlphaFull);
+                    drawLayer(g, Layer.FOREGROUND, mapPanel.getModel().getMap().getTilesetImage());
+                }
+                
+                case Layer.BACKGROUND -> {
+                    g.setComposite(compAlphaHalf);
+                    drawLayer(g, Layer.FOREGROUND, mapPanel.getModel().getMap().getTilesetImage());
+    
+                    g.setComposite(compAlphaFull);
+                    drawBackgroundLayer(g);
+                }
+                
+                case Layer.BOTH -> {
+                    g.setComposite(compAlphaFull);
+                    drawBackgroundLayer(g);
+    
+                    g.setComposite(compAlphaFull);
+                    drawLayer(g, Layer.FOREGROUND, mapPanel.getModel().getMap().getTilesetImage());
+                }
+            }
+        }
+    }
+    
+    private void drawBackgroundLayer(Graphics2D g) {
+        if (Settings.useBGTileset() && mapPanel.getModel().getMap().getBackgroundTilesetImage() != null) {
+            drawLayer(g, Layer.BACKGROUND, mapPanel.getModel().getMap().getBackgroundTilesetImage());
+        } else {
+            drawLayer(g, Layer.BACKGROUND, mapPanel.getModel().getMap().getTilesetImage());
         }
     }
     

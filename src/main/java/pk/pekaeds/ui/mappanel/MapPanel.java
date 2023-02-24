@@ -91,7 +91,6 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
         g2.setTransform(transform);*/
         
         painter.drawBackground(g2);
-        
         painter.drawBackgroundSprites(g2);
         
         if (model.getTilesetImage() != null) painter.drawLayers(g2);
