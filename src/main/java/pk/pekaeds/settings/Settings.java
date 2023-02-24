@@ -46,6 +46,7 @@ public class Settings {
     private static final String pk2Stuff = "pk2stuff.bmp";
     
     private static boolean highlightSprites = true;
+    private static boolean showTileNumberInTileset = true;
     
     private static boolean useBGTileset = false;
     
@@ -109,6 +110,7 @@ public class Settings {
             
             useBGTileset = dis.readBoolean();
             highlightSprites = dis.readBoolean();
+            showTileNumberInTileset = dis.readBoolean();
             
             defaultStartupBehavior = dis.readInt();
             
@@ -156,6 +158,7 @@ public class Settings {
             
             dos.writeBoolean(useBGTileset);
             dos.writeBoolean(highlightSprites);
+            dos.writeBoolean(showTileNumberInTileset);
             
             dos.writeInt(defaultStartupBehavior);
             
@@ -203,7 +206,9 @@ public class Settings {
         
         defaultStartupBehavior = StartupBehavior.NEW_MAP;
         
+        highlightSprites = true;
         useBGTileset = false;
+        showTileNumberInTileset = true;
         
         autosaveInterval = 120000;
         autosaveFileCount = 3;
@@ -237,6 +242,14 @@ public class Settings {
     
     public static KeyStroke getKeyboardShortcutFor(String actionName) {
         return keyboardShortcuts.get(actionName);
+    }
+    
+    public static void setShowTileNumberInTileset(boolean show) {
+        showTileNumberInTileset = show;
+    }
+    
+    public static boolean showTilesetNumberInTileset() {
+        return showTileNumberInTileset;
     }
     
     public List<String> getLayerNames() {

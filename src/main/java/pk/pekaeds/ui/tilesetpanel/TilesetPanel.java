@@ -81,11 +81,12 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
     }
    
     private void drawTileId(Graphics2D g2, Point position) {
-        g2.setFont(tileIDFont);
-        g2.setColor(Color.WHITE);
-        
-        String tileIDStr = Integer.toString(TileUtils.getTileIdFromTilesetPosition(position));
-        int fontWidth = fontMetrics.stringWidth(tileIDStr);
+        if (Settings.showTilesetNumberInTileset()) {
+            g2.setFont(tileIDFont);
+            g2.setColor(Color.WHITE);
+    
+            String tileIDStr = Integer.toString(TileUtils.getTileIdFromTilesetPosition(position));
+            int fontWidth = fontMetrics.stringWidth(tileIDStr);
        
         /*
             Hacky! If the width is 18, that means the number is something over 100, make the middle point 14 pixels, instead of 16.
@@ -93,11 +94,12 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
             
             It's hacky, but it works. That's the way she goes!
         */
-        int middlePos = fontWidth == 18 ? 14 : 16;
-        int offset = middlePos - (fontWidth / 2);
-   
-        // TODO Maybe draw an outline around the text to make it more visible.
-        g2.drawString(tileIDStr, position.x + offset, position.y + 20); // The y offset (20) gets hard coded because that's good enough.
+            int middlePos = fontWidth == 18 ? 14 : 16;
+            int offset = middlePos - (fontWidth / 2);
+    
+            // TODO Maybe draw an outline around the text to make it more visible.
+            g2.drawString(tileIDStr, position.x + offset, position.y + 20); // The y offset (20) gets hard coded because that's good enough.
+        }
     }
     
     public TilesetPanelModel getModel() {

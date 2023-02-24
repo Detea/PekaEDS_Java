@@ -84,6 +84,7 @@ public class SettingsDialog extends JDialog {
         Settings.setDefaultMapName(panelDefaults.getMapName());
         
         Settings.setUseBGTileset(panelGeneral.useBGTileset());
+        Settings.setShowTileNumberInTileset(panelGeneral.showTilesetNumber());
         
         Settings.setAutosaveInterval((panelGeneral.getAutosaveInterval() * 60) * 1000);
         Settings.setAutosaveFileCount(panelGeneral.getAutosaveFileCount());

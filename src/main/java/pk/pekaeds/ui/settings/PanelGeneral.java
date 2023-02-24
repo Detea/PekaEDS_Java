@@ -21,6 +21,8 @@ public class PanelGeneral extends JPanel {
     
     private JCheckBox rbBGTileset;
     
+    private JCheckBox cbShowTileNumbers;
+    
     private JSpinner spAutosaveInterval;
     private JSpinner spAutosaveFileCount;
     
@@ -53,6 +55,9 @@ public class PanelGeneral extends JPanel {
         
         rbBGTileset = new JCheckBox("Use background tileset, if available?");
         add(rbBGTileset, "cell 0 10");
+    
+        cbShowTileNumbers = new JCheckBox("Show tileset number in tileset?");
+        add(cbShowTileNumbers, "cell 0 11");
         
         var autosavePanel = new JPanel();
         autosavePanel.setBorder(BorderFactory.createTitledBorder("Autosave"));
@@ -71,7 +76,7 @@ public class PanelGeneral extends JPanel {
         autosavePanel.add(lblAutosaveFileCount, "cell 3 0");
         autosavePanel.add(spAutosaveFileCount, "cell 4 0");
         
-        add(autosavePanel, "cell 0 11");
+        add(autosavePanel, "cell 0 12");
     }
     
     private void setupGamePath() {
@@ -126,7 +131,8 @@ public class PanelGeneral extends JPanel {
         rbLoadEpisode.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.LOAD_LAST_EPISODE);
         
         rbBGTileset.setSelected(Settings.useBGTileset());
-    
+        cbShowTileNumbers.setSelected(Settings.showTilesetNumberInTileset());
+        
         spAutosaveInterval.setValue((Settings.getAutosaveInterval() / 1000) / 60);
         spAutosaveFileCount.setValue(Settings.getAutosaveFileCount());
     }
@@ -144,6 +150,8 @@ public class PanelGeneral extends JPanel {
     public boolean useBGTileset() {
         return rbBGTileset.isSelected();
     }
+    
+    public boolean showTilesetNumber() { return cbShowTileNumbers.isSelected(); }
     
     public String getGamePath() {
         return tfGamePath.getText();
