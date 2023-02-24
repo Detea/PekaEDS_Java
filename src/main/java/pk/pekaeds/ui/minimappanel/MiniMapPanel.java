@@ -35,6 +35,8 @@ public class MiniMapPanel extends JPanel implements PK2MapConsumer, TileChangeLi
     
     public MiniMapPanel() {
         setPreferredSize(new Dimension(256 ,224));
+        setMinimumSize(new Dimension(256 ,224));
+        setMaximumSize(new Dimension(256 ,224));
         
         setBackground(Color.DARK_GRAY);
         
