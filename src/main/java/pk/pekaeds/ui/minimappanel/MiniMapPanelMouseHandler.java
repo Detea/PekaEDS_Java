@@ -26,7 +26,7 @@ public class MiniMapPanelMouseHandler extends MouseAdapter {
         if (pos.y - (miniMapPanel.viewHeight / 2) < 0) pos.y = miniMapPanel.viewHeight / 2;
         
         if (pos.x + (miniMapPanel.viewWidth / 2) >= 256) {
-            pos.x = 256 - miniMapPanel.viewWidth; // Subtract 1 to prevent jitter.
+            pos.x = 256 - miniMapPanel.viewWidth;
         } else {
             pos.x -= (miniMapPanel.viewWidth / 2);
         }
