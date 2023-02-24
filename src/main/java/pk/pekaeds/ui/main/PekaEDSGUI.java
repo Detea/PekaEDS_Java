@@ -7,6 +7,7 @@ import pk.pekaeds.settings.Shortcuts;
 import pk.pekaeds.tools.*;
 import pk.pekaeds.ui.actions.*;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
+import pk.pekaeds.ui.misc.LoggerDialog;
 import pk.pekaeds.ui.toolpropertiespanel.ToolPropertiesPanel;
 import pk.pekaeds.util.*;
 import pk.pekaeds.settings.Settings;
@@ -56,6 +57,8 @@ public class PekaEDSGUI implements ChangeListener {
     
     private final AutoSaveManager autosaveManager;
     
+    private final LoggerDialog loggerDialog = new LoggerDialog();
+    
     public PekaEDSGUI() {
         // This has to be done before PekaEDSGUIView gets initialized, because it relies on the toolsList in the Tools class.
         registerTools();
@@ -99,7 +102,7 @@ public class PekaEDSGUI implements ChangeListener {
         
         miniMapPanel = new MiniMapPanel();
         
-        statusbar = new Statusbar();
+        statusbar = new Statusbar(this);
     
         toolPropertiesPanel = new ToolPropertiesPanel();
     }
@@ -456,6 +459,10 @@ public class PekaEDSGUI implements ChangeListener {
     
     ToolPropertiesPanel getToolPropertiesPanel() {
         return toolPropertiesPanel;
+    }
+    
+    LoggerDialog getLoggerDialog() {
+        return loggerDialog;
     }
     
     public void updateAutosaveManager() {

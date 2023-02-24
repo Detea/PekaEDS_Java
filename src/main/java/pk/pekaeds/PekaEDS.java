@@ -5,6 +5,7 @@ import pk.pekaeds.ui.PekaEDSGUILauncher;
 
 import java.util.Locale;
 import org.tinylog.Logger;
+import pk.pekaeds.ui.misc.LoggerDialog;
 
 public class PekaEDS {
     public static void main(String[] args) throws Exception {
@@ -17,6 +18,8 @@ public class PekaEDS {
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
             Logger.error(e);
         });
+        
+        Logger.info("test");
 
         PekaEDSGUILauncher.launch();
     }
