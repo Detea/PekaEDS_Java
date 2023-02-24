@@ -65,16 +65,21 @@ public class PekaEDSGUIView {
         var mapView = new MapPanelView(edsUI.getMapPanel());
         miniMapPanel.setViewport(mapView.getViewport());
         
+        var spMapMetaDataPanel = new JScrollPane(mapMetadataPanel);
+        
         var tabbedPane = new JTabbedPane();
-        tabbedPane.add("Map data", mapMetadataPanel);
+        tabbedPane.add("Map data", spMapMetaDataPanel);
         tabbedPane.add("Sprites", spritesPanel);
         
         frame.add(mainToolBar, BorderLayout.PAGE_START);
         
+        var panelMiniMap = new JPanel();
+        panelMiniMap.add(miniMapPanel, BorderLayout.CENTER);
+        
         var sp = new JPanel();
         sp.setLayout(new MigLayout());
         sp.add(tabbedPane, "dock center");
-        sp.add(miniMapPanel, "dock south");
+        sp.add(panelMiniMap, "dock south");
     
         toolPropertiesPanel = edsUI.getToolPropertiesPanel();
         
@@ -84,7 +89,6 @@ public class PekaEDSGUIView {
         tilesetAndToolPropPanel.setLayout(new MigLayout("", "fill"));
         tilesetAndToolPropPanel.add(tsetScrollPane, "cell 0 0");
         tilesetAndToolPropPanel.add(toolPropertiesPanel, "cell 0 1");
-        
         
         menuBar = new JMenuBar();
         mFile = new JMenu("File");
