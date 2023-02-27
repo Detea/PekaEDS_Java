@@ -218,11 +218,15 @@ public class PekaEDSGUI implements ChangeListener {
         
         PK2Map13 map = null;
         try {
+            Logger.info("Trying to load map file: {}", file.getAbsolutePath());
+            
             map = r.load(file);
             
             if (map != null) {
                 loadMap(map);
 
+                Logger.info("Map loaded successfully.");
+                
                 if (map.getBackgroundImage() != null) {
                     map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId()));
                     

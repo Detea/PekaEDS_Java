@@ -1,6 +1,7 @@
 package pk.pekaeds.ui.settings;
 
 import net.miginfocom.swing.MigLayout;
+import org.tinylog.Logger;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.settings.Shortcuts;
 import pk.pekaeds.ui.main.PekaEDSGUI;
@@ -91,6 +92,8 @@ public class SettingsDialog extends JDialog {
         
         for (var entry : panelShortcuts.getShortcutMap().entrySet()) {
             Settings.setKeyboardShortcutFor(entry.getKey(), entry.getValue());
+    
+            Logger.info("Settings shortcut for action {} to keys {}", entry.getKey(), entry.getValue());
         }
         
         Settings.getMapProfile().getScrollingTypes().clear();
