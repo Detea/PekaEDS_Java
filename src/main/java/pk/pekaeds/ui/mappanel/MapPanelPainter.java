@@ -80,8 +80,8 @@ public class MapPanelPainter {
         int viewWidth = mapPanel.getViewport().getViewRect().width / 32;
         int viewHeight = mapPanel.getViewport().getViewRect().height / 32;
         
-        for (int x = viewX; x < viewX + viewWidth + 1; x++) {
-            for (int y = viewY; y < viewY + viewHeight + 1; y++) {
+        for (int x = viewX; x <= viewX + viewWidth + 1; x++) {
+            for (int y = viewY; y <= viewY + viewHeight + 1; y++) {
                 drawTile(g, x * 32, y * 32, mapPanel.getModel().getMap().getTileAt(layerIndex, x, y), tileset);
             }
         }
