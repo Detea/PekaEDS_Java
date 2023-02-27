@@ -177,7 +177,7 @@ public class PekaEDSGUIView {
         
         mFileSaveAs.addActionListener(e -> {
             var fc = new JFileChooser("Save as...");
-            fc.setCurrentDirectory(edsUI.getCurrentFile().getParentFile());
+            if (edsUI.getCurrentFile() != null) fc.setCurrentDirectory(edsUI.getCurrentFile().getParentFile());
             
             fc.setFileFilter(new FileFilter() {
                 @Override

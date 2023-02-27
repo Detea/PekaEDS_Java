@@ -271,10 +271,13 @@ public class PekaEDSGUI implements ChangeListener {
             mapMetadataPanel.commitSpinnerValues();
             
             try {
+                if (!file.getName().endsWith(".map")) file = new File(file.getPath() + ".map");
+                
                 var writer = MapIO.getWriter();
-        
                 writer.write(model.getCurrentMap(), file);
-        
+    
+                model.setCurrentMapFile(file);
+                
                 unsavedChanges = false;
             } catch (IOException e) {
                 Logger.warn(e, "Unable to save map file {}.", model.getCurrentMapFile().getAbsolutePath());
