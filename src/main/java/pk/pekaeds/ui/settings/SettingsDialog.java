@@ -36,7 +36,7 @@ public class SettingsDialog extends JDialog {
         tabbedPane.add("General", panelGeneral);
         tabbedPane.add("Defaults", panelDefaults);
         tabbedPane.add("Shortcuts", panelShortcuts);
-        tabbedPane.add("Map profile", panelMapProfile);
+        //tabbedPane.add("Map profile", panelMapProfile);
         
         JPanel panelButtons = new JPanel();
         var btnOk = new JButton("OK");
@@ -96,6 +96,7 @@ public class SettingsDialog extends JDialog {
             Logger.info("Settings shortcut for action {} to keys {}", entry.getKey(), entry.getValue());
         }
         
+        /*
         Settings.getMapProfile().getScrollingTypes().clear();
         for (int i = 0; i < panelMapProfile.getScrollingTypes().size(); i++) {
             Settings.getMapProfile().getScrollingTypes().add(panelMapProfile.getScrollingTypes().get(i));
@@ -104,12 +105,12 @@ public class SettingsDialog extends JDialog {
         Settings.getMapProfile().getWeatherTypes().clear();
         for (int i = 0; i < panelMapProfile.getWeatherTypes().size(); i++) {
             Settings.getMapProfile().getWeatherTypes().add(panelMapProfile.getWeatherTypes().get(i));
-        }
+        }*/
         
         eds.installKeyboardShortcuts();
         eds.updateAutosaveManager();
         
-        eds.updateMapProfileData();
+        //eds.updateMapProfileData();
         
         Settings.save();
     }

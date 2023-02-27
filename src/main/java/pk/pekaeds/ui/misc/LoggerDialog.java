@@ -9,6 +9,7 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.PrintStream;
 
+// TODO Delete this
 public class LoggerDialog extends JDialog {
     private JTextArea textArea;
     private JButton btnCopyLog;
@@ -19,8 +20,8 @@ public class LoggerDialog extends JDialog {
         var ps = new PrintStream(new LogOutputStream());
         LogOutputStream.setTextArea(textArea);
         
-        System.setOut(ps);
-        System.setErr(ps);
+        //System.setOut(ps);
+        //System.setErr(ps);
         
         Logger.info("Writer set");
     }

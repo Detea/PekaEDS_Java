@@ -351,6 +351,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         });
     }
     
+    // TODO Fix this
     public void updateMapProfileData() {
         var scrollingModel = (DefaultComboBoxModel<String>) cbScrollingType.getModel();
         scrollingModel.removeAllElements();
@@ -365,7 +366,9 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         for (var str : Settings.getMapProfile().getWeatherTypes()) {
             cbWeather.addItem(str);
         }
-        
+
+        cbScrollingType.setSelectedIndex(map.getScrollType());
+        cbWeather.setSelectedIndex(map.getWeatherType());
     }
     
     // This seems pretty hacky, but this is a workaround for when the TextField values get set for the first time. This would cause the changeListener to fire, even though it isn't supposed to.
