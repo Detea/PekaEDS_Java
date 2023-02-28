@@ -12,7 +12,7 @@ public final class SpriteUtils {
      * @param layer The sprites layer
      * @param spriteList The list of PK2Sprites, used in the map
      */
-    public static void calcutePlacementAmountForSprites(int[][] layer, List<PK2Sprite> spriteList) {
+    public static void calculatePlacementAmountForSprites(int[][] layer, List<PK2Sprite> spriteList) {
         for (int x = 0; x < layer[0].length; x++) {
             for (int y = 0; y < layer.length; y++) {
                 int sprite = layer[y][x];
