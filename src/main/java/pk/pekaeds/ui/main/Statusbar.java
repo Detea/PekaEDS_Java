@@ -91,7 +91,7 @@ public class Statusbar extends JPanel implements ChangeListener {
         add(lblLastSavedVal);
         
         add(new JSeparator());
-        add(btnShowLog);
+        //add(btnShowLog);
         
         btnShowLog.addActionListener(e -> {
             eds.getLoggerDialog().setVisible(true);
