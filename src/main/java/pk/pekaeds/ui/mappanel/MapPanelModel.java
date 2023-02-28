@@ -28,8 +28,6 @@ public class MapPanelModel {
     private Point zoomPosition = new Point();
     private float zoomAmount = 1;
     
-    private boolean showSprites = true; // Putting this in here because it won't be saved in the settings file. Might do that, if users want it to be saved.
-    
     public PK2Map getMap() {
         return map;
     }
@@ -117,14 +115,6 @@ public class MapPanelModel {
     
     public float getZoomAmount() {
         return zoomAmount;
-    }
-    
-    public boolean shouldShowSprites() {
-        return showSprites;
-    }
-    
-    public void setShowSprites(boolean show) {
-        this.showSprites = show;
     }
     
     public void addPropertyChangeListener(PropertyChangeListener listener) {

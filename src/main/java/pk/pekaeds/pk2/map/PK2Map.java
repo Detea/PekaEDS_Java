@@ -146,6 +146,22 @@ public abstract class PK2Map {
         }
     }
     
+    public int getSpriteIdAt(int x, int y) {
+        if (x >= 0 && x < PK2Map13.WIDTH && y >= 0 && y < PK2Map13.HEIGHT) {
+            return spritesLayer[y][x];
+        }
+        
+        return 255;
+    }
+    
+    public PK2Sprite getSpriteAt(int x, int y) {
+        if (getSpriteIdAt(x, y) != 255) {
+            return spriteList.get(getSpriteIdAt(x, y));
+        }
+        
+        return null;
+    }
+    
     public List<PK2Sprite> getSpriteList() {
         return spriteList;
     }
@@ -290,8 +306,17 @@ public abstract class PK2Map {
         this.layers = layers;
     }
     
+    /**
+     * Returns the sprite at index in the sprite list, or null if the sprite doesn't exist in the list.
+     * @param index
+     * @return
+     */
     public PK2Sprite getSprite(int index) {
-        return spriteList.get(index);
+        if (index >= 0 && index < spriteList.size()) {
+            return spriteList.get(index);
+        }
+        
+        return null;
     }
     
     public void setSpriteList(List<PK2Sprite> list) {

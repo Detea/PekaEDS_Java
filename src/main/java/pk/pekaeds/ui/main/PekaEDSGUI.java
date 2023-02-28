@@ -229,6 +229,7 @@ public class PekaEDSGUI implements ChangeListener {
                 
                 if (map.getBackgroundImage() != null) {
                     map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId()));
+                    SpriteUtils.calcutePlacementAmountForSprites(map.getSpritesLayer(), map.getSpriteList());
                     
                     spritesPanel.setMap(map);
                 }
@@ -367,14 +368,6 @@ public class PekaEDSGUI implements ChangeListener {
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_ERASER, new SetSelectedToolAction(this, Tools.getTool(EraserTool.class)));
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_LINE, new SetSelectedToolAction(this, Tools.getTool(LineTool.class)));
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_RECT, new SetSelectedToolAction(this, Tools.getTool(RectangleTool.class)));
-    }
-    
-    void setShowSprites(boolean show) {
-        mapPanel.getModel().setShowSprites(show);
-    }
-    
-    boolean shouldShowSprites() {
-        return mapPanel.getModel().shouldShowSprites();
     }
     
     private void updateMapHolders() {

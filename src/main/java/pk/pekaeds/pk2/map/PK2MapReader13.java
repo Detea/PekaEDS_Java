@@ -12,6 +12,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import org.tinylog.Logger;
+import pk.pekaeds.util.SpriteUtils;
 
 public class PK2MapReader13 implements PK2MapReader {
     private final Settings settings = new Settings();
@@ -115,7 +116,6 @@ public class PK2MapReader13 implements PK2MapReader {
         for (String filename : spriteFilenames) {
             var spriteFile = new File(Settings.getSpritesPath() + filename);
             
-            // TODO handle missing sprites?
             if (!spriteFile.exists()) {
                 Logger.warn("Unable to find sprite file {}.", filename);
                 

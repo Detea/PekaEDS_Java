@@ -59,6 +59,8 @@ public class Settings {
     private static int autosaveInterval = 120000; // 2 minutes
     private static int autosaveFileCount = 3;
     
+    private static boolean showSprites = true;
+    
     public Settings() {
         // TODO Just for testing
         if (layerNames.isEmpty()) {
@@ -111,6 +113,7 @@ public class Settings {
             useBGTileset = dis.readBoolean();
             highlightSprites = dis.readBoolean();
             showTileNumberInTileset = dis.readBoolean();
+            showSprites = dis.readBoolean();
             
             defaultStartupBehavior = dis.readInt();
             
@@ -159,6 +162,7 @@ public class Settings {
             dos.writeBoolean(useBGTileset);
             dos.writeBoolean(highlightSprites);
             dos.writeBoolean(showTileNumberInTileset);
+            dos.writeBoolean(showSprites);
             
             dos.writeInt(defaultStartupBehavior);
             
@@ -210,6 +214,8 @@ public class Settings {
         useBGTileset = false;
         showTileNumberInTileset = true;
         
+        showSprites = true;
+        
         autosaveInterval = 120000;
         autosaveFileCount = 3;
         
@@ -250,6 +256,14 @@ public class Settings {
     
     public static boolean showTilesetNumberInTileset() {
         return showTileNumberInTileset;
+    }
+    
+    public static void setShowSprites(boolean show) {
+        showSprites = show;
+    }
+    
+    public static boolean showSprites() {
+        return showSprites;
     }
     
     public List<String> getLayerNames() {

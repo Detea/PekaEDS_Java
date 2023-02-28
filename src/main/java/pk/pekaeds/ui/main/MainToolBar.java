@@ -54,7 +54,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         tbHighlightSprites.setSelected(Settings.highlightSprites());
         
         tbShowSprites = new JToggleButton("Show sprites");
-        tbShowSprites.setSelected(gui.shouldShowSprites());
+        tbShowSprites.setSelected(Settings.showSprites());
         
         btnNew.addActionListener(new NewMapAction(gui));
         btnOpen.addActionListener(new OpenMapAction(gui));
@@ -67,7 +67,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         });
         
         tbShowSprites.addActionListener(e -> {
-            gui.setShowSprites(tbShowSprites.isSelected());
+            Settings.setShowSprites(tbShowSprites.isSelected());
             gui.getMapPanel().repaint();
         });
         

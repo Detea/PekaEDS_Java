@@ -3,6 +3,7 @@ package pk.pekaeds.tools;
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.data.MapData;
 import pk.pekaeds.pk2.map.PK2Map13;
+import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.listeners.TileChangeListener;
 import pk.pekaeds.util.TileUtils;
 import pk.pekaeds.pk2.map.PK2Map;
@@ -70,6 +71,8 @@ public abstract class Tool implements PropertyChangeListener {
     private static TileChangeListener tileChangeListener;
     
     private static ToolModeListener toolModeListener;
+    
+    private static SpritePlacementListener spritePlacementListener;
     
     public static boolean inTileMode() {
         return mode == MODE_TILE;
@@ -201,18 +204,33 @@ public abstract class Tool implements PropertyChangeListener {
         return spr;
     }
     
-    protected void placeSprite(Point position, int sprite) {
+    protected void placeSprite(Point position, int newSprite) {
         TileUtils.convertToMapCoordinates(position);
     
         if (position.x >= 0 && position.x <= Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y <= Settings.getMapProfile().getMapHeight()) {
-            int[][] oldData = {{
-                    map.getSpritesLayer()[position.y][position.x] // TODO Create method getSpriteAt and do bounds checking?
-            }};
-        
-            int[][] newData = {{ sprite }};
-        
-            map.setSpriteAt(position.x, position.y, sprite);
-        
+            int oldSprite = map.getSpriteIdAt(position.x, position.y);
+            
+            int[][] oldData = {{ oldSprite }};
+            int[][] newData = {{ newSprite }};
+            
+            PK2Sprite spriteOld = map.getSpriteAt(position.x, position.y);
+            PK2Sprite spriteNew = map.getSprite(newSprite);
+            
+            if (oldSprite != 255) {
+                if (newSprite != oldSprite) {
+                    if (spriteOld != null) {
+                        spriteOld.decreasePlacedAmount();
+                    }
+                    
+                    if (spriteNew != null) spriteNew.increasePlacedAmount();
+                }
+            } else {
+                if (spriteNew != null) spriteNew.increasePlacedAmount();
+            }
+            
+            spritePlacementListener.placed(newSprite);
+            map.setSpriteAt(position.x, position.y, newSprite);
+            
             UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_SPRITE, oldData, newData, -1, position.x, position.y));
         }
     }
@@ -349,5 +367,9 @@ public abstract class Tool implements PropertyChangeListener {
     
     public static void setToolModeListener(ToolModeListener listener) {
         toolModeListener = listener;
+    }
+    
+    public static void setSpritePlacementListener(SpritePlacementListener listener) {
+        spritePlacementListener = listener;
     }
 }

@@ -86,6 +86,8 @@ public class PK2Sprite {
     
     protected BufferedImage image;
     
+    protected int placedAmount = 0;
+    
     public void setImage(BufferedImage img) {
         this.image = img;
     }
@@ -478,5 +480,17 @@ public class PK2Sprite {
     
     public void setFramesAmount(int framesAmount) {
         this.framesAmount = framesAmount;
+    }
+    
+    public int getPlacedAmount() {
+        return placedAmount;
+    }
+    
+    public void increasePlacedAmount() {
+        placedAmount++;
+    }
+    
+    public void decreasePlacedAmount() {
+        if (placedAmount - 1 >= 0) placedAmount--;
     }
 }

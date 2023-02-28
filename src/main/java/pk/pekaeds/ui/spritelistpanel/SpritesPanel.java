@@ -8,6 +8,7 @@ import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.tools.Tool;
 import pk.pekaeds.ui.listeners.PK2MapConsumer;
+import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.main.PekaEDSGUI;
 
 import javax.swing.*;
@@ -17,7 +18,7 @@ import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.io.File;
 
-public class SpritesPanel extends JPanel implements PK2MapConsumer {
+public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacementListener {
     private final Settings settings = new Settings();
     
     private ChangeListener changeListener;
@@ -140,6 +141,8 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer {
             Tool.setSelectedSprite(spriteList.getSelectedValue());
             Tool.setMode(Tool.MODE_SPRITE);
         });
+        
+        Tool.setSpritePlacementListener(this);
     }
     
     public void setChangeListener(ChangeListener listener) {
@@ -152,5 +155,10 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer {
         
         listModel.clear();
         listModel.addAll(map.getSpriteList());
+    }
+    
+    @Override
+    public void placed(int id) {
+        spriteList.repaint(); // TODO Optimization: Don't redraw the whole list, only the affected entry
     }
 }

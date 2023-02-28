@@ -18,6 +18,9 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<P
     private JLabel spriteTypeLbl;
     private JLabel isPlayerLbl;
     
+    private JLabel lblPlacedText;
+    private JLabel lblPlacedAmount;
+    
     public SpriteListCellRenderer() {
         setup();
     }
@@ -49,6 +52,9 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<P
         spriteTypeLbl = new JLabel();
         isPlayerLbl = new JLabel();
         
+        lblPlacedText = new JLabel("Placed: ");
+        lblPlacedAmount = new JLabel("");
+        
         add(imgPanel, "gapleft 5, gaptop 5, gapbottom 5, gapright 5, dock west");
     
         JPanel dataPanel = new JPanel();
@@ -60,6 +66,9 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<P
         
         dataPanel.add(spriteTypeLbl, "cell 0 1");
         dataPanel.add(isPlayerLbl, "cell 1 1");
+        
+        dataPanel.add(lblPlacedText, "cell 0 2");
+        dataPanel.add(lblPlacedAmount, "cell 1 2");
         
         add(dataPanel, "dock center");
         
@@ -84,6 +93,8 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<P
         } else {
             isPlayerLbl.setText("");
         }
+        
+        lblPlacedAmount.setText(Integer.toString(sprite.getPlacedAmount()));
     }
     
     @Override

@@ -2,6 +2,7 @@ package pk.pekaeds.tools;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map13;
+import pk.pekaeds.settings.Settings;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;
@@ -26,14 +27,14 @@ public class SelectionTool extends Tool {
     
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (getSpriteAt(e.getPoint()) != 255) {
-            setMode(MODE_SPRITE);
-            
-            doSpriteSelection();
-        } else {
+        if (getSpriteAt(e.getPoint()) == 255 || !Settings.showSprites()) {
             setMode(MODE_TILE);
-            
+    
             doTileSelection();
+        } else {
+            setMode(MODE_SPRITE);
+    
+            doSpriteSelection();
         }
     }
     
