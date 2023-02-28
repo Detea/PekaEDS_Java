@@ -20,10 +20,6 @@ public final class SpriteUtils {
                     // Check if the sprite is contained in the list, just to be safe
                     if (sprite >= 0 && sprite < spriteList.size()) {
                         spriteList.get(sprite).increasePlacedAmount();
-    
-                        System.out.println("Found sprite: " + spriteList.get(sprite).getFilename() + " placed: " + spriteList.get(sprite).getPlacedAmount());
-                    } else {
-                        System.out.println(sprite + " - " + spriteList.size());
                     }
                 }
             }
