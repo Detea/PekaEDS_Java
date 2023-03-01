@@ -17,6 +17,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
@@ -246,15 +247,25 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         
         spMapPosX.addChangeListener(new MapPositionChangeListener());
         spMapPosY.addChangeListener(new MapPositionChangeListener());
-    
+        
+        mapPositionDialog.setPositionSpinners(spMapPosX, spMapPosY); // Not the best way to this, but it's easy and it works for now.
+        
         btnPositionMap.addActionListener(e -> {
-            var pos = mapPositionDialog.showDialog();
-            
-            spMapPosX.setValue(pos.x);
-            spMapPosY.setValue(pos.y);
+            try {
+                spMapPosX.commitEdit();
+                spMapPosY.commitEdit();
+            } catch (ParseException ex) {
+                Logger.info("Unable to commit edit of spinners.");
+            }
     
-            map.setMapX(pos.x);
-            map.setMapY(pos.y);
+            int posX = (int) spMapPosX.getValue();
+            int posY = (int) spMapPosY.getValue();
+            
+            map.setMapX(posX);
+            map.setMapY(posY);
+            
+            mapPositionDialog.updatePosition(new Point(posX, posY), false);
+            mapPositionDialog.setVisible(true);
             
             fireChanges();
         });
@@ -449,8 +460,6 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         @Override
         public void stateChanged(ChangeEvent e) {
             if (canFireChanges) {
-                mapPositionDialog.updatePosition(new Point((int) spMapPosX.getValue(), (int) spMapPosY.getValue()));
-    
                 map.setMapX((int) spMapPosX.getValue());
                 map.setMapY((int) spMapPosY.getValue());
             }

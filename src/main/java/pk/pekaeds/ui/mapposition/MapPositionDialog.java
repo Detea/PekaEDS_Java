@@ -18,6 +18,8 @@ public class MapPositionDialog extends JDialog {
     private List<MapIcon> episodeIcons = new ArrayList<>();
     private MapIcon mapIcon = null;
     
+    private JSpinner spX, spY;
+    
     public MapPositionDialog() {
         try {
             backgroundImage = ImageIO.read(new File(Settings.getGFXPath() + File.separatorChar + "map.bmp"));
@@ -30,17 +32,11 @@ public class MapPositionDialog extends JDialog {
         setTitle("Set icon position on map");
         setSize(new Dimension(640, 480));
         
-        setModal(true);
+        setAlwaysOnTop(true);
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setResizable(false);
         
         pack();
-    }
-    
-    public Point showDialog() {
-        setVisible(true);
-        
-        return mapIcon.getPosition();
     }
     
     public void setMapIcon(BufferedImage img, Point pos) {
@@ -75,12 +71,22 @@ public class MapPositionDialog extends JDialog {
         }
     }
     
-    public void updatePosition(Point pos) {
+    public void updatePosition(Point pos, boolean updateSpinners) {
         if (mapIcon != null) {
             mapIcon.setPosition(pos);
             
+            if (updateSpinners) {
+                if (spX != null) spX.setValue(mapIcon.getPosition().x);
+                if (spY != null) spY.setValue(mapIcon.getPosition().y);
+            }
+            
             repaint();
         }
+    }
+    
+    public void setPositionSpinners(JSpinner spMapPosX, JSpinner spMapPosY) {
+        this.spX = spMapPosX;
+        this.spY = spMapPosY;
     }
     
     private class PositionPanel extends JPanel {

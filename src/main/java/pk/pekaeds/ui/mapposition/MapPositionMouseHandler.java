@@ -12,6 +12,6 @@ public class MapPositionMouseHandler extends MouseAdapter {
     
     @Override
     public void mousePressed(MouseEvent e) {
-        dialog.updatePosition(e.getPoint());
+        dialog.updatePosition(e.getPoint(), true);
     }
 }
