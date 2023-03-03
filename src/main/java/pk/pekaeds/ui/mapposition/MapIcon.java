@@ -30,8 +30,8 @@ public class MapIcon {
     }
     
     public void setPosition(Point pos) {
-        position.x = pos.x - (27 / 2);
-        position.y = pos.y - (27 / 2);
+        position.x = pos.x;
+        position.y = pos.y;
     }
     
     public void setFilename(String filename) {

@@ -1,4 +1,4 @@
-package pk.pekaeds.ui.mapposition;
+package pk.pekaeds.ui.mapmetadatapanel;
 
 import javax.swing.*;
 import java.awt.*;

@@ -71,14 +71,12 @@ public class MapPositionDialog extends JDialog {
         }
     }
     
-    public void updatePosition(Point pos, boolean updateSpinners) {
+    public void updatePosition(Point pos) {
         if (mapIcon != null) {
             mapIcon.setPosition(pos);
-            
-            if (updateSpinners) {
-                if (spX != null) spX.setValue(mapIcon.getPosition().x);
-                if (spY != null) spY.setValue(mapIcon.getPosition().y);
-            }
+    
+            if (spX != null) spX.setValue(pos.x);
+            if (spY != null) spY.setValue(pos.y);
             
             repaint();
         }
@@ -105,7 +103,7 @@ public class MapPositionDialog extends JDialog {
             }
             
             if (mapIcon != null) {
-                g.drawImage(mapIcon.getImage(), mapIcon.getPosition().x, mapIcon.getPosition().y, null);
+                g.drawImage(mapIcon.getImage(), mapIcon.getPosition().x - 9, mapIcon.getPosition().y - 14, null);
             }
             
             // TODO Add episode support

@@ -2,7 +2,6 @@ package pk.pekaeds.ui.mapmetadatapanel;
 
 import net.miginfocom.swing.MigLayout;
 import pk.pekaeds.ui.listeners.TextFieldChangeListener;
-import pk.pekaeds.ui.mapposition.MapIconRenderer;
 import pk.pekaeds.ui.mapposition.MapPositionDialog;
 import pk.pekaeds.util.GFXUtils;
 import pk.pekaeds.pk2.map.PK2Map;
@@ -17,7 +16,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.text.Position;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
@@ -264,7 +262,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
             map.setMapX(posX);
             map.setMapY(posY);
             
-            mapPositionDialog.updatePosition(new Point(posX, posY), false);
+            mapPositionDialog.updatePosition(new Point(posX, posY));
             mapPositionDialog.setVisible(true);
             
             fireChanges();
@@ -462,6 +460,8 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
             if (canFireChanges) {
                 map.setMapX((int) spMapPosX.getValue());
                 map.setMapY((int) spMapPosY.getValue());
+                
+                mapPositionDialog.updatePosition(new Point(map.getMapX(), map.getMapY()));
             }
         }
     }
