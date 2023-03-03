@@ -1,6 +1,7 @@
 package pk.pekaeds.ui.actions;
 
 import pk.pekaeds.settings.Settings;
+import pk.pekaeds.ui.filefilters.FileFilters;
 import pk.pekaeds.ui.main.PekaEDSGUI;
 import pk.pekaeds.ui.misc.UnsavedChangesDialog;
 
@@ -20,18 +21,7 @@ public class OpenMapAction extends AbstractAction {
     public void actionPerformed(ActionEvent e) {
         var fc = new JFileChooser(Settings.getEpisodesPath());
     
-        // TODO Optimization: Create a single instance of this FileFilter and share it? Same with the FileChooser?
-        fc.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.isDirectory() || f.getName().endsWith(".map");
-            }
-        
-            @Override
-            public String getDescription() {
-                return "Pekka Kana 2 map (*.map)";
-            }
-        });
+        fc.setFileFilter(FileFilters.PK2_MAP_FILTER);
         
         if (gui.unsavedChangesPresent()) {
             int result = UnsavedChangesDialog.show(gui);
