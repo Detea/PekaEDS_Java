@@ -1,0 +1,50 @@
+package pk.pekaeds.util.episodemanager;
+
+import org.tinylog.Logger;
+
+import java.io.*;
+import java.util.ArrayList;
+
+final class EpisodeIO {
+    EpisodeIO() {
+    
+    }
+    
+    /**
+     * Loads the episode data from the file in parameter file.
+     * @param file
+     * @return An instance of the Episode class, or if something goes wrong null.
+     */
+    Episode load(File file) throws IOException {
+        var in = new DataInputStream(new FileInputStream(file));
+    
+        String name = in.readUTF();
+        String folder = in.readUTF();
+    
+        var fileList = new ArrayList<File>();
+        int fileCount = in.readInt();
+        for (int i = 0; i < fileCount; i++) {
+            fileList.add(new File(in.readUTF()));
+        }
+        
+        return new Episode(fileList, new File(folder), name);
+    }
+    
+    void save(Episode episode) {
+        var episodeFile = new File("episodes" + File.separatorChar + episode.getEpisodeName() + ".episode");
+        
+        try (var out = new DataOutputStream(new FileOutputStream(episodeFile))) {
+            out.writeUTF(episode.getEpisodeName());
+            out.writeUTF(episode.getEpisodeFolder().getAbsolutePath());
+            
+            out.writeInt(episode.getFileList().size());
+            for (var file : episode.getFileList()) {
+                out.writeUTF(file.getAbsolutePath());
+            }
+            
+            Logger.info("Episode file \"{}\" saved.", episodeFile.getAbsolutePath());
+        } catch (IOException e) {
+            Logger.info(e, "Unable to write episode file.");
+        }
+    }
+}

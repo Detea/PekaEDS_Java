@@ -2,9 +2,11 @@ package pk.pekaeds.ui.main;
 
 import net.miginfocom.swing.MigLayout;
 import pk.pekaeds.data.PekaEDSVersion;
+import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.actions.NewMapAction;
 import pk.pekaeds.ui.actions.OpenMapAction;
 import pk.pekaeds.ui.actions.SaveMapAction;
+import pk.pekaeds.ui.episodepanel.EpisodePanel;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
 import pk.pekaeds.ui.mappanel.MapPanelView;
 import pk.pekaeds.ui.settings.SettingsDialog;
@@ -38,6 +40,8 @@ public class PekaEDSGUIView {
     private JMenuItem mOtherSettings;
     private JMenuItem mOtherAbout;
     
+    private JTabbedPane tabbedPane;
+    
     private PekaEDSGUI edsUI;
    
     private JToolBar toolsToolBar;
@@ -67,9 +71,12 @@ public class PekaEDSGUIView {
         
         var spMapMetaDataPanel = new JScrollPane(mapMetadataPanel);
         
-        var tabbedPane = new JTabbedPane();
+        var episodesPanel = new EpisodePanel(edsUI.getEpisodeManager());
+        
+        tabbedPane = new JTabbedPane();
         tabbedPane.add("Map data", spMapMetaDataPanel);
         tabbedPane.add("Sprites", spritesPanel);
+        tabbedPane.add("Episode", episodesPanel);
         
         frame.add(mainToolBar, BorderLayout.PAGE_START);
         
@@ -111,7 +118,6 @@ public class PekaEDSGUIView {
         mEpisodeOpen = new JMenuItem("Open");
         mEpisodeExport = new JMenuItem("Export");
         
-        mEpisode.setEnabled(false);
         mEpisode.add(mEpisodeNew);
         mEpisode.add(mEpisodeOpen);
         mEpisode.addSeparator();
@@ -207,6 +213,39 @@ public class PekaEDSGUIView {
         });
         
         mFileExit.addActionListener(e -> System.exit(0));
+        
+        mEpisodeNew.addActionListener(e -> {
+            var fc = new JFileChooser(Settings.getEpisodesPath());
+            fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            fc.setDialogTitle("Select an episode folder to add...");
+            
+            if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+                edsUI.getEpisodeManager().newEpisode(fc.getSelectedFile());
+            }
+        });
+        
+        mEpisodeOpen.addActionListener(e -> {
+            var fc = new JFileChooser("episodes");
+            fc.setDialogTitle("Select an episode file to load...");
+            fc.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+            fc.setFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.getName().endsWith(".episode");
+                }
+    
+                @Override
+                public String getDescription() {
+                    return "PekaEDS episode file (*.episode)";
+                }
+            });
+            
+            if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
+                edsUI.getEpisodeManager().loadEpisode(fc.getSelectedFile());
+                
+                tabbedPane.setSelectedIndex(2);
+            }
+        });
     }
     
     void setFrameTitle(String title) {

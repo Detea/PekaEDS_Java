@@ -17,6 +17,7 @@ import pk.pekaeds.ui.minimappanel.MiniMapPanel;
 import pk.pekaeds.ui.listeners.RepaintListener;
 import pk.pekaeds.ui.spritelistpanel.SpritesPanel;
 import pk.pekaeds.ui.tilesetpanel.TilesetPanel;
+import pk.pekaeds.util.episodemanager.EpisodeManager;
 import pk.pekaeds.util.undoredo.UndoManager;
 
 
@@ -24,6 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -56,12 +58,15 @@ public class PekaEDSGUI implements ChangeListener {
     private boolean unsavedChanges = false;
     
     private final AutoSaveManager autosaveManager;
+    private final EpisodeManager episodeManager;
     
     private final LoggerDialog loggerDialog = new LoggerDialog();
     
     public PekaEDSGUI() {
         // This has to be done before PekaEDSGUIView gets initialized, because it relies on the toolsList in the Tools class.
         registerTools();
+    
+        episodeManager = new EpisodeManager();
         
         view = new PekaEDSGUIView(this);
         model = new PekaEDSGUIModel();
@@ -305,6 +310,44 @@ public class PekaEDSGUI implements ChangeListener {
         Tool.setSelectionSize(1, 1);
         Tool.setSelection(new int[][]{{0}});
         
+        if (episodeManager.hasEpisodeLoaded()) {
+            var jopAddToEpisode = JOptionPane.showConfirmDialog(null, "Add file to episode \"" + episodeManager.getEpisode().getEpisodeName() + "\"?", "Add to episode?", JOptionPane.YES_NO_OPTION);
+            
+            if (jopAddToEpisode == JOptionPane.YES_OPTION) {
+                var fc = new JFileChooser(episodeManager.getEpisode().getEpisodeFolder());
+                fc.setFileFilter(new FileFilter() {
+                    @Override
+                    public boolean accept(File f) {
+                        return f.getName().endsWith(".map");
+                    }
+    
+                    @Override
+                    public String getDescription() {
+                        return "Pekka Kana 2 map file (*.map)";
+                    }
+                }); // TODO Create PK2MapFilterFilter?
+                
+                // TODO Create a PK2MapFileChooser?
+                fc.setDialogTitle("Save map file as...");
+                
+                if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    var selectedFile = fc.getSelectedFile();
+                    
+                    if (!selectedFile.getName().endsWith(".map")) {
+                        selectedFile = new File(selectedFile.getAbsolutePath() + ".map");
+                    }
+                    
+                    episodeManager.addFileToEpisode(selectedFile);
+                    
+                    model.setCurrentMapFile(selectedFile);
+                    
+                    saveMap(selectedFile);
+                } else {
+                    JOptionPane.showMessageDialog(null, "File has not been added to episode.", "Not added to episode", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+        }
+        
         updateFrameTitle();
     }
     
@@ -463,6 +506,10 @@ public class PekaEDSGUI implements ChangeListener {
     
     LoggerDialog getLoggerDialog() {
         return loggerDialog;
+    }
+    
+    public EpisodeManager getEpisodeManager() {
+        return episodeManager;
     }
     
     public void updateAutosaveManager() {
