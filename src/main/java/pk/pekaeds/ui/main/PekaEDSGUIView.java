@@ -71,7 +71,7 @@ public class PekaEDSGUIView {
         
         var spMapMetaDataPanel = new JScrollPane(mapMetadataPanel);
         
-        var episodesPanel = new EpisodePanel(edsUI.getEpisodeManager());
+        var episodesPanel = new EpisodePanel(edsUI, edsUI.getEpisodeManager());
         
         tabbedPane = new JTabbedPane();
         tabbedPane.add("Map data", spMapMetaDataPanel);

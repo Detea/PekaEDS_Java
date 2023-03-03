@@ -1,11 +1,16 @@
 package pk.pekaeds.ui.episodepanel;
 
 import net.miginfocom.swing.MigLayout;
+import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.filefilters.FileFilters;
+import pk.pekaeds.ui.main.PekaEDSGUI;
+import pk.pekaeds.ui.misc.UnsavedChangesDialog;
 import pk.pekaeds.util.episodemanager.Episode;
 import pk.pekaeds.util.episodemanager.EpisodeManager;
 
 import javax.swing.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public final class EpisodePanel extends JPanel implements EpisodeChangeListener {
     private final EpisodeManager manager;
@@ -17,8 +22,11 @@ public final class EpisodePanel extends JPanel implements EpisodeChangeListener 
     private JButton btnImport;
     private JButton btnRemove;
     
-    public EpisodePanel(EpisodeManager episodeManager) {
+    private PekaEDSGUI eds;
+    
+    public EpisodePanel(PekaEDSGUI edsGUI, EpisodeManager episodeManager) {
         this.manager = episodeManager;
+        this.eds = edsGUI;
         
         manager.setChangeListener(this);
         
@@ -76,6 +84,39 @@ public final class EpisodePanel extends JPanel implements EpisodeChangeListener 
                 }
             } else {
                 JOptionPane.showMessageDialog(null, "No episode loaded!", "No episode", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+        
+        lstFiles.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (manager.hasEpisodeLoaded()) {
+                    if (e.getClickCount() == 2) {
+                        var file = manager.getEpisode().getFileList().get(lstFiles.getSelectedIndex());
+    
+                        if (eds.unsavedChangesPresent()) {
+                            String path = manager.getEpisode().getEpisodeFolder().getAbsolutePath();
+    
+                            int result = UnsavedChangesDialog.show(eds);
+                            
+                            if (result != JOptionPane.CANCEL_OPTION && result != JOptionPane.CLOSED_OPTION) {
+                                if (result == JOptionPane.YES_OPTION) {
+                                    var fc = new JFileChooser(path);
+                                    fc.setDialogTitle("Save map...");
+                                    fc.setFileFilter(FileFilters.PK2_MAP_FILTER);
+    
+                                    if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                                        eds.saveMap(fc.getSelectedFile());
+                                    }
+                                }
+    
+                                eds.loadMap(file);
+                            }
+                        } else {
+                            eds.loadMap(file);
+                        }
+                    }
+                }
             }
         });
     }
