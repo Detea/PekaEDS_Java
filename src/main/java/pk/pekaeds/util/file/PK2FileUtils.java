@@ -1,4 +1,4 @@
-package pk.pekaeds.util;
+package pk.pekaeds.util.file;
 
 import java.io.*;
 import java.util.Arrays;

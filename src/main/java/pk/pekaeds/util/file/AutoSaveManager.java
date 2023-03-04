@@ -1,4 +1,4 @@
-package pk.pekaeds.util;
+package pk.pekaeds.util.file;
 
 import org.tinylog.Logger;
 import pk.pekaeds.settings.Settings;

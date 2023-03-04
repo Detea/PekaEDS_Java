@@ -1,7 +1,7 @@
 package pk.pekaeds.ui;
 
 
-import pk.pekaeds.util.PathUtils;
+import pk.pekaeds.util.file.PathUtils;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.main.PekaEDSGUI;
 import pk.pekaeds.ui.misc.SetPathDialog;
@@ -9,9 +9,6 @@ import pk.pekaeds.ui.misc.SetPathDialog;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.logging.Logger;
 
 public final class PekaEDSGUILauncher {
    private final static SetPathDialog pathDialog = new SetPathDialog();

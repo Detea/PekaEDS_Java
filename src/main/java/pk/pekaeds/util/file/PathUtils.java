@@ -1,4 +1,4 @@
-package pk.pekaeds.util;
+package pk.pekaeds.util.file;
 
 import java.io.File;
 import java.nio.file.Files;

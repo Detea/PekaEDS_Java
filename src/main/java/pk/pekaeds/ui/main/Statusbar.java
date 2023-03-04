@@ -26,8 +26,6 @@ public class Statusbar extends JPanel implements ChangeListener {
     
     private JLabel lblLastSavedVal;
     
-    private JButton btnShowLog;
-    
     private PekaEDSGUI eds;
     
     public Statusbar(PekaEDSGUI edsUI) {
@@ -60,8 +58,6 @@ public class Statusbar extends JPanel implements ChangeListener {
         
         var lblLastSaved = new JLabel("Last saved:");
         lblLastSavedVal = new JLabel("Not yet");
-    
-        btnShowLog = new JButton("Show log");
 
         // TODO Make the labels stay in place when values change.
         setLayout(new MigLayout());
@@ -89,15 +85,7 @@ public class Statusbar extends JPanel implements ChangeListener {
         add(new JPanel(), "width 100%");
         add(lblLastSaved);
         add(lblLastSavedVal);
-        
-        add(new JSeparator());
-        //add(btnShowLog);
-        
-        btnShowLog.addActionListener(e -> {
-            eds.getLoggerDialog().setVisible(true);
-            eds.getLoggerDialog().requestFocus();
-        });
-        
+
         setPreferredSize(new Dimension(getWidth(), 30));
     }
     

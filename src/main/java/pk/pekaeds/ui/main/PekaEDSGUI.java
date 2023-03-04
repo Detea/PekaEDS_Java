@@ -8,11 +8,8 @@ import pk.pekaeds.settings.Shortcuts;
 import pk.pekaeds.settings.StartupBehavior;
 import pk.pekaeds.tools.*;
 import pk.pekaeds.ui.actions.*;
-import pk.pekaeds.ui.filefilters.FileFilters;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
 import pk.pekaeds.ui.mappanel.MapPanelView;
-import pk.pekaeds.ui.misc.LoggerDialog;
-import pk.pekaeds.ui.misc.UnsavedChangesDialog;
 import pk.pekaeds.ui.toolpropertiespanel.ToolPropertiesPanel;
 import pk.pekaeds.util.*;
 import pk.pekaeds.settings.Settings;
@@ -23,6 +20,9 @@ import pk.pekaeds.ui.listeners.RepaintListener;
 import pk.pekaeds.ui.spritelistpanel.SpritesPanel;
 import pk.pekaeds.ui.tilesetpanel.TilesetPanel;
 import pk.pekaeds.util.episodemanager.EpisodeManager;
+import pk.pekaeds.util.file.AutoSaveManager;
+import pk.pekaeds.util.file.LastSessionManager;
+import pk.pekaeds.util.file.PathUtils;
 import pk.pekaeds.util.undoredo.UndoManager;
 
 
@@ -35,7 +35,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalTime;
@@ -68,7 +67,6 @@ public class PekaEDSGUI implements ChangeListener {
     private final AutoSaveManager autosaveManager;
     private final EpisodeManager episodeManager;
     
-    private final LoggerDialog loggerDialog = new LoggerDialog();
     private final LastSessionManager sessionManager = new LastSessionManager();
     
     public PekaEDSGUI() {
@@ -581,10 +579,6 @@ public class PekaEDSGUI implements ChangeListener {
     
     ToolPropertiesPanel getToolPropertiesPanel() {
         return toolPropertiesPanel;
-    }
-    
-    LoggerDialog getLoggerDialog() {
-        return loggerDialog;
     }
     
     public EpisodeManager getEpisodeManager() {

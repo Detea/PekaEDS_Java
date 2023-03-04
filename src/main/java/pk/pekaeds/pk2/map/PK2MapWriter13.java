@@ -1,7 +1,7 @@
 package pk.pekaeds.pk2.map;
 
 import pk.pekaeds.data.Layer;
-import pk.pekaeds.util.PK2FileUtils;
+import pk.pekaeds.util.file.PK2FileUtils;
 import pk.pekaeds.util.TileUtils;
 
 import java.io.*;

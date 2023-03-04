@@ -18,7 +18,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -28,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.tinylog.Logger;
-import pk.pekaeds.util.PathUtils;
+import pk.pekaeds.util.file.PathUtils;
 
 // TODO The ChangeListener stuff ist pretty messy. It works but it should probably be cleaned up. Some time... maybe...
 public class MapMetadataPanel extends JPanel implements PK2MapConsumer {

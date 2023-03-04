@@ -3,7 +3,7 @@ package pk.pekaeds.pk2.sprite;
 import org.tinylog.Logger;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.util.GFXUtils;
-import pk.pekaeds.util.PK2FileUtils;
+import pk.pekaeds.util.file.PK2FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
