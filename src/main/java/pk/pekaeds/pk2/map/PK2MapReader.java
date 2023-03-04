@@ -14,4 +14,6 @@ public interface PK2MapReader {
     PK2Map load(File filename) throws IOException;
     
     List<PK2Sprite> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex) throws IOException;
+    
+    PK2Map loadIconDataOnly(File file);
 }

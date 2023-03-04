@@ -145,6 +145,36 @@ public class PK2MapReader13 implements PK2MapReader {
         return spriteList;
     }
     
+    /**
+     * Returns a PK2Map13 instance with only the following values set:
+     *  - mapX
+     *  - mapY
+     *  - icon
+     * @param file Pekka Kana 2 map file
+     * @return PK2Map13 instance with the following values set: mapX, mapY, icon
+     */
+    public PK2Map loadIconDataOnly(File file) {
+        PK2Map map = null;
+        
+        try (var in = new DataInputStream(new FileInputStream(file))) {
+            in.skipBytes(0xC4);
+    
+            int x = PK2FileUtils.readInt(in);
+            int y = PK2FileUtils.readInt(in);
+            
+            int icon = PK2FileUtils.readInt(in);
+            
+            map = new PK2Map13();
+            map.setMapX(x);
+            map.setMapY(y);
+            map.setIcon(icon);
+        } catch (IOException e) {
+            Logger.info(e, "Unable to load icon data from file: {}", file.getAbsolutePath());
+        }
+    
+        return map;
+    }
+    
     private int[][] readLayer(DataInputStream in) throws IOException {
         int startX = PK2FileUtils.readInt(in);
         int startY = PK2FileUtils.readInt(in);
