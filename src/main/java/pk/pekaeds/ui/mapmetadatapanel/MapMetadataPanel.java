@@ -68,7 +68,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     public MapMetadataPanel(PekaEDSGUI ui) {
         loadIcons();
         
-        mapPositionDialog = new MapPositionDialog();
+        mapPositionDialog = new MapPositionDialog(ui.getEpisodeManager());
         
         this.gui = ui;
         
