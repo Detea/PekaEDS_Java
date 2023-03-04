@@ -87,6 +87,8 @@ public class SettingsDialog extends JDialog {
         Settings.setUseBGTileset(panelGeneral.useBGTileset());
         Settings.setShowTileNumberInTileset(panelGeneral.showTilesetNumber());
         
+        Settings.setHighlightSelection(panelGeneral.highlightSelection());
+        
         Settings.setAutosaveInterval((panelGeneral.getAutosaveInterval() * 60) * 1000);
         Settings.setAutosaveFileCount(panelGeneral.getAutosaveFileCount());
         

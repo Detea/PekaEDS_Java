@@ -61,6 +61,8 @@ public class Settings {
     
     private static boolean showSprites = true;
     
+    private static boolean highlightSelection = false;
+    
     public Settings() {
         // TODO Just for testing
         if (layerNames.isEmpty()) {
@@ -115,6 +117,8 @@ public class Settings {
             showTileNumberInTileset = dis.readBoolean();
             showSprites = dis.readBoolean();
             
+            highlightSelection = dis.readBoolean();
+            
             defaultStartupBehavior = dis.readInt();
             
             autosaveInterval = dis.readInt();
@@ -163,6 +167,7 @@ public class Settings {
             dos.writeBoolean(highlightSprites);
             dos.writeBoolean(showTileNumberInTileset);
             dos.writeBoolean(showSprites);
+            dos.writeBoolean(highlightSelection);
             
             dos.writeInt(defaultStartupBehavior);
             
@@ -215,6 +220,7 @@ public class Settings {
         showTileNumberInTileset = true;
         
         showSprites = true;
+        highlightSelection = false;
         
         autosaveInterval = 120000;
         autosaveFileCount = 3;
@@ -412,5 +418,13 @@ public class Settings {
     
     public static void setAutosaveFileCount(int count) {
         autosaveFileCount = count;
+    }
+    
+    public static void setHighlightSelection(boolean highlight) {
+        highlightSelection = highlight;
+    }
+    
+    public static boolean highlistSelection() {
+        return highlightSelection;
     }
 }

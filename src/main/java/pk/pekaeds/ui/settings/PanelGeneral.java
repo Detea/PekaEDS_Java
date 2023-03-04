@@ -22,6 +22,7 @@ public class PanelGeneral extends JPanel {
     private JCheckBox rbBGTileset;
     
     private JCheckBox cbShowTileNumbers;
+    private JCheckBox cbHighlightSelection;
     
     private JSpinner spAutosaveInterval;
     private JSpinner spAutosaveFileCount;
@@ -59,6 +60,9 @@ public class PanelGeneral extends JPanel {
         cbShowTileNumbers = new JCheckBox("Show tileset number in tileset?");
         add(cbShowTileNumbers, "cell 0 11");
         
+        cbHighlightSelection = new JCheckBox("Highlight tile selection?");
+        add(cbHighlightSelection, "cell 0 12");
+        
         var autosavePanel = new JPanel();
         autosavePanel.setBorder(BorderFactory.createTitledBorder("Autosave"));
         autosavePanel.setLayout(new MigLayout());
@@ -76,7 +80,7 @@ public class PanelGeneral extends JPanel {
         autosavePanel.add(lblAutosaveFileCount, "cell 3 0");
         autosavePanel.add(spAutosaveFileCount, "cell 4 0");
         
-        add(autosavePanel, "cell 0 12");
+        add(autosavePanel, "cell 0 13");
     }
     
     private void setupGamePath() {
@@ -133,6 +137,8 @@ public class PanelGeneral extends JPanel {
         rbBGTileset.setSelected(Settings.useBGTileset());
         cbShowTileNumbers.setSelected(Settings.showTilesetNumberInTileset());
         
+        cbHighlightSelection.setSelected(Settings.highlistSelection());
+        
         spAutosaveInterval.setValue((Settings.getAutosaveInterval() / 1000) / 60);
         spAutosaveFileCount.setValue(Settings.getAutosaveFileCount());
     }
@@ -167,5 +173,9 @@ public class PanelGeneral extends JPanel {
     
     public int getAutosaveFileCount() {
         return (int) spAutosaveFileCount.getValue();
+    }
+    
+    public boolean highlightSelection() {
+        return cbHighlightSelection.isSelected();
     }
 }

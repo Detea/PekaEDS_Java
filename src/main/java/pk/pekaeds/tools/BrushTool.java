@@ -1,5 +1,6 @@
 package pk.pekaeds.tools;
 
+import pk.pekaeds.settings.Settings;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;
@@ -53,18 +54,41 @@ public class BrushTool extends Tool {
     // TODO Fix some weird multi selection bullshit, when selection is at/below 0, 0
     private void drawSelectedTiles(Graphics2D g) {
         if (!selectingTiles) {
+            // Make the selected tiles appear to be on a 32 * 32 grid.
+            int xAdjusted = (getMousePosition().x / 32 * 32);
+            int yAdjusted = (getMousePosition().y / 32 * 32);
+            
             for (int y = 0; y < getSelectionHeight(); y++) {
                 for (int x = 0; x < getSelectionWidth(); x++) {
-                    // Make the selected tiles appear to be on a 32 * 32 grid.
-                    int xAdjusted = (getMousePosition().x / 32 * 32);
-                    int yAdjusted = (getMousePosition().y / 32 * 32);
-                    
                     // Offset the selections position by half its size (selection width and height), so it is centered at the position of the mouse cursor.
                     int offsetX = (x - (getSelectionWidth() / 2)) * 32;
                     int offsetY = (y - (getSelectionHeight() / 2)) * 32;
                     
                     getMapPanelPainter().drawTile(g, xAdjusted + offsetX, yAdjusted + offsetY, tileSelection[y][x]);
                 }
+            }
+            
+            if (Settings.highlistSelection()) {
+                g.setXORMode(Color.BLACK);
+                
+                int xPos = xAdjusted;
+                int yPos = yAdjusted;
+                int sWidth = getSelectionWidth() * 32;
+                int sHeight = getSelectionHeight() * 32;
+    
+                xPos -= (sWidth / 2);
+                yPos -= (sHeight / 2);
+                
+                // TODO This seems pretty hacky, but it works. Maybe find a cleaner solution? I don't really care, lmao.
+                if (getSelectionWidth() % 2 != 0) {
+                    xPos += 16;
+                }
+                
+                if (getSelectionHeight() % 2 != 0) {
+                    yPos += 16;
+                }
+                
+                g.drawRect(xPos, yPos, sWidth, sHeight);
             }
         }
     }
