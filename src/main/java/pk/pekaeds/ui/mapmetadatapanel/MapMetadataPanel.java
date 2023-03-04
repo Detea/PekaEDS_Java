@@ -80,20 +80,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     private void loadIcons() {
         try {
             var iconSheet = ImageIO.read(new File(Settings.getPK2stuffFilePath()));
-            var colorModel = (IndexColorModel) iconSheet.getColorModel();
-    
-            var rs = new byte[256];
-            var gs = new byte[256];
-            var bs = new byte[256];
-            colorModel.getReds(rs);
-            colorModel.getGreens(gs);
-            colorModel.getBlues(bs);
-            
-            var cm = new IndexColorModel(8, 256, rs, gs, bs, 255);
-            
-            var raster = iconSheet.getRaster();
-            iconSheet = new BufferedImage(iconSheet.getWidth(), iconSheet.getHeight(), BufferedImage.TYPE_BYTE_INDEXED, cm);
-            iconSheet.setData(raster);
+            iconSheet = GFXUtils.makeTransparent(iconSheet);
             
             for (int i = 0; i < Settings.getMapProfile().getIconNames().length; i++) {
                 var img = iconSheet.getSubimage(1 + (i * 28), 452, 27, 27);
