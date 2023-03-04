@@ -10,6 +10,7 @@ import pk.pekaeds.ui.mapposition.MapIcon;
 import pk.pekaeds.util.GFXUtils;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -57,9 +58,25 @@ public final class EpisodeManager {
             
             changeListener.episodeChanged(episode);
             
+            var removedFilesList = new ArrayList<File>();
             mapIcons.clear();
             for (var file : episode.getFileList()) {
-                addIconToList(file);
+                if (file.exists()) {
+                    addIconToList(file);
+                } else {
+                    removedFilesList.add(file);
+                }
+            }
+            
+            if (!removedFilesList.isEmpty()) {
+                var sb = new StringBuilder();
+                for (var file : removedFilesList) {
+                    sb.append(file.getName()).append("\n");
+                    
+                    removeFileFromEpisode(file.getName(), false);
+                }
+    
+                JOptionPane.showMessageDialog(null, "The following files could not be found and were removed from the episode: " + sb.toString(), "Removed files", JOptionPane.INFORMATION_MESSAGE);
             }
             
             Logger.info("Loaded episode: {}, files: {}, folder: {}", episode.getEpisodeName(), episode.getFileList().size(), episode.getEpisodeFolder().getAbsolutePath());
@@ -99,11 +116,21 @@ public final class EpisodeManager {
         }
     }
     
+    /**
+     * Removes the file filename from the episode. You only need to provide the name of the file itself, not it's path. This method takes care of that.
+     * @param filename Filename of the file to remove
+     * @param delete Delete file from episode only or from disk too?
+     */
     public void removeFileFromEpisode(String filename, boolean delete) {
         if (episode != null) {
             var file = new File(episode.getEpisodeFolder().getAbsolutePath() + File.separatorChar + filename);
             
-            mapIcons.remove(episode.getFileList().indexOf(file));
+            if (episode.getFileList().contains(file)) {
+                int index = episode.getFileList().indexOf(file);
+                if (index < mapIcons.size()) {
+                    mapIcons.remove(index);
+                }
+            }
             episode.getFileList().remove(file);
             
             if (file.exists() && delete) {
@@ -117,6 +144,8 @@ public final class EpisodeManager {
             } else {
                 Logger.info("File \"{}\" doesn't exist!", file.getAbsolutePath());
             }
+            
+            changeListener.episodeChanged(episode);
             
             episodeIO.save(episode);
         }

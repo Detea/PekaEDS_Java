@@ -94,26 +94,34 @@ public final class EpisodePanel extends JPanel implements EpisodeChangeListener 
                     if (e.getClickCount() == 2) {
                         var file = manager.getEpisode().getFileList().get(lstFiles.getSelectedIndex());
     
-                        if (eds.unsavedChangesPresent()) {
-                            String path = manager.getEpisode().getEpisodeFolder().getAbsolutePath();
-    
-                            int result = UnsavedChangesDialog.show(eds);
-                            
-                            if (result != JOptionPane.CANCEL_OPTION && result != JOptionPane.CLOSED_OPTION) {
-                                if (result == JOptionPane.YES_OPTION) {
-                                    var fc = new JFileChooser(path);
-                                    fc.setDialogTitle("Save map...");
-                                    fc.setFileFilter(FileFilters.PK2_MAP_FILTER);
-    
-                                    if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                                        eds.saveMap(fc.getSelectedFile());
+                        if (file.exists()) {
+                            if (eds.unsavedChangesPresent()) {
+                                String path = manager.getEpisode().getEpisodeFolder().getAbsolutePath();
+        
+                                int result = UnsavedChangesDialog.show(eds);
+        
+                                if (result != JOptionPane.CANCEL_OPTION && result != JOptionPane.CLOSED_OPTION) {
+                                    if (result == JOptionPane.YES_OPTION) {
+                                        var fc = new JFileChooser(path);
+                                        fc.setDialogTitle("Save map...");
+                                        fc.setFileFilter(FileFilters.PK2_MAP_FILTER);
+                
+                                        if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                                            eds.saveMap(fc.getSelectedFile());
+                                        }
                                     }
+            
+                                    eds.loadMap(file);
                                 }
-    
+                            } else {
                                 eds.loadMap(file);
                             }
                         } else {
-                            eds.loadMap(file);
+                            var result = JOptionPane.showConfirmDialog(null, "Selected file doesn't exist. Remove it from episode?", "File not found", JOptionPane.YES_NO_OPTION);
+                            
+                            if (result == JOptionPane.YES_OPTION) {
+                                manager.removeFileFromEpisode(file.getName(), false);
+                            }
                         }
                     }
                 }
