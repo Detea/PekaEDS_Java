@@ -12,20 +12,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.tinylog.Logger;
+import pk.pekaeds.util.episodemanager.EpisodeManager;
 
 public class MapPositionDialog extends JDialog {
     private BufferedImage backgroundImage = null;
-    private List<MapIcon> episodeIcons = new ArrayList<>();
     private MapIcon mapIcon = null;
     
     private JSpinner spX, spY;
     
-    public MapPositionDialog() {
+    private EpisodeManager manager;
+    
+    public MapPositionDialog(EpisodeManager episodeManager) {
         try {
             backgroundImage = ImageIO.read(new File(Settings.getGFXPath() + File.separatorChar + "map.bmp"));
         } catch (IOException e) {
             Logger.warn(e, "Unable to load Map.bmp. Expecting to find it in this folder: {}", Settings.getGFXPath());
         }
+        
+        this.manager = episodeManager;
         
         add(new PositionPanel(), BorderLayout.CENTER);
         
@@ -41,28 +45,8 @@ public class MapPositionDialog extends JDialog {
     
     public void setMapIcon(BufferedImage img, Point pos) {
         mapIcon = new MapIcon(img, pos);
-        
-        /*if (!episodeIcons.contains(icon)) {
-            icons.add(icon);
-        }*/
     }
-    
-    public void removeIcon(int iconIndex) {
-        // TODO Implement
-    }
-    
-    public void updateIcon(BufferedImage img, Point pos) {
-        mapIcon.setImage(img);
-        mapIcon.setPosition(pos);
-        
-        /*for (var icon : icons) {
-            if (icon.getImage().equals(img) && icon.getPosition().equals(pos) && icon.getFilename().equals(file)) {
-                icon.setImage(img);
-                icon.setPosition(pos);
-            }
-        }*/
-    }
-    
+
     public void updateIconImage(BufferedImage img) {
         if (mapIcon != null) {
             mapIcon.setImage(img);
@@ -93,25 +77,28 @@ public class MapPositionDialog extends JDialog {
 
             addMouseListener(new MapPositionMouseHandler(MapPositionDialog.this));
         }
-        
+    
+        private final Composite compAlphaHalf = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.75f);
+        private final Composite compAlphaFull = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f);
         @Override
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
         
+            var g2 = (Graphics2D) g;
+            
             if (MapPositionDialog.this.backgroundImage != null) {
-                g.drawImage(backgroundImage, 0, 0, null);
+                g2.drawImage(backgroundImage, 0, 0, null);
+            }
+    
+            g2.setComposite(compAlphaHalf);
+            for (var icon : manager.getMapIcons()) {
+                g2.drawImage(icon.getImage(), icon.getPosition().x, icon.getPosition().y, null);
             }
             
+            g2.setComposite(compAlphaFull);
             if (mapIcon != null) {
-                g.drawImage(mapIcon.getImage(), mapIcon.getPosition().x - 9, mapIcon.getPosition().y - 14, null);
+                g2.drawImage(mapIcon.getImage(), mapIcon.getPosition().x - 9, mapIcon.getPosition().y - 14, null);
             }
-            
-            // TODO Add episode support
-            /*
-            for (var icon : MapPositionDialog.this.icons) {
-                // TODO Adjust to correct position, this is testing only for now
-                g.drawImage(icon.getImage(), icon.getPosition().x, icon.getPosition().y, null);
-            }*/
         }
     }
 }
