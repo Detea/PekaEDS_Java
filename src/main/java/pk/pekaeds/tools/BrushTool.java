@@ -87,8 +87,7 @@ public class BrushTool extends Tool {
                     yPos += 16;
                 }
                 
-                g.setXORMode(Color.BLACK);
-                g.drawRect(xPos, yPos, sWidth, sHeight);
+                drawSelectionRect(g, xPos, yPos, sWidth, sHeight);
             }
         }
     }

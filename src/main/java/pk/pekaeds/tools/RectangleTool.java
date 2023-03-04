@@ -81,15 +81,31 @@ public class RectangleTool extends Tool {
                 }
                 
                 if (Settings.highlistSelection()) {
-                    g.setXORMode(Color.BLACK);
-                    g.drawRect(rect.x * 32, rect.y * 32, rect.width * 32, rect.height * 32);
+                    drawSelectionRect(g, rect.x * 32, rect.y * 32, rect.width * 32, rect.height * 32);
+                    
+                    // Draw inner outlines when not filled
+                    if (!fill) {
+                        // The dimensions get adjusted, so that they will be drawn inside the rectangle, instead of the outside.
+                        int widthAdjusted = rect.width;
+                        int heightAdjusted = rect.height;
+                        
+                        // Only need to adjust the values when they're greater 1.
+                        if (rect.width > 1) {
+                            widthAdjusted = (widthAdjusted - 2) * 32;
+                        }
+    
+                        if (rect.height > 1) {
+                            heightAdjusted = (heightAdjusted - 2) * 32;
+                        }
+                        
+                        drawSelectionRect(g, (rect.x + 1) * 32, (rect.y + 1) * 32, widthAdjusted, heightAdjusted);
+                    }
                 }
             } else {
                 getMapPanelPainter().drawTile(g, getMousePosition().x, getMousePosition().y, tileSelection[0][0]);
     
                 if (Settings.highlistSelection()) {
-                    g.setXORMode(Color.BLACK);
-                    g.drawRect(getMousePosition().x * 32, getMousePosition().y * 32, 32 ,32);
+                    drawSelectionRect(g, getMousePosition().x, getMousePosition().y, 32, 32);
                 }
             }
         }

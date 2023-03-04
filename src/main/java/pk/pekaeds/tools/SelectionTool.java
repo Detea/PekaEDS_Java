@@ -110,13 +110,10 @@ public class SelectionTool extends Tool {
     @Override
     public void draw(Graphics2D g) {
         if (selectingTiles && selectionRect.x != -1) {
-            g.setXORMode(Color.BLACK);
-            
             int x = selectionRect.x * 32;
             int y = selectionRect.y * 32;
             
-            g.drawRect(x, y, selectionRect.width * 32, selectionRect.height * 32);
-            g.drawRect(x + 1, y + 1, (selectionRect.width * 32) - 2, (selectionRect.height * 32) - 2);
+            drawSelectionRect(g, x, y, selectionRect.width * 32, selectionRect.height * 32);
         }
     }
 }

@@ -64,6 +64,7 @@ public class LineTool extends Tool {
         }
     }
     
+    // TODO Draw selection rect
     private void plotLine(int x0, int y0, int x1, int y1) {
         plotLine(null, x0, y0, x1, y1);
     }
@@ -114,6 +115,9 @@ public class LineTool extends Tool {
         for (int y = y0; y <= y1; y++) {
             if (g != null) {
                 getMapPanelPainter().drawTile(g, x * 32, y * 32, tileSelection[0][0]);
+    
+                drawSelectionRect(g, x * 32, y * 32, 32, 32);
+                
             } else {
                 placeTile(x * 32, y * 32, tileSelection[0][0]);
             }

@@ -122,6 +122,16 @@ public abstract class Tool implements PropertyChangeListener {
     
     public abstract void draw(Graphics2D g);
     
+    public final void drawSelectionRect(Graphics2D g, int x, int y, int width, int height) {
+        g.setColor(Color.BLACK);
+        g.drawRect(x, y, width, height); // Draw outer black part
+        g.drawRect(x + 2, y + 2, width - 4, height - 4); // Draw inner black part
+        
+        // Draw white middle part
+        g.setColor(Color.WHITE);
+        g.drawRect(x + 1, y + 1, width - 2, height - 2);
+    }
+    
     protected void placeTile(Point pos, int tileId) {
         placeTile(pos.x, pos.y, tileId);
     }

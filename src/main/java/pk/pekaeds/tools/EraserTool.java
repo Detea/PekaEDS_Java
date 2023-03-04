@@ -33,5 +33,7 @@ public class EraserTool extends Tool {
         g.fillRect(getMousePosition().x, getMousePosition().y, 32, 32);
         
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
+        
+        drawSelectionRect(g, getMousePosition().x, getMousePosition().y, 32, 32);
     }
 }
