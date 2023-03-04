@@ -51,6 +51,7 @@ public class BrushTool extends Tool {
         }
     }
     
+    // TODO Draw 255/transparent tiles https://docs.oracle.com/javase/tutorial/2d/advanced/compositing.html
     // TODO Fix some weird multi selection bullshit, when selection is at/below 0, 0
     private void drawSelectedTiles(Graphics2D g) {
         if (!selectingTiles) {
@@ -69,8 +70,6 @@ public class BrushTool extends Tool {
             }
             
             if (Settings.highlistSelection()) {
-                g.setXORMode(Color.BLACK);
-                
                 int xPos = xAdjusted;
                 int yPos = yAdjusted;
                 int sWidth = getSelectionWidth() * 32;
@@ -88,6 +87,7 @@ public class BrushTool extends Tool {
                     yPos += 16;
                 }
                 
+                g.setXORMode(Color.BLACK);
                 g.drawRect(xPos, yPos, sWidth, sHeight);
             }
         }
