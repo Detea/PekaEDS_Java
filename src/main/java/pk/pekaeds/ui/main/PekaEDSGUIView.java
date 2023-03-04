@@ -221,6 +221,8 @@ public class PekaEDSGUIView {
             
             if (fc.showOpenDialog(frame) == JFileChooser.APPROVE_OPTION) {
                 edsUI.getEpisodeManager().newEpisode(fc.getSelectedFile());
+                
+                tabbedPane.setSelectedIndex(2);
             }
         });
         
