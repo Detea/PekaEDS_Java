@@ -61,7 +61,7 @@ public class Settings {
     
     private static boolean showSprites = true;
     
-    private static boolean highlightSelection = false;
+    private static boolean highlightSelection = true;
     
     public Settings() {
         // TODO Just for testing
@@ -220,7 +220,7 @@ public class Settings {
         showTileNumberInTileset = true;
         
         showSprites = true;
-        highlightSelection = false;
+        highlightSelection = true;
         
         autosaveInterval = 120000;
         autosaveFileCount = 3;
