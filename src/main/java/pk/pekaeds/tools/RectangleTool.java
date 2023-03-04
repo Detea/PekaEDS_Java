@@ -1,5 +1,6 @@
 package pk.pekaeds.tools;
 
+import pk.pekaeds.settings.Settings;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;
@@ -78,8 +79,18 @@ public class RectangleTool extends Tool {
                         }
                     }
                 }
+                
+                if (Settings.highlistSelection()) {
+                    g.setXORMode(Color.BLACK);
+                    g.drawRect(rect.x * 32, rect.y * 32, rect.width * 32, rect.height * 32);
+                }
             } else {
                 getMapPanelPainter().drawTile(g, getMousePosition().x, getMousePosition().y, tileSelection[0][0]);
+    
+                if (Settings.highlistSelection()) {
+                    g.setXORMode(Color.BLACK);
+                    g.drawRect(getMousePosition().x * 32, getMousePosition().y * 32, 32 ,32);
+                }
             }
         }
     }
