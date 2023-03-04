@@ -14,7 +14,7 @@ public class PekaEDSGUIModel {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     
     private PK2Map currentMap;
-    private File currentMapFile;
+    private File currentMapFile = null;
     
     private int currentLayer;
     private int currentMode;

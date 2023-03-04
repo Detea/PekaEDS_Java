@@ -1,6 +1,7 @@
 package pk.pekaeds.util.episodemanager;
 
 import org.tinylog.Logger;
+import pk.pekaeds.data.EditorConstants;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -30,8 +31,12 @@ final class EpisodeIO {
         return new Episode(fileList, new File(folder), name);
     }
     
+    /**
+     * Saves the episode's data into a file called (episode name).episode, that is stored in EditorConstants.EPISODES_FOLDER
+     * @param episode Instance of the episode class, containing the necessary data.
+     */
     void save(Episode episode) {
-        var episodeFile = new File("episodes" + File.separatorChar + episode.getEpisodeName() + ".episode");
+        var episodeFile = new File(EditorConstants.EPISODES_FOLDER + episode.getEpisodeName() + ".episode");
         
         try (var out = new DataOutputStream(new FileOutputStream(episodeFile))) {
             out.writeUTF(episode.getEpisodeName());

@@ -1,6 +1,7 @@
 package pk.pekaeds.util.episodemanager;
 
 import org.tinylog.Logger;
+import pk.pekaeds.data.EditorConstants;
 import pk.pekaeds.pk2.map.MapIO;
 import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.map.PK2Map13;
@@ -22,16 +23,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class EpisodeManager {
-    private Episode episode = null;
-    
     private static final EpisodeIO episodeIO = new EpisodeIO();
     
+    private Episode episode = null;
     private final List<MapIcon> mapIcons = new ArrayList<>();
+    
+    private File episodeFile; // This episode's (episodename).episode file in the episodes folder
     
     private EpisodeChangeListener changeListener;
     
     public EpisodeManager() {
-        var episodesFolder = new File("episodes");
+        var episodesFolder = new File(EditorConstants.EPISODES_FOLDER);
         
         if (!episodesFolder.exists()) {
             episodesFolder.mkdir();
@@ -49,12 +51,13 @@ public final class EpisodeManager {
         episode = new Episode(tmpFiles, folder, folder.getName());
         episodeIO.save(episode);
     
-        loadEpisode(new File("episodes" + File.separatorChar + episode.getEpisodeName() + ".episode")); // TODO Maybe save the episode file in the episode class?
+        loadEpisode(new File(EditorConstants.EPISODES_FOLDER + episode.getEpisodeName() + ".episode"));
     }
     
     public void loadEpisode(File episodeFile) {
         try {
             episode = episodeIO.load(episodeFile);
+            this.episodeFile = episodeFile;
             
             changeListener.episodeChanged(episode);
             
@@ -123,7 +126,7 @@ public final class EpisodeManager {
      */
     public void removeFileFromEpisode(String filename, boolean delete) {
         if (episode != null) {
-            var file = new File(episode.getEpisodeFolder().getAbsolutePath() + File.separatorChar + filename);
+            var file = new File(episode.getEpisodeFolder().getAbsolutePath() + File.separator + filename);
             
             if (episode.getFileList().contains(file)) {
                 int index = episode.getFileList().indexOf(file);
@@ -153,7 +156,7 @@ public final class EpisodeManager {
     
     public void importFileIntoEpisode(File selectedFile) {
         if (episode != null) {
-            var target = new File(episode.getEpisodeFolder().getAbsolutePath() + File.separatorChar + selectedFile.getName());
+            var target = new File(episode.getEpisodeFolder().getAbsolutePath() + File.separator + selectedFile.getName());
     
             try {
                 Files.move(Path.of(selectedFile.toURI()), Path.of(target.toURI()), StandardCopyOption.REPLACE_EXISTING);
@@ -181,5 +184,9 @@ public final class EpisodeManager {
     
     public void setChangeListener(EpisodeChangeListener listener) {
         this.changeListener = listener;
+    }
+    
+    public File getEpisodeFile() {
+        return episodeFile;
     }
 }

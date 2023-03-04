@@ -1,13 +1,16 @@
 package pk.pekaeds.ui.main;
 
+import pk.pekaeds.data.EditorConstants;
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.data.PekaEDSVersion;
 import pk.pekaeds.pk2.map.*;
 import pk.pekaeds.settings.Shortcuts;
+import pk.pekaeds.settings.StartupBehavior;
 import pk.pekaeds.tools.*;
 import pk.pekaeds.ui.actions.*;
 import pk.pekaeds.ui.filefilters.FileFilters;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
+import pk.pekaeds.ui.mappanel.MapPanelView;
 import pk.pekaeds.ui.misc.LoggerDialog;
 import pk.pekaeds.ui.misc.UnsavedChangesDialog;
 import pk.pekaeds.ui.toolpropertiespanel.ToolPropertiesPanel;
@@ -28,9 +31,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalTime;
@@ -45,6 +50,7 @@ public class PekaEDSGUI implements ChangeListener {
     
     private TilesetPanel tilesetPanel;
     private MapPanel mapPanel;
+    private MapPanelView mapPanelView;
     
     private MainToolBar mainToolBar;
     
@@ -63,6 +69,7 @@ public class PekaEDSGUI implements ChangeListener {
     private final EpisodeManager episodeManager;
     
     private final LoggerDialog loggerDialog = new LoggerDialog();
+    private final LastSessionManager sessionManager = new LastSessionManager();
     
     public PekaEDSGUI() {
         // This has to be done before PekaEDSGUIView gets initialized, because it relies on the toolsList in the Tools class.
@@ -93,14 +100,65 @@ public class PekaEDSGUI implements ChangeListener {
         
         autosaveManager = new AutoSaveManager(this, model.getCurrentMapFile());
         autosaveManager.start();
-        
-        // TODO Do startup behavior saved in Settings
-        newMap();
+    
+        // TODO Optimization: Make this faster. Map loading might also need to be sped up/put in SwingUtils.invokeLater()
+        handleStartup();
+    }
+    
+    private void handleStartup() {
+        var fLastSession = new File(EditorConstants.LAST_SESSION_FILE);
+        if (fLastSession.exists()) {
+            try {
+                var lastSession = sessionManager.loadLastSession(fLastSession);
+                
+                switch (Settings.getDefaultStartupBehavior()) {
+                    case StartupBehavior.NEW_MAP -> {
+                        newMap();
+    
+                        Logger.info("Creating new map.");
+                    }
+    
+                    case StartupBehavior.LOAD_LAST_EPISODE -> {
+                        if (lastSession.getLastEpisodeFile().exists()) {
+                            episodeManager.loadEpisode(lastSession.getLastEpisodeFile());
+            
+                            loadMap(lastSession.getLastLevelFile());
+                            mapPanelView.getViewport().setViewPosition(new Point(lastSession.getLastViewportX(), lastSession.getLastViewportY()));
+                            
+                            Logger.info("Loaded last episode: {} file: {}", episodeManager.getEpisode().getEpisodeName(), lastSession.getLastLevelFile().getAbsolutePath());
+                        } else {
+                            newMap();
+                            
+                            Logger.info("Unable to load last episode: {}. Creating new map instead.", lastSession.getLastEpisodeFile().getAbsolutePath());
+                        }
+                    }
+                    
+                    case StartupBehavior.LOAD_LAST_MAP -> {
+                        if (lastSession.getLastLevelFile().exists()) {
+                            loadMap(lastSession.getLastLevelFile());
+                            
+                            mapPanelView.getViewport().setViewPosition(new Point(lastSession.getLastViewportX(), lastSession.getLastViewportY()));
+                            
+                            Logger.info("Loaded last level: {}", lastSession.getLastLevelFile().getAbsolutePath());
+                        } else {
+                            newMap();
+                            
+                            Logger.info("Unable to load last level: {}. Creating new map instead.", lastSession.getLastLevelFile().getAbsolutePath());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                Logger.info(e, "Unable to load last session file. Creating new map.");
+                
+                newMap();
+            }
+        }
     }
     
     private void setupComponents() {
         tilesetPanel = new TilesetPanel(this);
         mapPanel = new MapPanel();
+        mapPanelView = new MapPanelView(mapPanel);
         
         mainToolBar = new MainToolBar(this);
         
@@ -312,6 +370,8 @@ public class PekaEDSGUI implements ChangeListener {
         Tool.setSelectionSize(1, 1);
         Tool.setSelection(new int[][]{{0}});
         
+        mapPanelView.getViewport().setViewPosition(new Point(0, 0));
+        
         if (episodeManager.hasEpisodeLoaded()) {
             var jopAddToEpisode = JOptionPane.showConfirmDialog(null, "Add file to episode \"" + episodeManager.getEpisode().getEpisodeName() + "\"?", "Add to episode?", JOptionPane.YES_NO_OPTION);
             
@@ -429,7 +489,12 @@ public class PekaEDSGUI implements ChangeListener {
         return unsavedChanges;
     }
     
+    /**
+     * This method gets called when the whole application shuts down.
+     */
     public void close() {
+        sessionManager.saveSession(new File(EditorConstants.LAST_SESSION_FILE), episodeManager.getEpisodeFile(), model.getCurrentMapFile(), mapPanelView.getViewport().getViewPosition().x, mapPanelView.getViewport().getViewPosition().y);
+        
         System.exit(0);
     }
     
@@ -442,19 +507,31 @@ public class PekaEDSGUI implements ChangeListener {
     }
     
     private void updateFrameTitle() {
-        String titleString = "PekaEDS " + PekaEDSVersion.VERSION_STRING + " - ";
+        var sb = new StringBuilder();
+        
+        if (episodeManager.hasEpisodeLoaded()) {
+            sb.append(episodeManager.getEpisode().getEpisodeName());
+            sb.append(" - ");
+        }
         
         if (model.getCurrentMapFile() != null) {
-            titleString += model.getCurrentMapFile().getAbsolutePath();
+            if (episodeManager.hasEpisodeLoaded()) {
+                sb.append(model.getCurrentMapFile().getName());
+            } else {
+                sb.append(model.getCurrentMapFile().getAbsolutePath());
+            }
         } else {
-            titleString += "Unnamed";
+            sb.append("Unnamed");
         }
-    
+
         if (unsavedChanges) {
-            titleString += "*";
+            sb.append("*");
         }
         
-        view.setFrameTitle(titleString);
+        sb.append(" - PekaEDS ");
+        sb.append(PekaEDSVersion.VERSION_STRING);
+        
+        view.setFrameTitle(sb.toString());
     }
     
     @Override
@@ -521,5 +598,9 @@ public class PekaEDSGUI implements ChangeListener {
     
     public void updateMapProfileData() {
         mapMetadataPanel.updateMapProfileData();
+    }
+    
+    public MapPanelView getMapPanelView() {
+        return mapPanelView;
     }
 }

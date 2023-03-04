@@ -66,7 +66,7 @@ public class PekaEDSGUIView {
         
         var miniMapPanel = edsUI.getMiniMapPanel();
 
-        var mapView = new MapPanelView(edsUI.getMapPanel());
+        var mapView = edsUI.getMapPanelView();
         miniMapPanel.setViewport(mapView.getViewport());
         
         var spMapMetaDataPanel = new JScrollPane(mapMetadataPanel);
