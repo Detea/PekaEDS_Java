@@ -1,8 +1,9 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.settings.Settings;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;

@@ -1,15 +1,13 @@
 package pk.pekaeds.ui.toolpropertiespanel;
 
 import net.miginfocom.swing.MigLayout;
-import pk.pekaeds.tools.RectangleTool;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.tools.RectangleTool;
+import pk.pekaeds.tool.Tool;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ToolPropertiesPanel extends JPanel {
     private static final String NO_PROP_PANEL = "noPropPanel";

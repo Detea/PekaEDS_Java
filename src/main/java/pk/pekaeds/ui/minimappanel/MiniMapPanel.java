@@ -2,20 +2,16 @@ package pk.pekaeds.ui.minimappanel;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map;
-import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.settings.Settings;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.ui.listeners.PK2MapConsumer;
 import pk.pekaeds.ui.listeners.TileChangeListener;
-import pk.pekaeds.ui.mappanel.MapPanelModel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 // TODO Reflect changes to the map on the mini map
 // TODO Reflect tileset and background change

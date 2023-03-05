@@ -1,7 +1,8 @@
 package pk.pekaeds.ui.main;
 
 import net.miginfocom.swing.MigLayout;
-import pk.pekaeds.tools.*;
+import pk.pekaeds.tool.*;
+import pk.pekaeds.tool.tools.*;
 import pk.pekaeds.ui.actions.SetSelectedToolAction;
 
 import javax.swing.*;
@@ -21,7 +22,8 @@ public class ToolsToolBar extends JToolBar {
     private JButton btnEraser;
     private JButton btnLine;
     private JButton btnRect;
-    
+    private JButton btnFloodFill;
+
     public ToolsToolBar(PekaEDSGUI ui) {
         this.gui = ui;
         
@@ -35,13 +37,15 @@ public class ToolsToolBar extends JToolBar {
         btnEraser = new JButton("Eraser");
         btnLine = new JButton("Line");
         btnRect = new JButton("Rect");
+        btnFloodFill = new JButton("Flood fill");
         
         setLayout(new MigLayout("flowy"));
         add(btnBrush);
         add(btnEraser);
         add(btnLine);
         add(btnRect);
-        
+        add(btnFloodFill);
+
         setActionListeners();
     }
     
@@ -50,5 +54,6 @@ public class ToolsToolBar extends JToolBar {
         btnEraser.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(EraserTool.class)));
         btnLine.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(LineTool.class)));
         btnRect.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(RectangleTool.class)));
+        btnFloodFill.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(FloodFillTool.class)));
     }
 }

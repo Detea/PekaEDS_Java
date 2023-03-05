@@ -1,6 +1,6 @@
 package pk.pekaeds.ui.actions;
 
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.ui.main.PekaEDSGUI;
 
 import javax.swing.*;

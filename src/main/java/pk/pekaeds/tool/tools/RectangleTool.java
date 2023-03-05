@@ -1,6 +1,7 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.settings.Settings;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;

@@ -1,8 +1,8 @@
 package pk.pekaeds.ui.toolpropertiespanel;
 
 import net.miginfocom.swing.MigLayout;
-import pk.pekaeds.tools.RectangleTool;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.tools.RectangleTool;
+import pk.pekaeds.tool.Tool;
 
 import javax.swing.*;
 

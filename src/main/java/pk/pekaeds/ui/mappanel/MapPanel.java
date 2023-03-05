@@ -1,18 +1,14 @@
 package pk.pekaeds.ui.mappanel;
 
-import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.map.PK2Map13;
-import pk.pekaeds.settings.Settings;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.ui.listeners.PK2MapConsumer;
 import pk.pekaeds.ui.listeners.RepaintListener;
-import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.AffineTransform;
 
 public class MapPanel extends JPanel implements ComponentListener, PK2MapConsumer, RepaintListener {
     private MapPanelModel model;

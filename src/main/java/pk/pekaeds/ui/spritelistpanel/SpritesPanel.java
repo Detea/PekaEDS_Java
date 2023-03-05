@@ -6,7 +6,7 @@ import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.sprite.PK2Sprite;
 import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.ui.listeners.PK2MapConsumer;
 import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.main.PekaEDSGUI;

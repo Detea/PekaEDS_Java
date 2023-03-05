@@ -6,7 +6,8 @@ import pk.pekaeds.data.PekaEDSVersion;
 import pk.pekaeds.pk2.map.*;
 import pk.pekaeds.settings.Shortcuts;
 import pk.pekaeds.settings.StartupBehavior;
-import pk.pekaeds.tools.*;
+import pk.pekaeds.tool.*;
+import pk.pekaeds.tool.tools.*;
 import pk.pekaeds.ui.actions.*;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
 import pk.pekaeds.ui.mappanel.MapPanelView;
@@ -211,6 +212,7 @@ public class PekaEDSGUI implements ChangeListener {
         Tools.addTool(LineTool.class);
         Tools.addTool(RectangleTool.class);
         Tools.addTool(EraserTool.class);
+        Tools.addTool(FloodFillTool.class);
     }
     
     /*
@@ -218,7 +220,8 @@ public class PekaEDSGUI implements ChangeListener {
      */
     public void loadMap(PK2Map map) {
         BufferedImage tilesetImage = null;
-        
+
+        // TODO Handle filename case sensitivity on linux
         try {
             tilesetImage = ImageIO.read(new File(Settings.getTilesetPath() + map.getTileset()));
         } catch (IOException e) {

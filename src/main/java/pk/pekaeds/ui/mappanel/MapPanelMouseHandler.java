@@ -1,14 +1,12 @@
 package pk.pekaeds.ui.mappanel;
 
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.sql.PreparedStatement;
 
 public final class MapPanelMouseHandler extends MouseAdapter {
     private Tool rightMouseTool;

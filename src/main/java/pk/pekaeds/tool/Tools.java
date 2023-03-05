@@ -1,4 +1,4 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;

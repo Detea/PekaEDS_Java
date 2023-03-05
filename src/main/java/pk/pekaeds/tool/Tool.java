@@ -1,4 +1,4 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.data.MapData;
@@ -47,7 +47,24 @@ public abstract class Tool implements PropertyChangeListener {
     private MapPanelPainter mapPainter;
     
     protected static int selectedLayer;
-    
+
+    /*
+        TODO
+            Create:
+             tileSelectionForeground
+             tileSelectionBackground
+             tileSelectionSprites
+
+             selectionMode
+                FOREGROUND_ONLY
+                BACKGROUND_ONLY
+
+                TILE_LAYER_ONLY
+
+                SPRITES_ONLY
+
+                EVERYTHING
+     */
     protected static int[][] tileSelection = new int[1][1];
     protected static Point selectionStart = new Point(-1, -1);
     protected static Point selectionEnd = new Point(-1, -1);
@@ -135,8 +152,7 @@ public abstract class Tool implements PropertyChangeListener {
     protected void placeTile(Point pos, int tileId) {
         placeTile(pos.x, pos.y, tileId);
     }
-    
-    // TODO Adjust multiselection position (has this been fixed?)
+
     protected void placeTile(int x, int y, int tileId) {
         // TODO Adjust for zoom
         x = x / 32;

@@ -2,8 +2,8 @@ package pk.pekaeds.ui.main;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.settings.Settings;
-import pk.pekaeds.tools.Tool;
-import pk.pekaeds.tools.ToolModeListener;
+import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.ToolModeListener;
 import pk.pekaeds.ui.actions.NewMapAction;
 import pk.pekaeds.ui.actions.OpenMapAction;
 import pk.pekaeds.ui.actions.PlayMapAction;

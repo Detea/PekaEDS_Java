@@ -1,4 +1,6 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool.tools;
+
+import pk.pekaeds.tool.Tool;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
