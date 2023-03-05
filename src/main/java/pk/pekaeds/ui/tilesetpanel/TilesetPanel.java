@@ -16,11 +16,6 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
     
     private Rectangle selectionRect = new Rectangle(0, 0, 1, 1);
     
-    private int selectionWidth = 1;
-    private int selectionHeight = 1;
-    
-    private PekaEDSGUI edsUI;
-    
     private Point mousePosition = new Point();
     
     private FontMetrics fontMetrics = null;
@@ -31,8 +26,6 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
     
     public TilesetPanel(PekaEDSGUI mainUI) {
         this.model = new TilesetPanelModel();
-
-        this.edsUI = mainUI;
         
         setup();
     }
@@ -102,14 +95,6 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
         }
     }
     
-    public TilesetPanelModel getModel() {
-        return model;
-    }
-    
-    PekaEDSGUI getEdsUI() {
-        return edsUI;
-    }
-    
     void setMousePosition(Point pos) {
         TileUtils.alignPointToGrid(pos);
         
@@ -118,25 +103,19 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
     
     private void drawSelectionRectangle(Graphics2D g, Point position) {
         if (position.x != -1) {
-            //g.setXORMode(Color.BLACK);
-
             g.setColor(Color.BLACK);
             g.drawRect(position.x, position.y, selectionRect.width * 32, selectionRect.height * 32);
+            g.drawRect(position.x + 2, position.y + 2, (selectionRect.width * 32) - 4, (selectionRect.height * 32) - 4);
             
             g.setColor(Color.WHITE);
             g.drawRect(position.x + 1, position.y + 1, (selectionRect.width * 32) - 2, (selectionRect.height * 32) - 2);
-            
-            g.setColor(Color.BLACK);
-            g.drawRect(position.x + 2, position.y + 2, (selectionRect.width * 32) - 4, (selectionRect.height * 32) - 4);
         }
     }
     
     public void resetSelection() {
-        //selectionRect.setBounds(0, 0, 1, 1);
+        selectionRect.setBounds(0, 0, 1, 1);
 
-        //selectionStart.setLocation(0, 0);
-        
-        //mousePosition.setLocation(0, 0);
+        mousePosition.setLocation(0, 0);
     }
     
     /*
