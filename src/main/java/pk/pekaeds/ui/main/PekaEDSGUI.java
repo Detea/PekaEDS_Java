@@ -107,6 +107,7 @@ public class PekaEDSGUI implements ChangeListener {
         var fLastSession = new File(EditorConstants.LAST_SESSION_FILE);
         if (fLastSession.exists()) {
             try {
+                Logger.info("Trying to load last.session...");
                 var lastSession = sessionManager.loadLastSession(fLastSession);
                 
                 switch (Settings.getDefaultStartupBehavior()) {
@@ -151,6 +152,8 @@ public class PekaEDSGUI implements ChangeListener {
                 newMap();
             }
         } else {
+            Logger.info("No last session found. Creating new map.");
+            
             newMap();
         }
     }
