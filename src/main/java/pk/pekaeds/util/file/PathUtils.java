@@ -6,10 +6,10 @@ import java.nio.file.Path;
 
 public final class PathUtils {
     private PathUtils() {}
-    
+
+    // TODO Improve this
     /**
      * Looks for the following:
-     *  pk2.exe - The executable of the game.
      *  gfx     - The directory that contains the tileset and background images needed by PekaEDS.
      *  sprites - The directory that contains the sprite files needed by PekaEDS.
      *
@@ -19,12 +19,11 @@ public final class PathUtils {
      */
     public static boolean isPK2Directory(File directory) {
         var path = directory.getPath();
-        
-        var pk2exe = new File(path + File.separatorChar + "pk2.exe");
+
         var gfxDir = new File(path + File.separatorChar + "gfx");
         var spritesDir = new File(path + File.separatorChar + "sprites");
         
-        return pk2exe.exists() && gfxDir.exists() && spritesDir.exists();
+        return gfxDir.exists() && spritesDir.exists();
     }
     
     public static boolean isPK2StuffPresent(String basePath) {
