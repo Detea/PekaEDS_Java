@@ -150,6 +150,8 @@ public class PekaEDSGUI implements ChangeListener {
                 
                 newMap();
             }
+        } else {
+            newMap();
         }
     }
     
