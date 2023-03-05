@@ -7,9 +7,23 @@ import pk.pekaeds.ui.PekaEDSGUILauncher;
 import java.util.Locale;
 import org.tinylog.Logger;
 
+import javax.swing.*;
+
 public class PekaEDS {
-    public static void main(String[] args) throws Exception {
-        FlatDarkLaf.setup();
+    public static void main(String[] args) {
+        try {
+            UIManager.setLookAndFeel(new FlatDarkLaf());
+        } catch (UnsupportedLookAndFeelException e) {
+            Logger.info(e, "Unable to install FlatDarkLaf, trying to set to system laf.");
+    
+            try {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException |
+                     InstantiationException ex) {
+                Logger.info(e, "Unable to set system looking feel.");
+            }
+        }
+    
         //System.setProperty( "flatlaf.menuBarEmbedded", "false" );
 
         System.setProperty("sun.java2d.noddraw", "true");
