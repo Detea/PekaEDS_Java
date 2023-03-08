@@ -48,53 +48,23 @@ public abstract class Tool implements PropertyChangeListener {
     
     protected static int selectedLayer;
 
-    /*
-        TODO
-            Create:
-             tileSelectionForeground
-             tileSelectionBackground
-             tileSelectionSprites
-
-             selectionMode
-                FOREGROUND_ONLY
-                BACKGROUND_ONLY
-
-                TILE_LAYER_ONLY
-
-                SPRITES_ONLY
-
-                EVERYTHING
-     */
-    protected static int[][] tileSelection = new int[1][1];
-    protected static Point selectionStart = new Point(-1, -1);
-    protected static Point selectionEnd = new Point(-1, -1);
-    
-    protected static int selectionWidth;
-    protected static int selectionHeight;
-    
+    protected final static ToolSelection selection = new ToolSelection();
     protected static boolean selectingTiles;
     
     private static Point mousePosition = new Point(-1, -1);
-    
-    private static int gridX = 32, gridY = 32;
-    
-    protected static int selectedSprite;
-    
+
     private static int mode = MODE_TILE;
     
     private static final ToolInformation toolInformation = new ToolInformation();
     private static ChangeListener toolInformationListener;
-    
-    private static TileChangeListener tileChangeListener;
-    
     private static ToolModeListener toolModeListener;
-    
-    private static SpritePlacementListener spritePlacementListener;
-    
-    public static boolean inTileMode() {
-        return mode == MODE_TILE;
-    } // TODO Cleanup: delete this
-    
+
+    protected static final LayerHandler layerHandler = new LayerHandler(selection);
+
+    public static void setSelection(int[][] tileSelection) {
+        selection.setTileSelection(tileSelection);
+    }
+
     // TODO I don't think it's necessary to update the mouse position in these two methods. Check if it is, if not make them abstract
     public void mousePressed(MouseEvent e) {
         mousePosition = e.getPoint();
@@ -128,14 +98,7 @@ public abstract class Tool implements PropertyChangeListener {
     public Point getMousePosition() {
         return mousePosition;
     }
-    
-    public void setUseSelectionGrid(boolean useSelectionSizeGrid) {
-        if (useSelectionSizeGrid) {
-            setGridSize(selectionWidth, selectionHeight);
-        } else {
-            setGridSize(32, 32);
-        }
-    }
+
     
     public abstract void draw(Graphics2D g);
     
@@ -149,146 +112,9 @@ public abstract class Tool implements PropertyChangeListener {
         g.drawRect(x + 1, y + 1, width - 2, height - 2);
     }
     
-    protected void placeTile(Point pos, int tileId) {
-        placeTile(pos.x, pos.y, tileId);
-    }
-
-    protected void placeTile(int x, int y, int tileId) {
-        // TODO Adjust for zoom
-        x = x / 32;
-        y = y / 32;
-        
-        int[][] oldData = new int[1][1];
-        
-        // TODO Don't use hardcoded values
-        // TODO should it be <= widht <= height or < width < height?
-        if (x >= 0 && y >= 0 && x <= 256 && y <= 224) {
-            if (selectedLayer == Layer.BOTH) selectedLayer = Layer.FOREGROUND;
-            
-            oldData[0][0] = map.getTileAt(selectedLayer, x, y);
-            
-            //map.getLayers().get(selectedLayer)[y][x] = tileId;
-            map.setTileAt(selectedLayer, x, y, tileId);
-            
-            tileChangeListener.tileChanged(x, y, tileId);
-            
-            int[][] newData = {{tileId}};
-            UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_TILE, oldData, newData, selectedLayer, x, y));
-        }
-    }
-    
-    // TODO Add grid size?
-    protected void placeTiles(Point position) {
-        int px = ((position.x / gridX * gridX) - (getSelectionWidth() * gridX) / 2) + (gridX / 2);
-        int py = ((position.y / gridY * gridY) - (getSelectionHeight() * gridY) / 2) + (gridY / 2);
-        
-        int[][] oldData = new int[selectionHeight][selectionWidth];
-        
-        var newPos = new Point();
-        for (int sx = 0; sx < getSelectionWidth(); sx++) {
-            for (int sy = 0; sy < getSelectionHeight(); sy++) {
-                newPos.x = px + (sx * gridX);
-                newPos.y = py + (sy * gridY);
-                
-                oldData[sy][sx] = getTileAt(selectedLayer, newPos);
-                
-                placeTile(newPos, tileSelection[sy][sx]);
-            }
-        }
-    
-        UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_TILE, oldData, tileSelection, selectedLayer, px / 32, py / 32));
-    }
-    
-    protected int getTileAt(int layer, Point position) {
-        int x = position.x / 32;
-        int y = position.y / 32;
-
-        int tile = 255;
-        
-        if (layer == Layer.BOTH) layer = Layer.FOREGROUND;
-        
-        if (map != null) {
-            if (x >= 0 && y >= 0 && x < PK2Map13.WIDTH && y < PK2Map13.HEIGHT) {
-                tile = map.getLayers().get(layer)[y][x];
-            }
-        }
-        
-        return tile;
-    }
-    
-    protected int getSpriteAt(Point position) {
-        TileUtils.convertToMapCoordinates(position);
-    
-        int spr = selectedSprite;
-        
-        if (map != null) {
-            if (position.x >= 0 && position.x < Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y < Settings.getMapProfile().getMapHeight()) {
-                spr = map.getSpritesLayer()[position.y][position.x]; // Should use map.getSpriteAt to check bounds, but whatever
-            }
-        }
-        
-        return spr;
-    }
-    
-    protected void placeSprite(Point position, int newSprite) {
-        TileUtils.convertToMapCoordinates(position);
-    
-        if (position.x >= 0 && position.x <= Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y <= Settings.getMapProfile().getMapHeight()) {
-            int oldSprite = map.getSpriteIdAt(position.x, position.y);
-            
-            int[][] oldData = {{ oldSprite }};
-            int[][] newData = {{ newSprite }};
-            
-            PK2Sprite spriteOld = map.getSpriteAt(position.x, position.y);
-            PK2Sprite spriteNew = map.getSprite(newSprite);
-            
-            if (oldSprite != 255) {
-                if (newSprite != oldSprite) {
-                    if (spriteOld != null) {
-                        spriteOld.decreasePlacedAmount();
-                    }
-                    
-                    if (spriteNew != null) spriteNew.increasePlacedAmount();
-                }
-            } else {
-                if (spriteNew != null) spriteNew.increasePlacedAmount();
-            }
-            
-            spritePlacementListener.placed(newSprite);
-            map.setSpriteAt(position.x, position.y, newSprite);
-            
-            UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_SPRITE, oldData, newData, -1, position.x, position.y));
-        }
-    }
-    
-    protected void placeSprite(Point position) {
-        placeSprite(position, selectedSprite);
-    }
-    
-    public void setGridSize(int x, int y) {
-        gridX = x;
-        gridY = y;
-    }
-    
-    public int getSelectionWidth() {
-        return selectionWidth;
-    }
-    
-    public int getSelectionHeight() {
-        return selectionHeight;
-    }
-    
     public static void setSelectionSize(int width, int height) {
-        selectionWidth = width;
-        selectionHeight = height;
-    }
-    
-    public static void setSelection(int[][] selection) {
-        tileSelection = selection;
-        
-        /*
-        gridX = selectionWidth;
-        gridY = selectionHeight;*/
+        selection.setWidth(width);
+        selection.setHeight(height);
     }
     
     public void setMapPanelPainter(MapPanelPainter painter) {
@@ -298,26 +124,25 @@ public abstract class Tool implements PropertyChangeListener {
     public MapPanelPainter getMapPanelPainter() {
         return mapPainter;
     }
-    
-    public static void setTileChangeListener(TileChangeListener listener) {
-        tileChangeListener = listener;
-    }
-    
+
     public static void setMap(PK2Map m) {
         map = m;
-        
+
+        layerHandler.setMap(m);
+
         reset();
     }
     
-    private static void reset() {
+    public static void reset() {
         setMode(MODE_TILE);
-        setSelectionSize(1, 1);
-        setSelection(new int[1][1]);
-        setSelectedSprite(0);
+
+        selection.reset();
     }
     
     public static void setSelectedLayer(int layer) {
         selectedLayer = layer;
+
+        layerHandler.setCurrentLayer(selectedLayer);
     }
     
     // Delete this
@@ -334,14 +159,14 @@ public abstract class Tool implements PropertyChangeListener {
             }
         }
     }
-    
+
     public static void setSelectedSprite(PK2Sprite newSprite) {
         // TODO Change grid size to size of selected sprite?
-        
+
         for (int i = 0; i < map.getSpriteList().size(); i++) {
             if (map.getSpriteList().get(i) == newSprite) {
-                selectedSprite = i;
-                
+                selection.setSelectionSprites(new int[][]{{ i }});
+
                 break;
             }
         }
@@ -355,10 +180,10 @@ public abstract class Tool implements PropertyChangeListener {
         toolInformation.setX(mousePosition.x);
         toolInformation.setY(mousePosition.y);
         
-        toolInformation.setForegroundTile(getTileAt(Layer.FOREGROUND, mousePosition));
-        toolInformation.setBackgroundTile(getTileAt(Layer.BACKGROUND, mousePosition));
+        toolInformation.setForegroundTile(layerHandler.getTileAt(Layer.FOREGROUND, mousePosition));
+        toolInformation.setBackgroundTile(layerHandler.getTileAt(Layer.BACKGROUND, mousePosition));
         
-        int sprId = getSpriteAt(mousePosition);
+        int sprId = layerHandler.getSpriteAt(mousePosition);
         toolInformation.setSpriteId(sprId);
         
         String sprFilename = "none";
@@ -376,11 +201,7 @@ public abstract class Tool implements PropertyChangeListener {
     public static ToolInformation getToolInformation() {
         return toolInformation;
     }
-    
-    public static void setSelectedSprite(int index) {
-        selectedSprite = index;
-    }
- 
+
     public int getMode() {
         return mode;
     }
@@ -394,8 +215,12 @@ public abstract class Tool implements PropertyChangeListener {
     public static void setToolModeListener(ToolModeListener listener) {
         toolModeListener = listener;
     }
-    
+
+    public static void setTileChangeListener(TileChangeListener listener) {
+        layerHandler.setTileChangeListener(listener);
+    }
+
     public static void setSpritePlacementListener(SpritePlacementListener listener) {
-        spritePlacementListener = listener;
+        layerHandler.setSpritePlacementListener(listener);
     }
 }

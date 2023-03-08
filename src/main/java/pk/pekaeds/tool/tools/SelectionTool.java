@@ -1,6 +1,5 @@
 package pk.pekaeds.tool.tools;
 
-import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.tool.Tool;
@@ -17,10 +16,10 @@ public class SelectionTool extends Tool {
     @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
-            selectionStart = e.getPoint();
-            selectionEnd = e.getPoint();
-    
-            selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd);
+            selection.setStart(e.getPoint());
+            selection.setEnd(e.getPoint());
+
+            selectionRect = TileUtils.calculateSelectionRectangle(e.getPoint(), e.getPoint());
             
             if (getMode() == Tool.MODE_TILE) selectingTiles = true;
         }
@@ -28,7 +27,7 @@ public class SelectionTool extends Tool {
     
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (getSpriteAt(e.getPoint()) == 255 || !Settings.showSprites()) {
+        if (layerHandler.getSpriteAt(e.getPoint()) == 255 || !Settings.showSprites()) {
             setMode(MODE_TILE);
     
             doTileSelection();
@@ -49,68 +48,40 @@ public class SelectionTool extends Tool {
         super.mouseDragged(e);
         
         if (SwingUtilities.isRightMouseButton(e)) {
-            selectionEnd = e.getPoint();
+            selection.setEnd(e.getPoint());
             
-            if (selectionEnd.x < 0) selectionEnd.x = 0;
-            if (selectionEnd.y < 0) selectionEnd.y = 0;
+            if (selection.getEnd().x < 0) selection.getEnd().x = 0;
+            if (selection.getEnd().y < 0) selection.getEnd().y = 0;
             
-            if (selectionEnd.x >= PK2Map13.WIDTH * 32) selectionEnd.x = (PK2Map13.WIDTH * 32) - 32;
-            if (selectionEnd.y >= PK2Map13.HEIGHT * 32) selectionEnd.y = (PK2Map13.HEIGHT * 32) - 32;
+            if (selection.getEnd().x >= PK2Map13.WIDTH * 32) selection.getEnd().x = (PK2Map13.WIDTH * 32) - 32;
+            if (selection.getEnd().y >= PK2Map13.HEIGHT * 32) selection.getEnd().y = (PK2Map13.HEIGHT * 32) - 32;
             
-            selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd);
+            selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd());
         }
     }
     
     private void doTileSelection() {
-        selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd);
-        
-        setSelectionSize(selectionRect.width, selectionRect.height);
-        
-        int[][] selection = new int[0][];
-        
-        // TODO Might want to add an option to choose?
-        if (selectedLayer == Layer.BOTH) {
-            selectedLayer = Layer.FOREGROUND;
-        }
-        
-        if (selectionRect.width > 1 || selectionRect.height > 1) {
-            selection = new int[selectionHeight][selectionWidth];
-        
-            Point tilePos = new Point(0, 0);
-        
-            selectionRect.x *= 32;
-            selectionRect.y *= 32;
-            
-            for (int sx = 0; sx < selection[0].length; sx++) {
-                for (int sy = 0; sy < selection.length; sy++) {
-                    tilePos.setLocation(selectionRect.x + (sx * 32), selectionRect.y + (sy * 32));
-                
-                    selection[sy][sx] = getTileAt(selectedLayer, tilePos);
-                }
-            }
-        } else if (selectionRect.width == 1 && selectionRect.height == 1) {
-            selection = new int[1][1];
-        
-            selection[0][0] = getTileAt(selectedLayer, selectionStart);
-        }
-    
-        setSelection(selection);
-        
+        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd());
+
+        selection.setTileSelection(layerHandler.getTilesFromRect(selectionRect, selectedLayer));
+
         selectionRect.x = -1;
         selectionRect.y = -1;
         selectionRect.width = 0;
         selectionRect.height = 0;
-        
+
         selectingTiles = false;
     }
     
     private void doSpriteSelection() {
-        selectedSprite = getSpriteAt(selectionStart);
+        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd());
+
+        selection.setSelectionSprites(new int[][]{{ layerHandler.getSpriteAt(selection.getStart().x, selection.getStart().y) }}); // TODO Fix multiselection of sprites
     }
-    
+
     @Override
     public void draw(Graphics2D g) {
-        if (selectingTiles && selectionRect.x != -1) {
+        if (selectionRect.x != -1) {
             int x = selectionRect.x * 32;
             int y = selectionRect.y * 32;
             

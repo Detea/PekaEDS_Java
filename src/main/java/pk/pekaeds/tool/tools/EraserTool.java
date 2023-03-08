@@ -22,8 +22,8 @@ public class EraserTool extends Tool {
     
     private void doPlacement(Point position) {
         switch (getMode()) {
-            case MODE_TILE -> placeTile(position, 255);
-            case MODE_SPRITE -> placeSprite(position, 255);
+            case MODE_TILE -> layerHandler.placeTile(position.x, position.y, 255, selectedLayer);
+            case MODE_SPRITE -> layerHandler.placeSprite(position, 255);
         }
     }
     
