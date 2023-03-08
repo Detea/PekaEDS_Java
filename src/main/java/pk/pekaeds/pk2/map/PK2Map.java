@@ -41,7 +41,7 @@ public abstract class PK2Map {
     private int mapX;
     private int mapY;
     
-    private int playerSpriteId;
+    private int playerSpriteId = 0;
     
     protected int spritesAmount;
     

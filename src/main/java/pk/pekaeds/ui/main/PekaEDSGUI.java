@@ -274,8 +274,10 @@ public class PekaEDSGUI implements ChangeListener {
         map.setChangeListener(this);
     
         model.setCurrentMap(map);
-    
+
         miniMapPanel.setMap(map);
+
+        spritesPanel.setMap(map);
 
         Tool.setMap(map);
     
@@ -297,11 +299,11 @@ public class PekaEDSGUI implements ChangeListener {
                 loadMap(map);
 
                 Logger.info("Map loaded successfully.");
-                
+
                 if (map.getBackgroundImage() != null) {
                     map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId()));
                     SpriteUtils.calculatePlacementAmountForSprites(map.getSpritesLayer(), map.getSpriteList());
-                    
+
                     spritesPanel.setMap(map);
                 }
                 
@@ -371,10 +373,8 @@ public class PekaEDSGUI implements ChangeListener {
         unsavedChanges = false;
         
         tilesetPanel.resetSelection();
-    
-        Tool.setMode(Tool.MODE_TILE);
-        Tool.setSelectionSize(1, 1);
-        Tool.setSelection(new int[][]{{0}});
+
+        Tool.reset();
         
         mapPanelView.getViewport().setViewPosition(new Point(0, 0));
         
@@ -524,7 +524,7 @@ public class PekaEDSGUI implements ChangeListener {
             if (episodeManager.hasEpisodeLoaded()) {
                 sb.append(model.getCurrentMapFile().getName());
             } else {
-                sb.append(model.getCurrentMapFile().getAbsolutePath());
+                sb.append(model.getCurrentMapFile().getParentFile().getName()).append(File.separator).append(model.getCurrentMapFile().getName());
             }
         } else {
             sb.append("Unnamed");
