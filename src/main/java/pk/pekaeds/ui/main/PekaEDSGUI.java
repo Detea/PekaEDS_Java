@@ -213,6 +213,7 @@ public class PekaEDSGUI implements ChangeListener {
         Tools.addTool(RectangleTool.class);
         Tools.addTool(EraserTool.class);
         Tools.addTool(FloodFillTool.class);
+        Tools.addTool(CutTool.class);
     }
     
     /*

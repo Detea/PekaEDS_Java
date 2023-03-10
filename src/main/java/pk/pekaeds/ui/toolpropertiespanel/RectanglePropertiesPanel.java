@@ -32,6 +32,6 @@ public class RectanglePropertiesPanel extends JPanel implements ToolChangeListen
     
     @Override
     public void setSelectedTool(Tool selectedTool) {
-        tool = (RectangleTool) selectedTool;
+        if (selectedTool instanceof RectangleTool) tool = (RectangleTool) selectedTool;
     }
 }

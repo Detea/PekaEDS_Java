@@ -177,4 +177,8 @@ public class MapPanelPainter {
             drawTile(g, x, y, tile, mapPanel.getModel().getMap().getTilesetImage());
         }
     }
+
+    public void setCursor(Cursor cursor) {
+        mapPanel.setCursor(cursor);
+    }
 }

@@ -73,9 +73,10 @@ public final class LayerHandler {
     }
 
     public int getTileAt(int layer, Point position) {
-        int x = position.x / 32;
-        int y = position.y / 32;
+        return getTileAt(layer, position.x / 32, position.y / 32);
+    }
 
+    public int getTileAt(int layer, int x, int y) {
         int tile = 255;
 
         if (layer == Layer.BOTH) layer = Layer.FOREGROUND;
@@ -124,13 +125,9 @@ public final class LayerHandler {
     public int[][] getSpritesFromRect(Rectangle selectionRect) {
         var tempSelection = new int[selectionRect.height][selectionRect.width];
 
-        System.out.println(selectionRect);
-
         for (int sx = 0; sx < selectionRect.width; sx++) {
             for (int sy = 0; sy < selectionRect.height; sy++) {
                 tempSelection[sy][sx] = getSpriteAt(selectionRect.x + sx, selectionRect.y + sy);
-
-                System.out.println(tempSelection[sy][sx]);
             }
         }
 

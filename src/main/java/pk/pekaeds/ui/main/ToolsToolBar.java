@@ -18,11 +18,14 @@ import javax.swing.*;
 public class ToolsToolBar extends JToolBar {
     private final PekaEDSGUI gui;
     
-    private JButton btnBrush;
-    private JButton btnEraser;
-    private JButton btnLine;
-    private JButton btnRect;
-    private JButton btnFloodFill;
+    private JToggleButton btnBrush;
+    private JToggleButton btnEraser;
+    private JToggleButton btnLine;
+    private JToggleButton btnRect;
+    private JToggleButton btnFloodFill;
+    private JToggleButton btnCut;
+
+    private ButtonGroup buttonGroup;
 
     public ToolsToolBar(PekaEDSGUI ui) {
         this.gui = ui;
@@ -33,18 +36,28 @@ public class ToolsToolBar extends JToolBar {
     private void setup() {
         setOrientation(VERTICAL);
     
-        btnBrush = new JButton("Brush");
-        btnEraser = new JButton("Eraser");
-        btnLine = new JButton("Line");
-        btnRect = new JButton("Rect");
-        btnFloodFill = new JButton("Flood fill");
-        
+        btnBrush = new JToggleButton("Brush");
+        btnEraser = new JToggleButton("Eraser");
+        btnLine = new JToggleButton("Line");
+        btnRect = new JToggleButton("Rect");
+        btnFloodFill = new JToggleButton("Flood fill");
+        btnCut = new JToggleButton("Cut");
+
+        buttonGroup = new ButtonGroup();
+        buttonGroup.add(btnBrush);
+        buttonGroup.add(btnEraser);
+        buttonGroup.add(btnLine);
+        buttonGroup.add(btnRect);
+        buttonGroup.add(btnFloodFill);
+        buttonGroup.add(btnCut);
+
         setLayout(new MigLayout("flowy"));
         add(btnBrush);
         add(btnEraser);
         add(btnLine);
         add(btnRect);
         add(btnFloodFill);
+        add(btnCut);
 
         setActionListeners();
     }
@@ -55,5 +68,6 @@ public class ToolsToolBar extends JToolBar {
         btnLine.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(LineTool.class)));
         btnRect.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(RectangleTool.class)));
         btnFloodFill.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(FloodFillTool.class)));
+        btnCut.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(CutTool.class)));
     }
 }
