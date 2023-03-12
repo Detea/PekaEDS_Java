@@ -13,7 +13,7 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
     private JCheckBox cbBackgroundLayer;
     private JCheckBox cbSpritesLayer;
 
-    private JCheckBox cbCutSelection;
+    private JRadioButton rbCut, rbRemove;
 
     public CutToolPropertiesPanel() {
         setup();
@@ -24,15 +24,39 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
         cbBackgroundLayer = new JCheckBox("Background layer");
         cbSpritesLayer = new JCheckBox("Sprites layer");
 
-        cbCutSelection = new JCheckBox("Cut");
+        rbCut = new JRadioButton("Cut");
+        rbRemove = new JRadioButton("Remove");
+
+        var rbGroup = new ButtonGroup();
+        rbGroup.add(rbCut);
+        rbGroup.add(rbRemove);
 
         setLayout(new MigLayout());
 
-        add(cbForegroundLayer, "cell 0 1");
-        add(cbBackgroundLayer, "cell 0 2");
-        add(cbSpritesLayer, "cell 0 3");
-        add(new JSeparator(), "cell 0 4");
-        add(cbCutSelection, "cell 0 5");
+        add(rbCut, "cell 0 0");
+        add(rbRemove, "cell 1 0");
+
+        add(new JSeparator(JSeparator.HORIZONTAL), "cell 0 1");
+
+        add(cbForegroundLayer, "cell 0 2");
+        add(cbBackgroundLayer, "cell 0 3");
+        add(cbSpritesLayer, "cell 0 4");
+
+        setListeners();
+    }
+
+    private void setListeners() {
+        cbForegroundLayer.addActionListener(e -> {
+            tool.setCutForegroundLayer(cbForegroundLayer.isSelected());
+        });
+
+        cbBackgroundLayer.addActionListener(e -> {
+            tool.setCutBackgroundLayer(cbBackgroundLayer.isSelected());
+        });
+
+        cbSpritesLayer.addActionListener(e -> {
+            tool.setCutSpritesLayer(cbSpritesLayer.isSelected());
+        });
     }
 
     @Override
@@ -44,7 +68,8 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
             cbBackgroundLayer.setSelected(tool.cutBackgroundLayer());
             cbSpritesLayer.setSelected(tool.cutSpritesLayer());
 
-            cbCutSelection.setSelected(tool.cutSelection());
+            rbCut.setSelected(tool.cutSelection());
+            rbRemove.setSelected(!tool.cutSelection());
         } else {
             System.out.println(selectedTool.getClass());
         }

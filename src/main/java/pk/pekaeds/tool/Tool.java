@@ -65,6 +65,8 @@ public abstract class Tool implements PropertyChangeListener {
         selection.setTileSelection(tileSelection);
     }
 
+    protected boolean useRightMouseButton = false;
+
     // TODO I don't think it's necessary to update the mouse position in these two methods. Check if it is, if not make them abstract
     public void mousePressed(MouseEvent e) {
         mousePosition = e.getPoint();
@@ -222,5 +224,9 @@ public abstract class Tool implements PropertyChangeListener {
 
     public static void setSpritePlacementListener(SpritePlacementListener listener) {
         layerHandler.setSpritePlacementListener(listener);
+    }
+
+    public boolean useRightMouseButton() {
+        return useRightMouseButton;
     }
 }
