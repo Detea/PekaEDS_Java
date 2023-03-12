@@ -38,10 +38,17 @@ public final class TileUtils {
     
         endX /= 32;
         endY /= 32;
-    
+
+        // Keep selection within bounds
+        if (startX < 0) startX = 0;
+        if (startY < 0) startY = 0;
+
+        if (endX >= PK2Map13.WIDTH) endX = PK2Map13.WIDTH - 1;
+        if (endY >= PK2Map13.HEIGHT) endY = PK2Map13.HEIGHT - 1;
+
         int selectionWidth = endX - startX;
         int selectionHeight = endY - startY;
-        
+
         return new Rectangle(startX, startY, selectionWidth + 1, selectionHeight + 1);
     }
     
