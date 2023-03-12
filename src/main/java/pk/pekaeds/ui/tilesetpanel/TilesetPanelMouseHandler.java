@@ -1,7 +1,7 @@
 package pk.pekaeds.ui.tilesetpanel;
 
 import pk.pekaeds.util.TileUtils;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 
 import javax.swing.*;
 import java.awt.*;

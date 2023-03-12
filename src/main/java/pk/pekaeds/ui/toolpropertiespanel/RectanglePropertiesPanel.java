@@ -1,8 +1,8 @@
 package pk.pekaeds.ui.toolpropertiespanel;
 
 import net.miginfocom.swing.MigLayout;
-import pk.pekaeds.tools.RectangleTool;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.tools.RectangleTool;
+import pk.pekaeds.tool.Tool;
 
 import javax.swing.*;
 
@@ -32,6 +32,6 @@ public class RectanglePropertiesPanel extends JPanel implements ToolChangeListen
     
     @Override
     public void setSelectedTool(Tool selectedTool) {
-        tool = (RectangleTool) selectedTool;
+        if (selectedTool instanceof RectangleTool) tool = (RectangleTool) selectedTool;
     }
 }

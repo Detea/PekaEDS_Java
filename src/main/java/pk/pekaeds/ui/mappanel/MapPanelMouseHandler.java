@@ -1,14 +1,13 @@
 package pk.pekaeds.ui.mappanel;
 
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.tools.CutTool;
 import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.sql.PreparedStatement;
 
 public final class MapPanelMouseHandler extends MouseAdapter {
     private Tool rightMouseTool;
@@ -28,11 +27,15 @@ public final class MapPanelMouseHandler extends MouseAdapter {
             leftMouseTool.mousePressed(e);
             UndoManager.clearRedoStack();
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            rightMouseTool.mousePressed(e);
+            if (!leftMouseTool.useRightMouseButton()) {
+                rightMouseTool.mousePressed(e);
+            } else {
+                leftMouseTool.mousePressed(e);
+            }
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
             mapPanel.getModel().setLastPanPoint(e.getPoint());
         }
-        
+
         // TODO only repaint the affected areas.
         mapPanel.repaint();
         mapPanel.requestFocus(); // This is needed to get the keyboard shortcuts to work.
@@ -45,7 +48,11 @@ public final class MapPanelMouseHandler extends MouseAdapter {
             
             UndoManager.endUndoBlock();
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            rightMouseTool.mouseReleased(e);
+            if (!leftMouseTool.useRightMouseButton()) {
+                rightMouseTool.mouseReleased(e);
+            } else {
+                leftMouseTool.mouseReleased(e);
+            }
         }
     
         // TODO only repaint the affected areas.
@@ -57,7 +64,11 @@ public final class MapPanelMouseHandler extends MouseAdapter {
         if (SwingUtilities.isLeftMouseButton(e)) {
             leftMouseTool.mouseDragged(e);
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            rightMouseTool.mouseDragged(e);
+            if (!leftMouseTool.useRightMouseButton()) {
+                rightMouseTool.mouseDragged(e);
+            } else {
+                leftMouseTool.mouseDragged(e);
+            }
         } else if (SwingUtilities.isMiddleMouseButton(e)) {
             panView(e.getX(), e.getY());
         }

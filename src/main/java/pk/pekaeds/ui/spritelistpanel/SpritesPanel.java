@@ -6,7 +6,7 @@ import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.sprite.PK2Sprite;
 import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.ui.listeners.PK2MapConsumer;
 import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.main.PekaEDSGUI;
@@ -112,7 +112,9 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     
         btnSetPlayer.addActionListener(e -> {
             if (spriteList.getSelectedValue().getType() == PK2Sprite.TYPE_CHARACTER) {
-                map.getSprite(map.getPlayerSpriteId()).setPlayerSprite(false);
+                var currentPlayerSprite = map.getSprite(map.getPlayerSpriteId());
+                if (currentPlayerSprite != null) currentPlayerSprite.setPlayerSprite(false);
+
                 map.setPlayerSpriteId(spriteList.getSelectedIndex());
                
                 spriteList.getSelectedValue().setPlayerSprite(true);
@@ -155,6 +157,10 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
         
         listModel.clear();
         listModel.addAll(map.getSpriteList());
+
+        if (map.getPlayerSpriteId() >= 0 && map.getPlayerSpriteId() < listModel.size()) {
+            listModel.get(map.getPlayerSpriteId()).setPlayerSprite(true);
+        }
     }
     
     @Override

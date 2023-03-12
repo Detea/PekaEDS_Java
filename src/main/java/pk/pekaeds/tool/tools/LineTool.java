@@ -1,4 +1,6 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool.tools;
+
+import pk.pekaeds.tool.Tool;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -84,9 +86,9 @@ public class LineTool extends Tool {
         
         for (int x = x0; x <= x1; x++) {
             if (g != null) {
-                getMapPanelPainter().drawTile(g, x * 32, y * 32, tileSelection[0][0]);
+                getMapPanelPainter().drawTile(g, x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0]);
             } else {
-                placeTile(x * 32, y * 32, tileSelection[0][0]);
+                layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
             }
             
             if (d > 0) {
@@ -114,12 +116,12 @@ public class LineTool extends Tool {
         
         for (int y = y0; y <= y1; y++) {
             if (g != null) {
-                getMapPanelPainter().drawTile(g, x * 32, y * 32, tileSelection[0][0]);
+                getMapPanelPainter().drawTile(g, x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0]);
     
                 drawSelectionRect(g, x * 32, y * 32, 32, 32);
                 
             } else {
-                placeTile(x * 32, y * 32, tileSelection[0][0]);
+                layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
             }
             
             if (d > 0) {
@@ -137,7 +139,7 @@ public class LineTool extends Tool {
             if (start != null) {
                 plotLine(g, start.x, start.y, end.x, end.y);
             } else {
-                getMapPanelPainter().drawTile(g, getMousePosition().x, getMousePosition().y, tileSelection[0][0]);
+                getMapPanelPainter().drawTile(g, getMousePosition().x, getMousePosition().y, selection.getTileSelection(selectedLayer)[0][0]);
             }
         }
     }

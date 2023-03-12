@@ -1,6 +1,7 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.settings.Settings;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;
@@ -9,18 +10,34 @@ import java.awt.event.MouseEvent;
 
 public class RectangleTool extends Tool {
     private boolean fill = false;
+    private boolean placing = false;
+
     private Rectangle rect;
-    
+
+    private Point selectionStart = new Point(), selectionEnd = new Point();
+
     @Override
     public void mousePressed(MouseEvent e) {
         if (getMode() == MODE_TILE) {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 selectionStart = e.getPoint();
                 selectionEnd = e.getPoint();
+
+                placing = true;
             }
         }
     }
-    
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        super.mouseMoved(e);
+
+        if (!placing) {
+            selectionStart = e.getPoint();
+            selectionEnd = e.getPoint();
+        }
+    }
+
     @Override
     public void mouseDragged(MouseEvent e) {
         super.mouseDragged(e);
@@ -37,6 +54,8 @@ public class RectangleTool extends Tool {
     
             selectionStart.setLocation(-1, -1);
             selectionEnd.setLocation(-1, -1);
+
+            placing = false;
         }
     }
     
@@ -49,11 +68,11 @@ public class RectangleTool extends Tool {
                 // TODO support a tile selection greater than one
                 // TODO Again, code use. Maybe clean this up.
                 if (fill) {
-                    placeTile(x * 32, y * 32, tileSelection[0][0]);
+                    layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
                 } else {
                     if (x == rect.x || x == rect.x + (rect.width - 1) ||
                             y == rect.y || y == rect.y + (rect.height - 1)) {
-                        placeTile(x * 32, y * 32, tileSelection[0][0]);
+                        layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
                     }
                 }
             }
@@ -70,11 +89,11 @@ public class RectangleTool extends Tool {
                     for (int y = rect.y; y < rect.y + rect.height; y++) {
                         // TODO support a tile selection greater than one
                         if (fill) {
-                            getMapPanelPainter().drawTile(g, x * 32, y * 32, tileSelection[0][0]);
+                            getMapPanelPainter().drawTile(g, x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0]);
                         } else {
                             if (x == rect.x || x == rect.x + (rect.width - 1) ||
                                     y == rect.y || y == rect.y + (rect.height - 1)) {
-                                getMapPanelPainter().drawTile(g, x * 32, y * 32, tileSelection[0][0]);
+                                getMapPanelPainter().drawTile(g, x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0]);
                             }
                         }
                     }
@@ -102,7 +121,7 @@ public class RectangleTool extends Tool {
                     }
                 }
             } else {
-                getMapPanelPainter().drawTile(g, getMousePosition().x, getMousePosition().y, tileSelection[0][0]);
+                getMapPanelPainter().drawTile(g, getMousePosition().x, getMousePosition().y, selection.getTileSelection(selectedLayer)[0][0]);
     
                 if (Settings.highlistSelection()) {
                     drawSelectionRect(g, getMousePosition().x, getMousePosition().y, 32, 32);

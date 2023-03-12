@@ -32,6 +32,8 @@ import java.util.function.Consumer;
  * delay is also stored in the settings file and can be accessed via Settings.get/setAutosaveInterval()
  */
 public final class AutoSaveManager {
+    private File autosavesFolder = new File("autosaves");
+
     private final Timer timer;
     private final PekaEDSGUI edsGUI; // I really don't like to make this class depend on PekaEDSGUI, but I don't see another way for now. This class needs to access unsavedChangesPresent().
     
@@ -45,7 +47,8 @@ public final class AutoSaveManager {
     private final List<File> fileRotation = new ArrayList<>();
     
     private String filename;
-    
+
+    // TODO Remove file from constructor?
     public AutoSaveManager(PekaEDSGUI eds, File file) {
         this.edsGUI = eds;
         this.originalFile = file;
@@ -53,7 +56,7 @@ public final class AutoSaveManager {
         delay = Settings.getAutosaveInterval();
         timer = new Timer(delay, new SaveAction());
         timer.setInitialDelay(delay);
-        
+
         fileCount = Settings.getAutosaveFileCount();
         generateFileRotation();
     }
@@ -82,7 +85,12 @@ public final class AutoSaveManager {
         
         if (file != null) {
             filename = file.getName().substring(0, file.getName().length() - 4); // Only save the name of the file, get rid of the .map at the end. See SaveAction.actionPerformed() for more information.
-    
+
+            autosavesFolder = new File(file.getParentFile().getAbsolutePath() + File.separator + "autosaves");
+            if (!autosavesFolder.exists()) {
+                autosavesFolder.mkdir();
+            }
+
             generateFileRotation();
         }
     }
@@ -101,16 +109,16 @@ public final class AutoSaveManager {
         This method constructs the corresponding name/path for the autosave_{filenumber}.map file.
      
         Example, file: "level01.map", file count = 3:
-        {path of current file}\level01.map
-        {path of current file}\level01_autosave_1.map
-        {path of current file}\level01_autosave_2.map
-        {path of current file}\level01_autosave_3.map
+        {path of current file}\autosaves\level01.map
+        {path of current file}\autosaves\level01_autosave_1.map
+        {path of current file}\autosaves\level01_autosave_2.map
+        {path of current file}\autosaves\level01_autosave_3.map
     */
     private String generateAutosaveFilePath(int fileNumber) {
         var sb = new StringBuilder();
         
         if (originalFile != null) {
-            sb.append(originalFile.getParentFile().getPath());
+            sb.append(autosavesFolder.getPath());
             sb.append(File.separatorChar);
             sb.append(filename);
             sb.append("_autosave_");
@@ -129,6 +137,8 @@ public final class AutoSaveManager {
                     // Copy the original file into the current auto save file
                     try {
                         Files.copy(originalFile.toPath(), fileRotation.get(currentFile).toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                        Logger.info("Created autosave: {}", fileRotation.get(currentFile).getAbsolutePath());
                     } catch (IOException ex) {
                         Logger.warn("Unable to save autosave file: " + fileRotation.get(currentFile).getName());
                     }

@@ -1,15 +1,12 @@
 package pk.pekaeds.ui.main;
 
 import net.miginfocom.swing.MigLayout;
-import pk.pekaeds.PekaEDS;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.Tool;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 

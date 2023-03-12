@@ -1,4 +1,4 @@
-package pk.pekaeds.tools;
+package pk.pekaeds.tool;
 
 /**
  * This class contains the following information:

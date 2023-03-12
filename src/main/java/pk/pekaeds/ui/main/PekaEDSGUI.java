@@ -6,7 +6,8 @@ import pk.pekaeds.data.PekaEDSVersion;
 import pk.pekaeds.pk2.map.*;
 import pk.pekaeds.settings.Shortcuts;
 import pk.pekaeds.settings.StartupBehavior;
-import pk.pekaeds.tools.*;
+import pk.pekaeds.tool.*;
+import pk.pekaeds.tool.tools.*;
 import pk.pekaeds.ui.actions.*;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
 import pk.pekaeds.ui.mappanel.MapPanelView;
@@ -211,6 +212,8 @@ public class PekaEDSGUI implements ChangeListener {
         Tools.addTool(LineTool.class);
         Tools.addTool(RectangleTool.class);
         Tools.addTool(EraserTool.class);
+        Tools.addTool(FloodFillTool.class);
+        Tools.addTool(CutTool.class);
     }
     
     /*
@@ -218,7 +221,8 @@ public class PekaEDSGUI implements ChangeListener {
      */
     public void loadMap(PK2Map map) {
         BufferedImage tilesetImage = null;
-        
+
+        // TODO Handle filename case sensitivity on linux
         try {
             tilesetImage = ImageIO.read(new File(Settings.getTilesetPath() + map.getTileset()));
         } catch (IOException e) {
@@ -271,8 +275,10 @@ public class PekaEDSGUI implements ChangeListener {
         map.setChangeListener(this);
     
         model.setCurrentMap(map);
-    
+
         miniMapPanel.setMap(map);
+
+        spritesPanel.setMap(map);
 
         Tool.setMap(map);
     
@@ -294,11 +300,11 @@ public class PekaEDSGUI implements ChangeListener {
                 loadMap(map);
 
                 Logger.info("Map loaded successfully.");
-                
+
                 if (map.getBackgroundImage() != null) {
                     map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId()));
                     SpriteUtils.calculatePlacementAmountForSprites(map.getSpritesLayer(), map.getSpriteList());
-                    
+
                     spritesPanel.setMap(map);
                 }
                 
@@ -368,10 +374,8 @@ public class PekaEDSGUI implements ChangeListener {
         unsavedChanges = false;
         
         tilesetPanel.resetSelection();
-    
-        Tool.setMode(Tool.MODE_TILE);
-        Tool.setSelectionSize(1, 1);
-        Tool.setSelection(new int[][]{{0}});
+
+        Tool.reset();
         
         mapPanelView.getViewport().setViewPosition(new Point(0, 0));
         
@@ -521,7 +525,7 @@ public class PekaEDSGUI implements ChangeListener {
             if (episodeManager.hasEpisodeLoaded()) {
                 sb.append(model.getCurrentMapFile().getName());
             } else {
-                sb.append(model.getCurrentMapFile().getAbsolutePath());
+                sb.append(model.getCurrentMapFile().getParentFile().getName()).append(File.separator).append(model.getCurrentMapFile().getName());
             }
         } else {
             sb.append("Unnamed");

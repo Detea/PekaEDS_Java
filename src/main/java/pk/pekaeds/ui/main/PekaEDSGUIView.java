@@ -4,6 +4,7 @@ import net.miginfocom.swing.MigLayout;
 import pk.pekaeds.data.PekaEDSVersion;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.actions.NewMapAction;
+import pk.pekaeds.ui.actions.OpenFolderAction;
 import pk.pekaeds.ui.actions.OpenMapAction;
 import pk.pekaeds.ui.actions.SaveMapAction;
 import pk.pekaeds.ui.episodepanel.EpisodePanel;
@@ -35,11 +36,20 @@ public class PekaEDSGUIView {
     private JMenuItem mEpisodeNew;
     private JMenuItem mEpisodeOpen;
     private JMenuItem mEpisodeExport;
-    
+
+    private JMenu mFolders;
+    private JMenuItem mfBase;
+    private JMenuItem mfEpisodes;
+    private JMenuItem mfTilesets;
+    private JMenuItem mfBackgrounds;
+    private JMenuItem mfSprites;
+    private JMenuItem mfMusic;
+    private JMenuItem mfSounds;
+
     private JMenu mOther;
     private JMenuItem mOtherSettings;
     private JMenuItem mOtherAbout;
-    
+
     private JTabbedPane tabbedPane;
     
     private PekaEDSGUI edsUI;
@@ -132,11 +142,27 @@ public class PekaEDSGUIView {
         
         mOther.add(mOtherSettings);
         mOther.add(mOtherAbout);
-        
+
+        JMenu mFolders = new JMenu("Folders");
+        mfBase = new JMenuItem("Base");
+        mfEpisodes = new JMenuItem("Episodes");
+        mfTilesets = new JMenuItem("Tilesets");
+        mfBackgrounds = new JMenuItem("Backgrounds");
+        mfSprites = new JMenuItem("Sprites");
+        mfMusic = new JMenuItem("Music");
+
+        mFolders.add(mfBase);
+        mFolders.add(mfEpisodes);
+        mFolders.add(mfTilesets);
+        mFolders.add(mfBackgrounds);
+        mFolders.add(mfSprites);
+        mFolders.add(mfMusic);
+
         menuBar.add(mFile);
         menuBar.add(mEpisode);
+        menuBar.add(mFolders);
         menuBar.add(mOther);
-        
+
         toolsToolBar = new ToolsToolBar(edsUI);
         
         setActionListeners();
@@ -248,6 +274,13 @@ public class PekaEDSGUIView {
                 tabbedPane.setSelectedIndex(2);
             }
         });
+
+        mfBase.addActionListener(new OpenFolderAction(Settings.getBasePath()));
+        mfEpisodes.addActionListener(new OpenFolderAction(Settings.getEpisodesPath()));
+        mfTilesets.addActionListener(new OpenFolderAction(Settings.getTilesetPath()));
+        mfBackgrounds.addActionListener(new OpenFolderAction(Settings.getBackgroundPath()));
+        mfSprites.addActionListener(new OpenFolderAction(Settings.getSpritesPath()));
+        mfMusic.addActionListener(new OpenFolderAction(Settings.getMusicPath()));
     }
     
     void setFrameTitle(String title) {

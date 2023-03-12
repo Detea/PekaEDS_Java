@@ -1,15 +1,14 @@
 package pk.pekaeds.ui.toolpropertiespanel;
 
 import net.miginfocom.swing.MigLayout;
-import pk.pekaeds.tools.RectangleTool;
-import pk.pekaeds.tools.Tool;
+import pk.pekaeds.tool.tools.CutTool;
+import pk.pekaeds.tool.tools.RectangleTool;
+import pk.pekaeds.tool.Tool;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ToolPropertiesPanel extends JPanel {
     private static final String NO_PROP_PANEL = "noPropPanel";
@@ -34,6 +33,7 @@ public class ToolPropertiesPanel extends JPanel {
         noPropPanel.add(lblNoProp);
     
         var rectPanel = new RectanglePropertiesPanel();
+        var cutPanel = new CutToolPropertiesPanel();
         
         cardLayout = new CardLayout();
         setLayout(cardLayout);
@@ -42,6 +42,7 @@ public class ToolPropertiesPanel extends JPanel {
         setBorder(BorderFactory.createTitledBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, Color.BLACK), "Properties:"));
         
         addPropertyPanel(rectPanel, RectangleTool.class);
+        addPropertyPanel(cutPanel, CutTool.class);
     }
     
     public void setSelectedTool(Tool tool) {
@@ -49,7 +50,7 @@ public class ToolPropertiesPanel extends JPanel {
         
         if (toolList.contains(selectedTool.getClass().getName())) {
             cardLayout.show(this, selectedTool.getClass().getName());
-            
+
             for (var p : paneList) {
                 p.setSelectedTool(selectedTool);
             }
