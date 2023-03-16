@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'pk.pekaeds'
-version '0.6-beta'
+version '0.7-beta'
 
 repositories {
     mavenCentral()
