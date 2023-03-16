@@ -87,6 +87,8 @@ public class LineTool extends Tool {
         for (int x = x0; x <= x1; x++) {
             if (g != null) {
                 getMapPanelPainter().drawTile(g, x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0]);
+    
+                drawSelectionRect(g, x * 32, y * 32, 32, 32);
             } else {
                 layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
             }
