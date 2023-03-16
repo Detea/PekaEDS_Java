@@ -79,8 +79,8 @@ public class PanelShortcuts extends JPanel {
         btn.addKeyListener(new ButtonKeyListener(btn, actionName));
         
         add(lbl);
-        add(new JPanel(), "width 100%");
-        add(btn, "width 70%");
+        add(new JPanel(), "width 40%");
+        add(btn);
         
         buttonMap.put(actionName, btn);
     }

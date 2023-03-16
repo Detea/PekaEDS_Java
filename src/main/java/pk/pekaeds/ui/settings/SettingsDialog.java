@@ -35,7 +35,7 @@ public class SettingsDialog extends JDialog {
         
         tabbedPane.add("General", panelGeneral);
         tabbedPane.add("Defaults", panelDefaults);
-        tabbedPane.add("Shortcuts", panelShortcuts);
+        tabbedPane.add("Shortcuts", new JScrollPane(panelShortcuts));
         //tabbedPane.add("Map profile", panelMapProfile);
         
         JPanel panelButtons = new JPanel();
