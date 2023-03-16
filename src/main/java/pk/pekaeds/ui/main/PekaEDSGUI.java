@@ -273,6 +273,9 @@ public class PekaEDSGUI implements ChangeListener {
             }
         }
     
+        Tool.reset();
+        setSelectedTool(Tools.getTool(BrushTool.class));
+        
         map.setBackgroundImage(backgroundImage);
         map.setTilesetImage(tilesetImage);
     
@@ -368,6 +371,9 @@ public class PekaEDSGUI implements ChangeListener {
     }
     
     public void newMap() {
+        Tool.reset();
+        setSelectedTool(Tools.getTool(BrushTool.class));
+        
         var map = new PK2Map13();
         map.reset();
     
@@ -378,8 +384,6 @@ public class PekaEDSGUI implements ChangeListener {
         unsavedChanges = false;
         
         tilesetPanel.resetSelection();
-
-        Tool.reset();
         
         mapPanelView.getViewport().setViewPosition(new Point(0, 0));
         
@@ -557,8 +561,10 @@ public class PekaEDSGUI implements ChangeListener {
     }
     
     private Tool currentTool = null;
-    public void setSelectedTool(Tool selectedTool) {
+    public void setSelectedTool(Tool selectedTool, boolean ignorePrompts) {
         if (currentTool != selectedTool) {
+            if (currentTool != null) currentTool.onDeselect(ignorePrompts);
+            
             mapPanel.setLeftMouseTool(selectedTool);
     
             toolPropertiesPanel.setSelectedTool(selectedTool);
@@ -566,7 +572,12 @@ public class PekaEDSGUI implements ChangeListener {
             ((ToolsToolBar) view.getToolsToolBar()).setSelectedTool(selectedTool);
             
             currentTool = selectedTool;
+            currentTool.onSelect();
         }
+    }
+    
+    public void setSelectedTool(Tool selectedTool) {
+        setSelectedTool(selectedTool, true);
     }
     
     /*

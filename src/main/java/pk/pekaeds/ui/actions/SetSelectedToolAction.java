@@ -19,7 +19,7 @@ public class SetSelectedToolAction extends AbstractAction {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (selectedTool != null) {
-            gui.setSelectedTool(selectedTool);
+            gui.setSelectedTool(selectedTool, false);
         }
     }
 }

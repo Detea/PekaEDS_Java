@@ -60,11 +60,7 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
     }
     
     public void setLeftMouseTool(Tool tool) {
-        if (leftMouseTool != null) leftMouseTool.onDeselect();
-        
         this.leftMouseTool = tool;
-        
-        leftMouseTool.onSelect();
         
         leftMouseTool.setMapPanelPainter(painter);
         mpMouseHandler.setLeftMouseTool(leftMouseTool);

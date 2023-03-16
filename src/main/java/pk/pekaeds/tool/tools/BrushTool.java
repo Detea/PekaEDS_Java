@@ -56,7 +56,7 @@ public class BrushTool extends Tool {
     }
     
     @Override
-    public void onDeselect() {
+    public void onDeselect(boolean ignorePrompts) {
     }
     
     // TODO Draw 255/transparent tiles https://docs.oracle.com/javase/tutorial/2d/advanced/compositing.html

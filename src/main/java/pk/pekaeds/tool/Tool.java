@@ -244,5 +244,5 @@ public abstract class Tool implements PropertyChangeListener {
     }
     
     public abstract void onSelect();
-    public abstract void onDeselect();
+    public abstract void onDeselect(boolean ignorePrompts);
 }

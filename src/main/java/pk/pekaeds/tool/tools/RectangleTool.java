@@ -136,7 +136,7 @@ public class RectangleTool extends Tool {
     }
     
     @Override
-    public void onDeselect() {
+    public void onDeselect(boolean ignorePrompts) {
     
     }
     

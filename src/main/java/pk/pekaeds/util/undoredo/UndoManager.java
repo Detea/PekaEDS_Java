@@ -130,9 +130,6 @@ public final class UndoManager {
                 
                 case REDO_CUT_TILES, REDO_CUT_SPRITES -> {
                     replaceLayerAreaWithTile(mapLayer, action.getStartX(), action.getStartY(), action.getAreaWidth(), action.getAreaHeight(), 255);
-    
-                    // TODO This solution works, but I don't like it. Maybe find a better way. This will do for now.
-                    ((CutTool) Tools.getTool(CutTool.class)).redoCut();
                 }
             }
         }
@@ -140,8 +137,6 @@ public final class UndoManager {
     
     // TODO Handle sprites placement count in all methods?
     private static void replaceLayerArea(int[][] mapLayer, int startX, int startY, int[][] data) {
-        System.out.println("data: " + Arrays.deepToString(data));
-        
         for (int x = 0; x < data[0].length; x++) {
             for (int y = 0; y < data.length; y++) {
                 mapLayer[startY + y][startX + x] = data[y][x];

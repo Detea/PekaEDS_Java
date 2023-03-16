@@ -95,7 +95,7 @@ public class SelectionTool extends Tool {
     }
     
     @Override
-    public void onDeselect() {
+    public void onDeselect(boolean ignorePrompts) {
     
     }
 }

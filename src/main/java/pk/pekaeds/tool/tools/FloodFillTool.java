@@ -207,7 +207,7 @@ public final class FloodFillTool extends Tool {
     }
     
     @Override
-    public void onDeselect() {
+    public void onDeselect(boolean ignorePrompts) {
         // Assign null to layer arrays, so that they get cleaned up?
         // OR create new arrays size [0][0]?
     }

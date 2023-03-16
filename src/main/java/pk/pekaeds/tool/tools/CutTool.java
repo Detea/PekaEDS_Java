@@ -52,11 +52,12 @@ public final class CutTool extends Tool {
         if (SwingUtilities.isRightMouseButton(e)) {
             if (isSelectionPresent()) {
                 finalizeCut();
-            }
+                resetCut();
+            } else {
+                selecting = true;
     
-            selectionStart = e.getPoint();
-
-            resetCut();
+                selectionStart = e.getPoint();
+            }
         } else if (SwingUtilities.isLeftMouseButton(e)) {
             if (isSelectionPresent()) {
                 int mx = e.getX() / 32;
@@ -129,7 +130,6 @@ public final class CutTool extends Tool {
         }
     }
     
-    private boolean isSelectedTool = false;
     @Override
     public void onSelect() {
         if (isSelectionPresent()) {
@@ -138,16 +138,20 @@ public final class CutTool extends Tool {
     }
     
     @Override
-    public void onDeselect() {
+    public void onDeselect(boolean ignorePrompts) {
         getMapPanelPainter().setCursor(defaultCursor);
         
-        if (isSelectionPresent() && !isSelectedTool) {
-            int res = JOptionPane.showConfirmDialog(null, "Cut selection has not been placed. Do you want to place it?", "Selection hasn't been placed", JOptionPane.YES_NO_OPTION);
+        if (isSelectionPresent()) {
+            if (!ignorePrompts) {
+                int res = JOptionPane.showConfirmDialog(null, "Cut selection has not been placed. Do you want to place it?", "Selection hasn't been placed", JOptionPane.YES_NO_OPTION);
     
-            if (res == JOptionPane.YES_OPTION) {
-                finalizeCut();
+                if (res == JOptionPane.YES_OPTION) {
+                    finalizeCut();
+                } else {
+                    undoCut();
+                }
             } else {
-                // TODO Undo cut
+                undoCut();
             }
             
             resetCut();
@@ -171,23 +175,25 @@ public final class CutTool extends Tool {
     }
     
     private void resetCut() {
-        selecting = true;
         selectionRect.setRect(0, 0, 0, 0);
     
         getMapPanelPainter().setCursor(defaultCursor);
     }
     
     public void undoCut() {
-        selectionRect.setSize(0, 0);
+        int startx = selectionStart.x / 32;
+        int starty = selectionStart.y / 32;
+    
+        for (int y = 0; y < selectionRect.height; y++) {
+            for (int x = 0; x < selectionRect.width; x++) {
+                if (cutForegroundLayer) map.setTileAt(Layer.FOREGROUND, startx + x, starty + y, foregroundLayer[y][x]);
+                if (cutBackgroundLayer) map.setTileAt(Layer.BACKGROUND, startx + x, starty + y, backgroundLayer[y][x]);
+                if (cutSpritesLayer) map.setSpriteAt(startx + x, starty + y, spritesLayer[y][x]);
+            }
+        }
         
-        getMapPanelPainter().setCursor(defaultCursor);
         getMapPanelPainter().repaint();
     }
-    
-    public void redoCut() {
-        System.out.println("Redo cut");
-    }
-    
     
     private void drawLayer(Graphics2D g, int[][] layer, int startX, int startY) {
         for (int x = 0; x < layer[0].length; x++) {
