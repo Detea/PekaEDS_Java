@@ -1,7 +1,12 @@
 package pk.pekaeds.util.undoredo;
 
 import pk.pekaeds.pk2.map.PK2Map;
+import pk.pekaeds.tool.Tools;
+import pk.pekaeds.tool.tools.CutTool;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -48,7 +53,7 @@ public final class UndoManager {
     
     public static void undoLastAction() {
         if (!undoActionStack.empty()) {
-            var lastUndoBlock = undoBlockStack.pop();
+            var lastUndoBlock = undoBlockStack.pop(); // TODO Handle empty undoBlockStack
             
             int redoStart = redoActionStack.size();
             
@@ -86,14 +91,21 @@ public final class UndoManager {
     
     private static void performAction(UndoAction action) {
         int[][] mapLayer = null;
-    
-        switch (action.getType()) {
-            case UNDO_PLACE_TILE, REDO_PLACE_TILE -> mapLayer = map.getLayers().get(action.getAffectedLayer());
-            case UNDO_PLACE_SPRITE, REDO_PLACE_SPRITE -> mapLayer = map.getSpritesLayer();
-        }
         
+        switch (action.getType()) {
+            case    UNDO_PLACE_TILE,
+                    REDO_PLACE_TILE,
+                    UNDO_CUT_TILES,
+                    REDO_CUT_TILES -> mapLayer = map.getLayers().get(action.getAffectedLayer());
+            
+            case    UNDO_PLACE_SPRITE,
+                    REDO_PLACE_SPRITE,
+                    UNDO_CUT_SPRITES,
+                    REDO_CUT_SPRITES -> mapLayer = map.getSpritesLayer();
+        }
+
         if (mapLayer != null) {
-            for (int x = 0; x < action.getNewData()[0].length; x++) {
+            /*for (int x = 0; x < action.getNewData()[0].length; x++) {
                 for (int y = 0; y < action.getNewData().length; y++) {
                     int startX = action.getStartX();
                     int startY = action.getStartY();
@@ -103,6 +115,44 @@ public final class UndoManager {
                         case REDO_PLACE_TILE, REDO_PLACE_SPRITE -> mapLayer[startY + y][startX + x] = action.getNewData()[y][x];
                     }
                 }
+            }*/
+            
+            switch (action.getType()) {
+                case UNDO_PLACE_TILE, UNDO_PLACE_SPRITE -> replaceLayerArea(mapLayer, action.getStartX(), action.getStartY(), action.getOldData());
+                case REDO_PLACE_TILE, REDO_PLACE_SPRITE -> replaceLayerArea(mapLayer, action.getStartX(), action.getStartY(), action.getNewData());
+                
+                case UNDO_CUT_TILES, UNDO_CUT_SPRITES -> {
+                    replaceLayerArea(mapLayer, action.getStartX(), action.getStartY(), action.getOldData());
+                    
+                    // TODO This solution works, but I don't like it. Maybe find a better way. This will do for now.
+                    ((CutTool) Tools.getTool(CutTool.class)).undoCut();
+                }
+                
+                case REDO_CUT_TILES, REDO_CUT_SPRITES -> {
+                    replaceLayerAreaWithTile(mapLayer, action.getStartX(), action.getStartY(), action.getAreaWidth(), action.getAreaHeight(), 255);
+    
+                    // TODO This solution works, but I don't like it. Maybe find a better way. This will do for now.
+                    ((CutTool) Tools.getTool(CutTool.class)).redoCut();
+                }
+            }
+        }
+    }
+    
+    // TODO Handle sprites placement count in all methods?
+    private static void replaceLayerArea(int[][] mapLayer, int startX, int startY, int[][] data) {
+        System.out.println("data: " + Arrays.deepToString(data));
+        
+        for (int x = 0; x < data[0].length; x++) {
+            for (int y = 0; y < data.length; y++) {
+                mapLayer[startY + y][startX + x] = data[y][x];
+            }
+        }
+    }
+    
+    private static void replaceLayerAreaWithTile(int[][] mapLayer, int startX, int startY, int width, int height, int tile) {
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                mapLayer[startY + y][startX + x] = tile;
             }
         }
     }

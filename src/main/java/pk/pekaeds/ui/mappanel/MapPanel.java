@@ -60,7 +60,11 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
     }
     
     public void setLeftMouseTool(Tool tool) {
+        if (leftMouseTool != null) leftMouseTool.onDeselect();
+        
         this.leftMouseTool = tool;
+        
+        leftMouseTool.onSelect();
         
         leftMouseTool.setMapPanelPainter(painter);
         mpMouseHandler.setLeftMouseTool(leftMouseTool);
@@ -146,9 +150,7 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
     
     @Override
     public void repaint() {
-        if (model != null) {
-            repaint(model.getViewRect());
-        }
+        if(viewport != null) repaint(viewport.getViewRect());
     }
     
     public void setViewX(int x) {

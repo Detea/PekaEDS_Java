@@ -24,7 +24,7 @@ public class SetPathDialog extends JDialog {
             var fc = new JFileChooser();
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             
-            var res = fc.showOpenDialog(this);
+            var res = fc.showOpenDialog(null);
             
             if (res == JFileChooser.APPROVE_OPTION) {
                 tfPath.setText(fc.getSelectedFile().getPath());

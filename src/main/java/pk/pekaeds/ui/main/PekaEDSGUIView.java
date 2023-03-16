@@ -290,4 +290,8 @@ public class PekaEDSGUIView {
     public void setWindowListener(MainUIWindowListener mainUIWindowListener) {
         frame.addWindowListener(mainUIWindowListener);
     }
+    
+    JToolBar getToolsToolBar() {
+        return toolsToolBar;
+    }
 }

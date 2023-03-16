@@ -18,4 +18,6 @@ public class Shortcuts {
     public static final String TOOL_ERASER = "toolEraser";
     public static final String TOOL_LINE = "toolLine";
     public static final String TOOL_RECT = "toolRect";
+    public static final String TOOL_CUT = "toolCut";
+    public static final String TOOL_FLOOD_FILL = "toolFloodFill";
 }

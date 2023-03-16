@@ -130,6 +130,16 @@ public class RectangleTool extends Tool {
         }
     }
     
+    @Override
+    public void onSelect() {
+    
+    }
+    
+    @Override
+    public void onDeselect() {
+    
+    }
+    
     public void setFilled(boolean filled) {
         this.fill = filled;
     }

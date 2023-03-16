@@ -51,6 +51,14 @@ public class BrushTool extends Tool {
         }
     }
     
+    @Override
+    public void onSelect() {
+    }
+    
+    @Override
+    public void onDeselect() {
+    }
+    
     // TODO Draw 255/transparent tiles https://docs.oracle.com/javase/tutorial/2d/advanced/compositing.html
     private void drawSelectedTiles(Graphics2D g) {
         if (!selectingTiles) {
@@ -77,7 +85,6 @@ public class BrushTool extends Tool {
                 xPos -= (sWidth / 2);
                 yPos -= (sHeight / 2);
                 
-                // TODO This seems pretty hacky, but it works. Maybe find a cleaner solution? I don't really care, lmao.
                 if (selection.getWidth() % 2 != 0) {
                     xPos += 16;
                 }

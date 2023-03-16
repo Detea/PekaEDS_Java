@@ -167,4 +167,9 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     public void placed(int id) {
         spriteList.repaint(); // TODO Optimization: Don't redraw the whole list, only the affected entry
     }
+    
+    @Override
+    public void removed(int id) {
+        spriteList.repaint(); // TODO Optimization: Don't redraw the whole list, only the affected entry
+    }
 }

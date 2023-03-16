@@ -1,6 +1,7 @@
 package pk.pekaeds.ui.mappanel;
 
 import pk.pekaeds.pk2.map.PK2Map13;
+import pk.pekaeds.tool.Tool;
 import pk.pekaeds.ui.minimappanel.MiniMapPanel;
 import pk.pekaeds.util.undoredo.UndoManager;
 
@@ -38,10 +39,14 @@ public class MapPanelView extends JScrollPane implements ComponentListener {
         
         getHorizontalScrollBar().addAdjustmentListener(l -> {
             mapPanel.setViewX(getHorizontalScrollBar().getValue());
+    
+            Tool.setViewRect(getViewport().getViewRect());
         });
         
         getVerticalScrollBar().addAdjustmentListener(l -> {
             mapPanel.setViewY(getVerticalScrollBar().getValue());
+    
+            Tool.setViewRect(getViewport().getViewRect());
         });
         
         getViewport().addComponentListener(this);
@@ -51,6 +56,8 @@ public class MapPanelView extends JScrollPane implements ComponentListener {
     public void componentResized(ComponentEvent e) {
         mapPanel.getModel().setViewSize(getViewport().getWidth(), getViewport().getHeight());
         //mapPanelBackground.setViewSize(getViewport().getWidth(), getViewport().getHeight());
+    
+        Tool.setViewRect(getViewport().getViewRect());
     }
     
     @Override

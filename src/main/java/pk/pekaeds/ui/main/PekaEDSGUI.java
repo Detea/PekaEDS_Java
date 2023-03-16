@@ -100,6 +100,10 @@ public class PekaEDSGUI implements ChangeListener {
         autosaveManager = new AutoSaveManager(this, model.getCurrentMapFile());
         autosaveManager.start();
     
+        setSelectedTool(Tools.getTool(BrushTool.class));
+        
+        mapPanel.requestFocus();
+        
         // TODO Optimization: Make this faster. Map loading might also need to be sped up/put in SwingUtils.invokeLater()
         handleStartup();
     }
@@ -480,6 +484,8 @@ public class PekaEDSGUI implements ChangeListener {
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_ERASER, new SetSelectedToolAction(this, Tools.getTool(EraserTool.class)));
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_LINE, new SetSelectedToolAction(this, Tools.getTool(LineTool.class)));
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_RECT, new SetSelectedToolAction(this, Tools.getTool(RectangleTool.class)));
+        ShortcutUtils.install(mapPanel, Shortcuts.TOOL_CUT, new SetSelectedToolAction(this, Tools.getTool(CutTool.class)));
+        ShortcutUtils.install(mapPanel, Shortcuts.TOOL_FLOOD_FILL, new SetSelectedToolAction(this, Tools.getTool(FloodFillTool.class)));
     }
     
     private void updateMapHolders() {
@@ -550,10 +556,17 @@ public class PekaEDSGUI implements ChangeListener {
         }
     }
     
+    private Tool currentTool = null;
     public void setSelectedTool(Tool selectedTool) {
-        mapPanel.setLeftMouseTool(selectedTool);
-        
-        toolPropertiesPanel.setSelectedTool(selectedTool);
+        if (currentTool != selectedTool) {
+            mapPanel.setLeftMouseTool(selectedTool);
+    
+            toolPropertiesPanel.setSelectedTool(selectedTool);
+    
+            ((ToolsToolBar) view.getToolsToolBar()).setSelectedTool(selectedTool);
+            
+            currentTool = selectedTool;
+        }
     }
     
     /*

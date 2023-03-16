@@ -38,4 +38,14 @@ public class EraserTool extends Tool {
         
         drawSelectionRect(g, getMousePosition().x, getMousePosition().y, 32, 32);
     }
+    
+    @Override
+    public void onSelect() {
+    
+    }
+    
+    @Override
+    public void onDeselect() {
+    
+    }
 }

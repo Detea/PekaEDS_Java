@@ -13,11 +13,15 @@ public class PekaEDS {
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
+            
+            Logger.info("FlatDarkLaf installed.");
         } catch (UnsupportedLookAndFeelException e) {
             Logger.info(e, "Unable to install FlatDarkLaf, trying to set to system laf.");
     
             try {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                
+                Logger.info("System LaF installed.");
             } catch (ClassNotFoundException | UnsupportedLookAndFeelException | IllegalAccessException |
                      InstantiationException ex) {
                 Logger.info(e, "Unable to set system looking feel.");
@@ -32,7 +36,7 @@ public class PekaEDS {
         PekaEDSGUILauncher.launch();
     
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            Logger.error(e);
+            Logger.info(e, "Uncaught exception");
         });
         
         Logger.info("Version: " + PekaEDSVersion.VERSION_STRING);

@@ -181,4 +181,8 @@ public class MapPanelPainter {
     public void setCursor(Cursor cursor) {
         mapPanel.setCursor(cursor);
     }
+    
+    public void repaint() {
+        mapPanel.repaint();
+    }
 }

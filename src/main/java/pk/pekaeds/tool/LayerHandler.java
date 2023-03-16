@@ -71,29 +71,26 @@ public final class LayerHandler {
 
         UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_TILE, oldData, selection.getTileSelection(), layer, px / 32, py / 32));
     }
-
-    public void placeTiles(Point position, int layer, int[][] tiles) {
+    
+    /**
+     * Places the tiles in tiles[][] on the layer.
+     *
+     * This method does NOT push the changed tiles onto the undo stack.
+     * @param layer
+     * @param tiles
+     */
+    public void placeTiles(int x, int y, int layer, int[][] tiles) {
         int selectionWidth = tiles[0].length;
         int selectionHeight = tiles.length;
-
-        int px = ((position.x / gridX * gridX) - (selectionWidth * gridX) / 2) + (gridX / 2);
-        int py = ((position.y / gridY * gridY) - (selectionHeight * gridY) / 2) + (gridY / 2);
-
-        int[][] oldData = new int[selectionHeight][selectionWidth];
-
-        var newPos = new Point();
+        
         for (int sx = 0; sx < selectionWidth; sx++) {
             for (int sy = 0; sy < selectionHeight; sy++) {
-                newPos.x = px + (sx * gridX);
-                newPos.y = py + (sy * gridY);
+                int xx = x + (sx * gridX);
+                int yy = y + (sy * gridY);
 
-                oldData[sy][sx] = getTileAt(layer, newPos);
-
-                placeTile(newPos.x, newPos.y, tiles[sy][sx], layer, false);
+                placeTile(xx, yy, tiles[sy][sx], layer, false);
             }
         }
-
-        UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_TILE, oldData, tiles, layer, px / 32, py / 32));
     }
 
     public int getTileAt(int layer, Point position) {
@@ -126,7 +123,6 @@ public final class LayerHandler {
         return tempSelection;
     }
 
-    // TODO For remove*Area, handle unsavedChanges
     public void removeTilesArea(Rectangle area, int layer) {
         for (int sx = 0; sx < area.width; sx++) {
             for (int sy = 0; sy < area.height; sy++) {
@@ -193,21 +189,40 @@ public final class LayerHandler {
             UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_SPRITE, oldData, newData, -1, position.x, position.y));
         }
     }
-
+    
     public void placeSprite(Point position) {
         placeSprite(position, selection.getSelectionSprites()[0][0]);
     }
-
+    
+    public void placeSprites(int x, int y, int[][] spritesLayer) {
+        // TODO Start an undo block? Look into that. Gonna do a simple implementation for now.
+        
+        for (int sx = 0; sx < spritesLayer[0].length; sx++) {
+            for (int sy = 0; sy < spritesLayer.length; sy++) {
+                int xAdjusted = (x / 32) + sx;
+                int yAdjusted = (y / 32) + sy;
+                
+                map.setSpriteAt(xAdjusted, yAdjusted, spritesLayer[sy][sx]);
+            }
+        }
+    }
+    
     public void removeSpritesArea(Rectangle area) {
         for (int sx = 0; sx < area.width; sx++) {
             for (int sy = 0; sy < area.height; sy++) {
-                map.getSpritesLayer()[area.y + sy][area.x + sx] = 255; // TODO Handle undo
+                int xAdjusted = area.x + sx;
+                int yAdjusted = area.y + sy;
+                
+                var sprOld = map.getSpriteAt(xAdjusted, yAdjusted);
+                if (sprOld != null) sprOld.decreasePlacedAmount();
+                
+                map.setSpriteAt(area.x + sx, area.y + sy, 255); // TODO Handle undo
             }
         }
 
         // TODO Handle UndoManager
     }
-
+    
     public void setMap(PK2Map m) {
         this.map = m;
     }
@@ -227,15 +242,5 @@ public final class LayerHandler {
 
     public void setSpritePlacementListener(SpritePlacementListener listener) {
         this.spritePlacementListener = listener;
-    }
-
-    public void placeSprites(Point point, int[][] spritesLayer) {
-        // TODO Start an undo block? Look into that. Gonna do a simple implementation for now.
-
-        for (int x = 0; x < spritesLayer[0].length; x++) {
-            for (int y = 0; y < spritesLayer.length; y++) {
-                placeSprite(point, spritesLayer[y][x]);
-            }
-        }
     }
 }

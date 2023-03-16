@@ -3,11 +3,15 @@ package pk.pekaeds.tool.tools;
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.tool.Tool;
 import pk.pekaeds.util.TileUtils;
+import pk.pekaeds.util.undoredo.ActionType;
+import pk.pekaeds.util.undoredo.UndoAction;
+import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public final class CutTool extends Tool {
@@ -30,58 +34,49 @@ public final class CutTool extends Tool {
     public CutTool() {
         useRightMouseButton = true;
     }
-
-    /*
-        TODO Add keyboard shortcut
-
-        User selects an area they want to cut. They draw the selection, the cursor changes to the move tool.
-        Then the user can drag the selection around and place it where ever they like and to finalize the movement hit enter(?)
-
-        Draw an outline around the selection, while it is active, remove it when it has been placed.
-
-            -Draw selection rect, when user draws/releases right mousebutton
-            -Let user move (drag) selection around
-        Remove tiles below original selection
-
-        When user hits ENTER place selection
-        When user changes tools revert changes back
-        When user has selected an area and pressed right mouse button, revert changes
-     */
-
-    private void moveSelectionTo(Point position) {
+    
+    private void moveSelectionTo(Point position, int xOffset, int yOffset) {
         int mx = position.x / 32;
         int my = position.y / 32;
-
-        int x = mx - (selectionRect.width / 2);
-        int y = my - (selectionRect.height / 2);
-
+        
+        int x = mx - xOffset;
+        int y = my - yOffset;
+        
         selectionRect.x = x;
         selectionRect.y = y;
     }
 
+    private int clickXOffset, clickYOffset;
     @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
+            if (isSelectionPresent()) {
+                finalizeCut();
+            }
+    
             selectionStart = e.getPoint();
-            selectionEnd = e.getPoint();
 
-            selecting = true;
-
-            getMapPanelPainter().setCursor(defaultCursor);
+            resetCut();
         } else if (SwingUtilities.isLeftMouseButton(e)) {
-            moveSelectionTo(e.getPoint());
+            if (isSelectionPresent()) {
+                int mx = e.getX() / 32;
+                int my = e.getY() / 32;
+                
+                if (!selectionRect.contains(mx, my)) {
+                    selectionRect.setLocation(mx - (selectionRect.width / 2), my - (selectionRect.height / 2));
+                } else {
+                    clickXOffset = mx - selectionRect.x;
+                    clickYOffset = my - selectionRect.y;
+                }
+            }
         }
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        //super.mouseDragged(e);
-
         if (SwingUtilities.isLeftMouseButton(e)) {
-            moveSelectionTo(e.getPoint());
+            moveSelectionTo(e.getPoint(), clickXOffset, clickYOffset);
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            // TODO Keep selection in map bounds, in calculateSelectionRect?
-
             selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, e.getPoint());
         }
     }
@@ -91,33 +86,41 @@ public final class CutTool extends Tool {
         if (SwingUtilities.isRightMouseButton(e)) {
             if (cutForegroundLayer) {
                 foregroundLayer = layerHandler.getTilesFromRect(selectionRect, Layer.FOREGROUND);
-
                 layerHandler.removeTilesArea(selectionRect, Layer.FOREGROUND);
+                
+                //UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_CUT_TILES, foregroundLayer, Layer.FOREGROUND, selectionRect.x, selectionRect.y));
             }
 
             if (cutBackgroundLayer) {
                 backgroundLayer = layerHandler.getTilesFromRect(selectionRect, Layer.BACKGROUND);
-
                 layerHandler.removeTilesArea(selectionRect, Layer.BACKGROUND);
+    
+                //UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_CUT_TILES, backgroundLayer, Layer.BACKGROUND, selectionRect.x, selectionRect.y));
             }
 
             if (cutSpritesLayer) {
                 spritesLayer = layerHandler.getSpritesFromRect(selectionRect);
-
-                layerHandler.removeSpritesArea(selectionRect);
+                layerHandler.removeSpritesArea(selectionRect); // TODO Test if sprite placed counter decreases
+                
+                //UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_CUT_SPRITES, spritesLayer, Layer.SPRITES, selectionRect.x, selectionRect.y));
             }
 
             selecting = false;
-
-            getMapPanelPainter().setCursor(moveCursor); // TODO Change cursor back when switching tools
+            
+            if (isSelectionPresent()) {
+                getMapPanelPainter().setCursor(moveCursor);
+            } else {
+                getMapPanelPainter().setCursor(defaultCursor);
+            }
         }
     }
 
     @Override
     public void draw(Graphics2D g) {
         if (selecting) {
-            drawSelectionRect(g, selectionRect.x * 32, selectionRect.y * 32, selectionRect.width * 32, selectionRect.height * 32);
-        } else {
+            // Check isSelectionPresent() in here because if I don't the selection rect still gets drawn at 0,0 with a width and height of 1, for whatever reason.
+            if (isSelectionPresent()) drawSelectionRect(g, selectionRect.x * 32, selectionRect.y * 32, selectionRect.width * 32, selectionRect.height * 32);
+        } else if (isSelectionPresent()) {
             if (cutBackgroundLayer) drawLayer(g, backgroundLayer, selectionRect.x * 32, selectionRect.y * 32);
             if (cutForegroundLayer) drawLayer(g, foregroundLayer, selectionRect.x * 32, selectionRect.y * 32);
             if (cutSpritesLayer) drawSelectedSprites(g, selectionRect);
@@ -125,7 +128,67 @@ public final class CutTool extends Tool {
             drawSelectionRect(g, selectionRect.x * 32, selectionRect.y * 32, selectionRect.width * 32, selectionRect.height * 32);
         }
     }
-
+    
+    private boolean isSelectedTool = false;
+    @Override
+    public void onSelect() {
+        if (isSelectionPresent()) {
+            getMapPanelPainter().setCursor(moveCursor);
+        }
+    }
+    
+    @Override
+    public void onDeselect() {
+        getMapPanelPainter().setCursor(defaultCursor);
+        
+        if (isSelectionPresent() && !isSelectedTool) {
+            int res = JOptionPane.showConfirmDialog(null, "Cut selection has not been placed. Do you want to place it?", "Selection hasn't been placed", JOptionPane.YES_NO_OPTION);
+    
+            if (res == JOptionPane.YES_OPTION) {
+                finalizeCut();
+            } else {
+                // TODO Undo cut
+            }
+            
+            resetCut();
+        }
+    }
+    
+    private void finalizeCut() {
+        if (cutForegroundLayer) {
+            layerHandler.placeTiles(selectionRect.x * 32, selectionRect.y * 32, Layer.FOREGROUND, foregroundLayer);
+        
+            // TODO UNDO
+        }
+    
+        if (cutBackgroundLayer) {
+            layerHandler.placeTiles(selectionRect.x * 32, selectionRect.y * 32, Layer.BACKGROUND, backgroundLayer);
+        }
+    
+        if (cutSpritesLayer) {
+            layerHandler.placeSprites(selectionRect.x * 32, selectionRect.y * 32, spritesLayer); // TODO Test if sprite placed counter increases
+        }
+    }
+    
+    private void resetCut() {
+        selecting = true;
+        selectionRect.setRect(0, 0, 0, 0);
+    
+        getMapPanelPainter().setCursor(defaultCursor);
+    }
+    
+    public void undoCut() {
+        selectionRect.setSize(0, 0);
+        
+        getMapPanelPainter().setCursor(defaultCursor);
+        getMapPanelPainter().repaint();
+    }
+    
+    public void redoCut() {
+        System.out.println("Redo cut");
+    }
+    
+    
     private void drawLayer(Graphics2D g, int[][] layer, int startX, int startY) {
         for (int x = 0; x < layer[0].length; x++) {
             for (int y = 0; y < layer.length; y++) {
@@ -147,7 +210,11 @@ public final class CutTool extends Tool {
             }
         }
     }
-
+    
+    private boolean isSelectionPresent() {
+        return selectionRect.width > 0 && selectionRect.height > 0;
+    }
+    
     public boolean cutForegroundLayer() {
         return cutForegroundLayer;
     }

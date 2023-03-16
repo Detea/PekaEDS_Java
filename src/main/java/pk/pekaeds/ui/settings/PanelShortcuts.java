@@ -42,6 +42,8 @@ public class PanelShortcuts extends JPanel {
         addShortcutEntry("Eraser tool", Shortcuts.TOOL_ERASER);
         addShortcutEntry("Line tool", Shortcuts.TOOL_LINE);
         addShortcutEntry("Rectangle tool", Shortcuts.TOOL_RECT);
+        addShortcutEntry("Cut tool", Shortcuts.TOOL_CUT);
+        addShortcutEntry("Flood fill tool", Shortcuts.TOOL_FLOOD_FILL);
     }
     
     private JToggleButton lastPressedButton = null;

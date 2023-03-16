@@ -2,6 +2,7 @@ package pk.pekaeds.ui.toolpropertiespanel;
 
 import net.miginfocom.swing.MigLayout;
 import pk.pekaeds.tool.tools.CutTool;
+import pk.pekaeds.tool.tools.FloodFillTool;
 import pk.pekaeds.tool.tools.RectangleTool;
 import pk.pekaeds.tool.Tool;
 
@@ -34,6 +35,7 @@ public class ToolPropertiesPanel extends JPanel {
     
         var rectPanel = new RectanglePropertiesPanel();
         var cutPanel = new CutToolPropertiesPanel();
+        var floodFillPanel = new FloodFillPropertiesPanel();
         
         cardLayout = new CardLayout();
         setLayout(cardLayout);
@@ -43,6 +45,7 @@ public class ToolPropertiesPanel extends JPanel {
         
         addPropertyPanel(rectPanel, RectangleTool.class);
         addPropertyPanel(cutPanel, CutTool.class);
+        addPropertyPanel(floodFillPanel, FloodFillTool.class);
     }
     
     public void setSelectedTool(Tool tool) {

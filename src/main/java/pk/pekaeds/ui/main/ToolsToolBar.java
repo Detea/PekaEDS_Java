@@ -6,6 +6,10 @@ import pk.pekaeds.tool.tools.*;
 import pk.pekaeds.ui.actions.SetSelectedToolAction;
 
 import javax.swing.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * The tools toolbar in of the main UI.
@@ -24,9 +28,11 @@ public class ToolsToolBar extends JToolBar {
     private JToggleButton btnRect;
     private JToggleButton btnFloodFill;
     private JToggleButton btnCut;
-
+    
+    private Map<Class<? extends Tool>, JToggleButton> buttonMap = new LinkedHashMap<>();
+    
     private ButtonGroup buttonGroup;
-
+    
     public ToolsToolBar(PekaEDSGUI ui) {
         this.gui = ui;
         
@@ -35,39 +41,45 @@ public class ToolsToolBar extends JToolBar {
     
     private void setup() {
         setOrientation(VERTICAL);
-    
-        btnBrush = new JToggleButton("Brush");
-        btnEraser = new JToggleButton("Eraser");
-        btnLine = new JToggleButton("Line");
-        btnRect = new JToggleButton("Rect");
-        btnFloodFill = new JToggleButton("Flood fill");
-        btnCut = new JToggleButton("Cut");
-
+        
+        buttonMap.put(BrushTool.class, new JToggleButton("Brush"));
+        buttonMap.put(EraserTool.class, new JToggleButton("Eraser"));
+        buttonMap.put(LineTool.class, new JToggleButton("Line"));
+        buttonMap.put(RectangleTool.class, new JToggleButton("Rect"));
+        buttonMap.put(FloodFillTool.class, new JToggleButton("Flood Fill"));
+        buttonMap.put(CutTool.class, new JToggleButton("Cut"));
+        
         buttonGroup = new ButtonGroup();
-        buttonGroup.add(btnBrush);
-        buttonGroup.add(btnEraser);
-        buttonGroup.add(btnLine);
-        buttonGroup.add(btnRect);
-        buttonGroup.add(btnFloodFill);
-        buttonGroup.add(btnCut);
-
         setLayout(new MigLayout("flowy"));
-        add(btnBrush);
-        add(btnEraser);
-        add(btnLine);
-        add(btnRect);
-        add(btnFloodFill);
-        add(btnCut);
-
+        
+        for (var btn : buttonMap.entrySet()) {
+            buttonGroup.add(btn.getValue());
+        }
+    
+        for (var btn : buttonMap.entrySet()) {
+            add(btn.getValue());
+        }
+        
         setActionListeners();
     }
     
+    private Class<? extends Tool> lastTool = null;
+    private Class<? extends Tool> currentTool = null;
+    public void setSelectedTool(Tool tool) {
+        lastTool = currentTool;
+        
+        currentTool = tool.getClass();
+        
+        buttonMap.get(currentTool).setSelected(true);
+        if (lastTool != null) buttonMap.get(lastTool).setSelected(false);
+    }
+    
     private void setActionListeners() {
-        btnBrush.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(BrushTool.class)));
-        btnEraser.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(EraserTool.class)));
-        btnLine.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(LineTool.class)));
-        btnRect.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(RectangleTool.class)));
-        btnFloodFill.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(FloodFillTool.class)));
-        btnCut.addActionListener(new SetSelectedToolAction(gui, Tools.getTool(CutTool.class)));
+        buttonMap.get(BrushTool.class).addActionListener(new SetSelectedToolAction(gui, Tools.getTool(BrushTool.class)));
+        buttonMap.get(EraserTool.class).addActionListener(new SetSelectedToolAction(gui, Tools.getTool(EraserTool.class)));
+        buttonMap.get(LineTool.class).addActionListener(new SetSelectedToolAction(gui, Tools.getTool(LineTool.class)));
+        buttonMap.get(RectangleTool.class).addActionListener(new SetSelectedToolAction(gui, Tools.getTool(RectangleTool.class)));
+        buttonMap.get(FloodFillTool.class).addActionListener(new SetSelectedToolAction(gui, Tools.getTool(FloodFillTool.class)));
+        buttonMap.get(CutTool.class).addActionListener(new SetSelectedToolAction(gui, Tools.getTool(CutTool.class)));
     }
 }

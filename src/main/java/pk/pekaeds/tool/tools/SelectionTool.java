@@ -88,4 +88,14 @@ public class SelectionTool extends Tool {
             drawSelectionRect(g, x, y, selectionRect.width * 32, selectionRect.height * 32);
         }
     }
+    
+    @Override
+    public void onSelect() {
+    
+    }
+    
+    @Override
+    public void onDeselect() {
+    
+    }
 }

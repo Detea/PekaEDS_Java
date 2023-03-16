@@ -13,6 +13,9 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
     private JCheckBox cbBackgroundLayer;
     private JCheckBox cbSpritesLayer;
 
+    private JLabel lblClickDrag;
+    private JLabel lblClick;
+    
     private JRadioButton rbCut, rbRemove;
 
     public CutToolPropertiesPanel() {
@@ -24,6 +27,9 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
         cbBackgroundLayer = new JCheckBox("Background layer");
         cbSpritesLayer = new JCheckBox("Sprites layer");
 
+        lblClickDrag = new JLabel("Right click and drag to select");
+        lblClick = new JLabel("Right click again to place selection");
+        
         rbCut = new JRadioButton("Cut");
         rbRemove = new JRadioButton("Remove");
 
@@ -41,6 +47,8 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
         add(cbForegroundLayer, "cell 0 2");
         add(cbBackgroundLayer, "cell 0 3");
         add(cbSpritesLayer, "cell 0 4");
+        add(lblClickDrag, "cell 0 6");
+        add(lblClick, "cell 0 7");
 
         setListeners();
     }
@@ -70,8 +78,6 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
 
             rbCut.setSelected(tool.cutSelection());
             rbRemove.setSelected(!tool.cutSelection());
-        } else {
-            System.out.println(selectedTool.getClass());
         }
     }
 

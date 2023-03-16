@@ -15,6 +15,7 @@ import pk.pekaeds.util.undoredo.ActionType;
 import pk.pekaeds.util.undoredo.UndoAction;
 import pk.pekaeds.util.undoredo.UndoManager;
 
+import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -60,6 +61,8 @@ public abstract class Tool implements PropertyChangeListener {
     private static ToolModeListener toolModeListener;
 
     protected static final LayerHandler layerHandler = new LayerHandler(selection);
+    
+    protected static Rectangle viewRect;
 
     public static void setSelection(int[][] tileSelection) {
         selection.setTileSelection(tileSelection);
@@ -145,6 +148,12 @@ public abstract class Tool implements PropertyChangeListener {
         selectedLayer = layer;
 
         layerHandler.setCurrentLayer(selectedLayer);
+        
+        onLayerChange();
+    }
+    
+    private static void onLayerChange() {
+    
     }
     
     // Delete this
@@ -226,7 +235,14 @@ public abstract class Tool implements PropertyChangeListener {
         layerHandler.setSpritePlacementListener(listener);
     }
 
+    public static void setViewRect(Rectangle rect) {
+        viewRect = rect;
+    }
+    
     public boolean useRightMouseButton() {
         return useRightMouseButton;
     }
+    
+    public abstract void onSelect();
+    public abstract void onDeselect();
 }

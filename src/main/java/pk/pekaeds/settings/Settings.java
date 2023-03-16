@@ -99,6 +99,8 @@ public class Settings {
         keyboardShortcuts.put(Shortcuts.TOOL_ERASER, KeyStroke.getKeyStroke(KeyEvent.VK_E, 0));
         keyboardShortcuts.put(Shortcuts.TOOL_LINE, KeyStroke.getKeyStroke(KeyEvent.VK_R, 0));
         keyboardShortcuts.put(Shortcuts.TOOL_RECT, KeyStroke.getKeyStroke(KeyEvent.VK_T, 0));
+        keyboardShortcuts.put(Shortcuts.TOOL_CUT, KeyStroke.getKeyStroke(KeyEvent.VK_Q, 0));
+        keyboardShortcuts.put(Shortcuts.TOOL_FLOOD_FILL, KeyStroke.getKeyStroke(KeyEvent.VK_F, 0));
     }
     
     public static void load() throws IOException {

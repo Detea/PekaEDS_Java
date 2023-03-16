@@ -15,6 +15,9 @@ public class UndoAction {
     private int startX;
     private int startY;
     
+    private int oldX, oldY;
+    private int newX, newY;
+    
     public UndoAction(ActionType type, int[][] oldData, int[][] newData, int layer, int startX, int startY) {
         this.actionType = type;
         this.oldData = oldData;
@@ -26,10 +29,28 @@ public class UndoAction {
         this.startY = startY;
     }
     
+    /**
+     * Constructor for the cut tiles/sprites action type.
+     *
+     * startX and startY are in the scale of the tiles. That means that they should be between MAP_WIDTH (256) and MAP_HEIGHT (224).
+     * @param type
+     */
+    public UndoAction(ActionType type, int[][] oldData, int layer, int startX, int startY) {
+        this.actionType = type;
+        
+        this.oldData = oldData;
+        this.affectedLayer = layer;
+        this.startX = startX;
+        this.startY = startY;
+    }
+    
     public void changeIntoRedo() {
         switch (actionType) {
             case UNDO_PLACE_TILE -> actionType = ActionType.REDO_PLACE_TILE;
             case UNDO_PLACE_SPRITE -> actionType = ActionType.REDO_PLACE_SPRITE;
+            
+            case UNDO_CUT_TILES -> actionType = ActionType.REDO_CUT_TILES;
+            case UNDO_CUT_SPRITES -> actionType = ActionType.REDO_CUT_SPRITES;
         }
     }
     
@@ -37,10 +58,12 @@ public class UndoAction {
         switch (actionType) {
             case REDO_PLACE_TILE -> actionType = ActionType.UNDO_PLACE_TILE;
             case REDO_PLACE_SPRITE -> actionType = ActionType.UNDO_PLACE_SPRITE;
+            
+            case REDO_CUT_TILES -> actionType = ActionType.UNDO_CUT_TILES;
+            case REDO_CUT_SPRITES -> actionType = ActionType.UNDO_CUT_SPRITES;
         }
     }
-
-    // TODO fucking bullshit gets added multiple times eventhough the fucking arrays are the same i don't know
+    
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -157,5 +180,13 @@ public class UndoAction {
     
     public int getStartY() {
         return startY;
+    }
+    
+    public int getAreaWidth() {
+        return oldData[0].length;
+    }
+    
+    public int getAreaHeight() {
+        return oldData.length;
     }
 }

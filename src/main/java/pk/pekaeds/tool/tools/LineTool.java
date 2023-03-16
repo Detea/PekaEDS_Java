@@ -143,4 +143,14 @@ public class LineTool extends Tool {
             }
         }
     }
+    
+    @Override
+    public void onSelect() {
+    
+    }
+    
+    @Override
+    public void onDeselect() {
+    
+    }
 }
