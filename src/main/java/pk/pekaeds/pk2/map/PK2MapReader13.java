@@ -19,7 +19,7 @@ public class PK2MapReader13 implements PK2MapReader {
     public PK2Map13 load(File filename) throws IOException {
         var map = new PK2Map13();
         
-        var in = new DataInputStream(new FileInputStream(filename));
+        var in = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)));
         
         boolean validMap = true;
         

@@ -10,7 +10,7 @@ public class PK2MapWriter13 implements PK2MapWriter {
     @Override
     public void write(PK2Map map, File filename) throws IOException {
         if (filename != null) {
-            try (var out = new DataOutputStream(new FileOutputStream(filename))) {
+            try (var out = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(filename)))) {
                 for (var id : PK2Map13.ID) {
                     out.writeByte(id);
                 }

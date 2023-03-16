@@ -21,7 +21,7 @@ public final class PK2SpriteReader13 implements PK2SpriteReader {
     public PK2Sprite loadImageData(File filename, BufferedImage backgroundImage) {
         var spr = new PK2Sprite();
         
-        try (DataInputStream in = new DataInputStream(new FileInputStream(filename))) {
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
             in.readNBytes(4); // Skip the magic number
             
             spr.setType(Integer.reverseBytes(in.readInt()));

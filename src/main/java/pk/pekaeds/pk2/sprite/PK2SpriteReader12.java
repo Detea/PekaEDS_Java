@@ -6,10 +6,7 @@ import pk.pekaeds.util.file.PK2FileUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 
 import org.tinylog.Logger;
 
@@ -19,7 +16,7 @@ public final class PK2SpriteReader12 implements PK2SpriteReader {
     public PK2Sprite loadImageData(File filename, BufferedImage backgroundImage) {
         var spr = new PK2Sprite();
     
-        try (DataInputStream in = new DataInputStream(new FileInputStream(filename))) {
+        try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
             in.readNBytes(4); // Skip the magic number
         
             spr.setType(Integer.reverseBytes(in.readInt()));
