@@ -2,6 +2,8 @@ package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.undomanager.ActionType;
+import pk.pekaeds.tool.undomanager.UndoAction;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;
@@ -18,8 +20,12 @@ public class RectangleTool extends Tool {
 
     @Override
     public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        
         if (getMode() == MODE_TILE) {
             if (SwingUtilities.isLeftMouseButton(e)) {
+                getUndoManager().startBlock();
+                
                 selectionStart = e.getPoint();
                 selectionEnd = e.getPoint();
 
@@ -52,6 +58,8 @@ public class RectangleTool extends Tool {
         if (getMode() == MODE_TILE) {
             placeRectangle();
     
+            getUndoManager().endBlock();
+            
             selectionStart.setLocation(-1, -1);
             selectionEnd.setLocation(-1, -1);
 
@@ -59,20 +67,22 @@ public class RectangleTool extends Tool {
         }
     }
     
-    // TODO stinky code reuse, but I can't think of a clean way to separate this code right now.
     private void placeRectangle() {
         rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd);
         
         for (int x = rect.x; x < rect.x + rect.width; x++) {
             for (int y = rect.y; y < rect.y + rect.height; y++) {
                 // TODO support a tile selection greater than one
-                // TODO Again, code use. Maybe clean this up.
                 if (fill) {
-                    layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
+                    getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+                    
+                    layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
                 } else {
                     if (x == rect.x || x == rect.x + (rect.width - 1) ||
                             y == rect.y || y == rect.y + (rect.height - 1)) {
-                        layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
+                        getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+
+                        layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
                     }
                 }
             }

@@ -1,15 +1,9 @@
 package pk.pekaeds.ui.mappanel;
 
-import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.tool.Tool;
-import pk.pekaeds.ui.minimappanel.MiniMapPanel;
-import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * This class is a wrapper for the MapPanel. It puts the MapPanel inside a JScrollPane and passes the viewport size onto the MapPanel class.

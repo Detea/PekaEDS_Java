@@ -1,6 +1,8 @@
 package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.undomanager.ActionType;
+import pk.pekaeds.tool.undomanager.UndoAction;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -17,6 +19,8 @@ public class LineTool extends Tool {
         
         if (getMode() == MODE_TILE) {
             if (clickCount == 0) {
+                getUndoManager().startBlock();
+                
                 start = e.getPoint();
         
                 start.x /= 32;
@@ -41,9 +45,13 @@ public class LineTool extends Tool {
     
     @Override
     public void mouseReleased(MouseEvent e) {
+        super.mouseReleased(e);
+        
         if (start != null) {
             plotLine(start.x, start.y, end.x, end.y);
     
+            getUndoManager().endBlock();
+            
             start = null;
             end = null;
         }
@@ -90,7 +98,9 @@ public class LineTool extends Tool {
     
                 drawSelectionRect(g, x * 32, y * 32, 32, 32);
             } else {
-                layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
+                getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+                
+                layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
             }
             
             if (d > 0) {
@@ -121,9 +131,10 @@ public class LineTool extends Tool {
                 getMapPanelPainter().drawTile(g, x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0]);
     
                 drawSelectionRect(g, x * 32, y * 32, 32, 32);
-                
             } else {
-                layerHandler.placeTile(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
+                getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+                
+                layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
             }
             
             if (d > 0) {

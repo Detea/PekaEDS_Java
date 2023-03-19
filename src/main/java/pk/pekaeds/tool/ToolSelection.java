@@ -22,6 +22,8 @@ public final class ToolSelection {
     private int width;
     private int height;
 
+    private Rectangle rect = new Rectangle();
+    
     public void reset() {
         tileSelection = new int[1][1];
 
@@ -29,6 +31,8 @@ public final class ToolSelection {
 
         width = 1;
         height = 1;
+        
+        rect.setRect(0, 0, 0, 0);
     }
 
     public void setTileSelection(int[][] selection) {

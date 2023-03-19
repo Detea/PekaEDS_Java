@@ -24,8 +24,6 @@ import pk.pekaeds.util.episodemanager.EpisodeManager;
 import pk.pekaeds.util.file.AutoSaveManager;
 import pk.pekaeds.util.file.LastSessionManager;
 import pk.pekaeds.util.file.PathUtils;
-import pk.pekaeds.util.undoredo.UndoManager;
-
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -289,8 +287,6 @@ public class PekaEDSGUI implements ChangeListener {
 
         Tool.setMap(map);
     
-        UndoManager.setMap(map);
-    
         updateMapHolders();
     }
     
@@ -458,7 +454,7 @@ public class PekaEDSGUI implements ChangeListener {
         ShortcutUtils.install(mapPanel, Shortcuts.UNDO_ACTION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UndoManager.undoLastAction();
+                Tool.getUndoManager().undoLastAction();
             
                 mapPanel.repaint(); // TODO Repaint only affected areas?
             }
@@ -467,7 +463,7 @@ public class PekaEDSGUI implements ChangeListener {
         ShortcutUtils.install(mapPanel, Shortcuts.REDO_ACTION, new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                UndoManager.redoLastAction();
+                Tool.getUndoManager().redoLastAction();
             
                 mapPanel.repaint(); // TODO Repaint only affected areas?
             }

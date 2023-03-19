@@ -3,6 +3,8 @@ package pk.pekaeds.tool.tools;
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.undomanager.ActionType;
+import pk.pekaeds.tool.undomanager.UndoAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,9 +33,15 @@ public final class FloodFillTool extends Tool {
     
     @Override
     public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        
         if (SwingUtilities.isLeftMouseButton(e)) {
             SwingUtilities.invokeLater(() -> {
+                getUndoManager().startBlock();
+                
                 fill(e.getX() / 32, e.getY() / 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, e.getX() / 32, e.getY() / 32));
+                
+                getUndoManager().endBlock();
             });
         }
     }
@@ -59,7 +67,7 @@ public final class FloodFillTool extends Tool {
         }
     }
     
-    // TODO Undo
+    // TODO Optimize Undo/Redo is way too slow.
     //https://lodev.org/cgtutor/floodfill.html#Recursive_Scanline_Floodfill_Algorithm
     private void fill(int x, int y, int newTile, int oldTile) {
         if (oldTile == newTile) return;
@@ -68,14 +76,18 @@ public final class FloodFillTool extends Tool {
         int x1 = x;
         
         while (x1 < PK2Map13.WIDTH && map.getTileAt(selectedLayer, x1, y) == oldTile) {
-            layerHandler.placeTile(x1 * 32, y * 32, newTile, selectedLayer, false); // TODO Find a better way to handle placeTiles. Multiplying by 32 everytime is unnecessary
+            getUndoManager().pushTilePlaced(this, x1 * 32, y * 32, newTile, map.getTileAt(selectedLayer, x1, y), selectedLayer);
+            
+            layerHandler.placeTileScreen(x1 * 32, y * 32, newTile, selectedLayer);
             
             x1++;
         }
         
         x1 = x - 1;
         while (x1 >= 0 && map.getTileAt(selectedLayer, x1, y) == oldTile) {
-            layerHandler.placeTile(x1 * 32, y * 32, newTile, selectedLayer, false);
+            getUndoManager().pushTilePlaced(this, x1 * 32, y * 32, newTile, map.getTileAt(selectedLayer, x1, y), selectedLayer);
+    
+            layerHandler.placeTileScreen(x1 * 32, y * 32, newTile, selectedLayer);
             
             x1--;
         }

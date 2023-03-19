@@ -15,6 +15,8 @@ public class SelectionTool extends Tool {
     
     @Override
     public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        
         if (SwingUtilities.isRightMouseButton(e)) {
             selection.setStart(e.getPoint());
             selection.setEnd(e.getPoint());

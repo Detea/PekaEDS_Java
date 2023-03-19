@@ -34,15 +34,15 @@ public class CutToolPropertiesPanel extends JPanel implements ToolChangeListener
         rbRemove = new JRadioButton("Remove");
 
         var rbGroup = new ButtonGroup();
-        rbGroup.add(rbCut);
-        rbGroup.add(rbRemove);
+        //rbGroup.add(rbCut);
+        //rbGroup.add(rbRemove);
 
         setLayout(new MigLayout());
 
-        add(rbCut, "cell 0 0");
-        add(rbRemove, "cell 1 0");
+        //add(rbCut, "cell 0 0");
+        //add(rbRemove, "cell 1 0");
 
-        add(new JSeparator(JSeparator.HORIZONTAL), "cell 0 1");
+        //add(new JSeparator(JSeparator.HORIZONTAL), "cell 0 1");
 
         add(cbForegroundLayer, "cell 0 2");
         add(cbBackgroundLayer, "cell 0 3");

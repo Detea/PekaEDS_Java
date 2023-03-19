@@ -1,8 +1,6 @@
 package pk.pekaeds.ui.mappanel;
 
 import pk.pekaeds.tool.Tool;
-import pk.pekaeds.tool.tools.CutTool;
-import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
@@ -22,10 +20,7 @@ public final class MapPanelMouseHandler extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            UndoManager.startUndoBlock();
-            
             leftMouseTool.mousePressed(e);
-            UndoManager.clearRedoStack();
         } else if (SwingUtilities.isRightMouseButton(e)) {
             if (!leftMouseTool.useRightMouseButton()) {
                 rightMouseTool.mousePressed(e);
@@ -45,8 +40,6 @@ public final class MapPanelMouseHandler extends MouseAdapter {
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
             leftMouseTool.mouseReleased(e);
-            
-            UndoManager.endUndoBlock();
         } else if (SwingUtilities.isRightMouseButton(e)) {
             if (!leftMouseTool.useRightMouseButton()) {
                 rightMouseTool.mouseReleased(e);

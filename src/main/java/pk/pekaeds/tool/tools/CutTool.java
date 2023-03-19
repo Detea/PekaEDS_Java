@@ -2,17 +2,13 @@ package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.undomanager.ActionType;
+import pk.pekaeds.tool.undomanager.UndoAction;
 import pk.pekaeds.util.TileUtils;
-import pk.pekaeds.util.undoredo.ActionType;
-import pk.pekaeds.util.undoredo.UndoAction;
-import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public final class CutTool extends Tool {
     private static final Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
@@ -49,9 +45,12 @@ public final class CutTool extends Tool {
     private int clickXOffset, clickYOffset;
     @Override
     public void mousePressed(MouseEvent e) {
+        super.mousePressed(e);
+        
         if (SwingUtilities.isRightMouseButton(e)) {
             if (isSelectionPresent()) {
                 finalizeCut();
+                
                 resetCut();
             } else {
                 selecting = true;
@@ -78,40 +77,49 @@ public final class CutTool extends Tool {
         if (SwingUtilities.isLeftMouseButton(e)) {
             moveSelectionTo(e.getPoint(), clickXOffset, clickYOffset);
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, e.getPoint());
+            if (selecting) selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, e.getPoint());
         }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isRightMouseButton(e)) {
-            if (cutForegroundLayer) {
-                foregroundLayer = layerHandler.getTilesFromRect(selectionRect, Layer.FOREGROUND);
-                layerHandler.removeTilesArea(selectionRect, Layer.FOREGROUND);
+            if (selecting) {
+                getUndoManager().startBlock();
                 
-                //UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_CUT_TILES, foregroundLayer, Layer.FOREGROUND, selectionRect.x, selectionRect.y));
-            }
-
-            if (cutBackgroundLayer) {
-                backgroundLayer = layerHandler.getTilesFromRect(selectionRect, Layer.BACKGROUND);
-                layerHandler.removeTilesArea(selectionRect, Layer.BACKGROUND);
+                if (cutForegroundLayer) {
+                    foregroundLayer = layerHandler.getTilesFromRect(selectionRect, Layer.FOREGROUND);
+        
+                    getUndoManager().pushTilePlaced(this, ActionType.CUT_TOOL_CUT_FOREGROUND, selectionRect.x * 32, selectionRect.y * 32, foregroundLayer, layerHandler.getTilesFromRect(selectionRect, Layer.FOREGROUND), Layer.FOREGROUND);
+        
+                    layerHandler.removeTilesArea(selectionRect, Layer.FOREGROUND);
+                }
     
-                //UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_CUT_TILES, backgroundLayer, Layer.BACKGROUND, selectionRect.x, selectionRect.y));
-            }
-
-            if (cutSpritesLayer) {
-                spritesLayer = layerHandler.getSpritesFromRect(selectionRect);
-                layerHandler.removeSpritesArea(selectionRect); // TODO Test if sprite placed counter decreases
-                
-                //UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_CUT_SPRITES, spritesLayer, Layer.SPRITES, selectionRect.x, selectionRect.y));
-            }
-
-            selecting = false;
-            
-            if (isSelectionPresent()) {
-                getMapPanelPainter().setCursor(moveCursor);
-            } else {
-                getMapPanelPainter().setCursor(defaultCursor);
+                if (cutBackgroundLayer) {
+                    backgroundLayer = layerHandler.getTilesFromRect(selectionRect, Layer.BACKGROUND);
+        
+                    getUndoManager().pushTilePlaced(this, ActionType.CUT_TOOL_CUT_BACKGROUND, selectionRect.x * 32, selectionRect.y * 32, backgroundLayer, layerHandler.getTilesFromRect(selectionRect, Layer.BACKGROUND), Layer.BACKGROUND);
+        
+                    layerHandler.removeTilesArea(selectionRect, Layer.BACKGROUND);
+                }
+    
+                if (cutSpritesLayer) {
+                    spritesLayer = layerHandler.getSpritesFromRect(selectionRect);
+        
+                    getUndoManager().pushSpritePlaced(this, ActionType.CUT_TOOL_CUT_SPRITES, selectionRect.x * 32, selectionRect.y * 32, spritesLayer, layerHandler.getSpritesFromRect(selectionRect));
+        
+                    layerHandler.removeSpritesArea(selectionRect);
+                }
+    
+                getUndoManager().endBlock();
+    
+                selecting = false;
+    
+                if (isSelectionPresent()) {
+                    getMapPanelPainter().setCursor(moveCursor);
+                } else {
+                    getMapPanelPainter().setCursor(defaultCursor);
+                }
             }
         }
     }
@@ -148,10 +156,10 @@ public final class CutTool extends Tool {
                 if (res == JOptionPane.YES_OPTION) {
                     finalizeCut();
                 } else {
-                    undoCut();
+                    getUndoManager().undoLastAction();
                 }
             } else {
-                undoCut();
+                getUndoManager().undoLastAction();
             }
             
             resetCut();
@@ -159,19 +167,27 @@ public final class CutTool extends Tool {
     }
     
     private void finalizeCut() {
-        if (cutForegroundLayer) {
-            layerHandler.placeTiles(selectionRect.x * 32, selectionRect.y * 32, Layer.FOREGROUND, foregroundLayer);
+        getUndoManager().startBlock();
         
-            // TODO UNDO
+        if (cutForegroundLayer) {
+            getUndoManager().pushTilePlaced(this, ActionType.CUT_TOOL_PLACE_FOREGROUND, selectionRect.x * 32, selectionRect.y * 32, foregroundLayer, layerHandler.getTilesFromRect(selectionRect, Layer.FOREGROUND), Layer.FOREGROUND);
+            
+            layerHandler.placeTilesScreen(selectionRect.x * 32, selectionRect.y * 32, Layer.FOREGROUND, foregroundLayer);
         }
     
         if (cutBackgroundLayer) {
-            layerHandler.placeTiles(selectionRect.x * 32, selectionRect.y * 32, Layer.BACKGROUND, backgroundLayer);
+            getUndoManager().pushTilePlaced(this, ActionType.CUT_TOOL_PLACE_BACKGROUND, selectionRect.x * 32, selectionRect.y * 32, backgroundLayer, layerHandler.getTilesFromRect(selectionRect, Layer.BACKGROUND), Layer.BACKGROUND);
+    
+            layerHandler.placeTilesScreen(selectionRect.x * 32, selectionRect.y * 32, Layer.BACKGROUND, backgroundLayer);
         }
     
         if (cutSpritesLayer) {
-            layerHandler.placeSprites(selectionRect.x * 32, selectionRect.y * 32, spritesLayer); // TODO Test if sprite placed counter increases
+            getUndoManager().pushSpritePlaced(this, ActionType.CUT_TOOL_PLACE_SPRITES, selectionRect.x * 32, selectionRect.y * 32, spritesLayer, layerHandler.getSpritesFromRect(selectionRect));
+            
+            layerHandler.placeSprites(selectionRect.x, selectionRect.y, spritesLayer);
         }
+        
+        getUndoManager().endBlock();
     }
     
     private void resetCut() {
@@ -180,19 +196,36 @@ public final class CutTool extends Tool {
         getMapPanelPainter().setCursor(defaultCursor);
     }
     
-    public void undoCut() {
-        int startx = selectionStart.x / 32;
-        int starty = selectionStart.y / 32;
-    
-        for (int y = 0; y < selectionRect.height; y++) {
-            for (int x = 0; x < selectionRect.width; x++) {
-                if (cutForegroundLayer) map.setTileAt(Layer.FOREGROUND, startx + x, starty + y, foregroundLayer[y][x]);
-                if (cutBackgroundLayer) map.setTileAt(Layer.BACKGROUND, startx + x, starty + y, backgroundLayer[y][x]);
-                if (cutSpritesLayer) map.setSpriteAt(startx + x, starty + y, spritesLayer[y][x]);
-            }
-        }
+    @Override
+    public void onUndo(UndoAction action) {
+        super.onUndo(action);
         
-        getMapPanelPainter().repaint();
+        // If the user undoes the placement of the cut selection, restore the old tiles and restore the selection
+        if (doesActionPlace(action)) {
+            switch (action.getType()) {
+                case CUT_TOOL_PLACE_FOREGROUND -> foregroundLayer = action.getNewTiles();
+                case CUT_TOOL_PLACE_BACKGROUND -> backgroundLayer = action.getNewTiles();
+                case CUT_TOOL_PLACE_SPRITES -> spritesLayer = action.getNewTiles();
+            }
+    
+            selectionRect.setRect(action.getX() / 32, action.getY() / 32, action.getNewTiles()[0].length, action.getNewTiles().length);
+    
+            getMapPanelPainter().setCursor(moveCursor);
+            getMapPanelPainter().repaint();
+        } else { // Otherwise, if they have made a cut, only restore the cut tiles
+            resetCut();
+        }
+    }
+    
+    private boolean doesActionPlace(UndoAction action) {
+        return action.getType() == ActionType.CUT_TOOL_PLACE_FOREGROUND ||
+                action.getType() == ActionType.CUT_TOOL_PLACE_BACKGROUND ||
+                action.getType() == ActionType.CUT_TOOL_PLACE_SPRITES;
+    }
+    
+    @Override
+    public void onRedo(UndoAction action) {
+        super.onRedo(action);
     }
     
     private void drawLayer(Graphics2D g, int[][] layer, int startX, int startY) {

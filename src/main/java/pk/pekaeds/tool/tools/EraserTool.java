@@ -1,14 +1,19 @@
 package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.undomanager.ActionType;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
 public class EraserTool extends Tool {
+    private static final int[][] EMPTY_TILE = {{ 255 }};
+    
     @Override
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
+        
+        getUndoManager().startBlock();
         
         doPlacement(e.getPoint());
     }
@@ -20,10 +25,24 @@ public class EraserTool extends Tool {
         doPlacement(e.getPoint());
     }
     
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        getUndoManager().endBlock();
+    }
+    
     private void doPlacement(Point position) {
         switch (getMode()) {
-            case MODE_TILE -> layerHandler.placeTile(position.x, position.y, 255, selectedLayer);
-            case MODE_SPRITE -> layerHandler.placeSprite(position, 255);
+            case MODE_TILE -> {
+                getUndoManager().pushTilePlaced(this, position.x, position.y, EMPTY_TILE, layerHandler.getTilesFromArea(position.x, position.y, 1, 1, selectedLayer), selectedLayer);
+                
+                layerHandler.placeTileScreen(position.x, position.y, 255, selectedLayer);
+            }
+            
+            case MODE_SPRITE -> {
+                getUndoManager().pushSpritePlaced(this, position.x, position.y, EMPTY_TILE, layerHandler.getSpritesFromArea(position.x, position.y, 1, 1));
+                
+                layerHandler.placeSprite(position, 255);
+            }
         }
     }
     

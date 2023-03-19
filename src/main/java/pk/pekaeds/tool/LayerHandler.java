@@ -8,9 +8,6 @@ import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.listeners.TileChangeListener;
 import pk.pekaeds.util.TileUtils;
-import pk.pekaeds.util.undoredo.ActionType;
-import pk.pekaeds.util.undoredo.UndoAction;
-import pk.pekaeds.util.undoredo.UndoManager;
 
 import java.awt.*;
 
@@ -27,68 +24,42 @@ public final class LayerHandler {
     public LayerHandler(ToolSelection toolSelection) {
         this.selection = toolSelection;
     }
-
-    public void placeTile(int x, int y, int tileId, int layer) {
-        placeTile(x, y, tileId, layer, true);
+    
+    /**
+     * Like placeTileMap, but adjusts the x and y values by dividing them by the size of a single tile (32).
+     * Use this when x and y are screen/mouse coordinates.
+     * @param x
+     * @param y
+     * @param tileId
+     * @param layer
+     */
+    public void placeTileScreen(int x, int y, int tileId, int layer) {
+        x /= gridX;
+        y /= gridY;
+        
+        placeTile(x, y, tileId, layer);
     }
-
-    public void placeTile(int x, int y, int tileId, int layer, boolean pushUndo) {
-        x = x / 32;
-        y = y / 32;
-
-        if (layer == Layer.BOTH) layer = Layer.FOREGROUND;
+    
+    public void placeTile(int x, int y, int tileId, int layer) {
+        if (layer == Layer.BOTH) layer = Layer.FOREGROUND; // TODO I think this can go, but needs testing.
 
         if (x >= 0 && y >= 0 && x < PK2Map13.WIDTH && y < PK2Map13.HEIGHT) {
-            var oldData = new int[][] {{ map.getTileAt(layer, x, y )}};
-
             map.setTileAt(layer, x, y, tileId);
 
             tileChangeListener.tileChanged(x, y, tileId);
-
-            if (pushUndo) UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_TILE, oldData, selection.getTileSelection(), layer, x, y));
         }
-    }
-
-    public void placeTiles(Point position) {
-        int px = ((position.x / gridX * gridX) - (selection.getWidth() * gridX) / 2) + (gridX / 2);
-        int py = ((position.y / gridY * gridY) - (selection.getHeight() * gridY) / 2) + (gridY / 2);
-
-        int[][] oldData = new int[selection.getHeight()][selection.getWidth()];
-
-        int layer = currentLayer == Layer.BOTH ? Layer.FOREGROUND : currentLayer;
-
-        var newPos = new Point();
-        for (int sx = 0; sx < selection.getWidth(); sx++) {
-            for (int sy = 0; sy < selection.getHeight(); sy++) {
-                newPos.x = px + (sx * gridX);
-                newPos.y = py + (sy * gridY);
-
-                oldData[sy][sx] = getTileAt(layer, newPos);
-
-                placeTile(newPos.x, newPos.y, selection.getTileSelection()[sy][sx], layer, false);
-            }
-        }
-
-        UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_TILE, oldData, selection.getTileSelection(), layer, px / 32, py / 32));
     }
     
-    /**
-     * Places the tiles in tiles[][] on the layer.
-     *
-     * This method does NOT push the changed tiles onto the undo stack.
-     * @param layer
-     * @param tiles
-     */
-    public void placeTiles(int x, int y, int layer, int[][] tiles) {
+    public void placeTilesScreen(int x, int y, int layer, int[][] tiles) {
         int selectionWidth = tiles[0].length;
         int selectionHeight = tiles.length;
         
         for (int sx = 0; sx < selectionWidth; sx++) {
             for (int sy = 0; sy < selectionHeight; sy++) {
-                int xx = x + (sx * gridX);
-                int yy = y + (sy * gridY);
-
-                placeTile(xx, yy, tiles[sy][sx], layer, false);
+                int xx = x + (sx * 32);
+                int yy = y + (sy * 32);
+                
+                placeTileScreen(xx, yy, tiles[sy][sx], layer);
             }
         }
     }
@@ -111,6 +82,11 @@ public final class LayerHandler {
         return tile;
     }
 
+    /**
+     * Gets tile from an area, should be used with ToolSelection.
+     *
+     * selectionRect's values should be in map coordinates. Meaning they should be x >= 0; x < MAP_WIDTH, y >= 0; y < MAP_HEIGHT
+     */
     public int[][] getTilesFromRect(Rectangle selectionRect, int layer) {
         var tempSelection = new int[selectionRect.height][selectionRect.width];
 
@@ -120,6 +96,30 @@ public final class LayerHandler {
             }
         }
 
+        return tempSelection;
+    }
+    
+    /**
+     * Gets tiles from an area. x and y position need to be in screen coordinates. They will be divided by the tile size (32)
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param layer
+     * @return
+     */
+    public int[][] getTilesFromArea(int x, int y, int width, int height, int layer) {
+        var tempSelection = new int[height][width];
+        
+        x /= 32;
+        y /= 32;
+        
+        for (int sx = 0; sx < width; sx++) {
+            for (int sy = 0; sy < height; sy++) {
+                tempSelection[sy][sx] = getTileAt(layer, x + sx, y + sy);
+            }
+        }
+        
         return tempSelection;
     }
 
@@ -164,10 +164,7 @@ public final class LayerHandler {
 
         if (position.x >= 0 && position.x <= Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y <= Settings.getMapProfile().getMapHeight()) {
             int oldSprite = map.getSpriteIdAt(position.x, position.y);
-
-            int[][] oldData = {{ oldSprite }};
-            int[][] newData = {{ newSprite }};
-
+            
             PK2Sprite spriteOld = map.getSpriteAt(position.x, position.y);
             PK2Sprite spriteNew = map.getSprite(newSprite);
 
@@ -185,8 +182,6 @@ public final class LayerHandler {
 
             spritePlacementListener.placed(newSprite);
             map.setSpriteAt(position.x, position.y, newSprite);
-
-            UndoManager.addUndoAction(new UndoAction(ActionType.UNDO_PLACE_SPRITE, oldData, newData, -1, position.x, position.y));
         }
     }
     
@@ -194,17 +189,40 @@ public final class LayerHandler {
         placeSprite(position, selection.getSelectionSprites()[0][0]);
     }
     
+    public void placeSpritesScreen(int x, int y, int[][] sprites) {
+        placeSprites(x / 32, y / 32, sprites);
+    }
+    
+    /**
+     * Places sprites on the map, coordinates are within map bounds x: >=0, < 256, y: >=0, < 224
+     * @param x
+     * @param y
+     * @param spritesLayer
+     */
     public void placeSprites(int x, int y, int[][] spritesLayer) {
-        // TODO Start an undo block? Look into that. Gonna do a simple implementation for now.
-        
-        for (int sx = 0; sx < spritesLayer[0].length; sx++) {
-            for (int sy = 0; sy < spritesLayer.length; sy++) {
-                int xAdjusted = (x / 32) + sx;
-                int yAdjusted = (y / 32) + sy;
+        for (int sy = 0; sy < spritesLayer.length; sy++) {
+            for (int sx = 0; sx < spritesLayer[0].length; sx++) {
+                int xAdjusted = x + sx;
+                int yAdjusted = y + sy;
                 
                 map.setSpriteAt(xAdjusted, yAdjusted, spritesLayer[sy][sx]);
             }
         }
+    }
+    
+    public int[][] getSpritesFromArea(int x, int y, int width, int height) {
+        var sprites = new int[height][width];
+        
+        x /= 32;
+        y /= 32;
+        
+        for (int yy = 0; yy < height; yy++) {
+            for (int xx = 0; xx < width; xx++) {
+                sprites[yy][xx] = map.getSpriteIdAt(x + xx, y + yy);
+            }
+        }
+        
+        return sprites;
     }
     
     public void removeSpritesArea(Rectangle area) {

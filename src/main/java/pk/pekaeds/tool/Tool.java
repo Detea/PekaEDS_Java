@@ -3,17 +3,15 @@ package pk.pekaeds.tool;
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.data.MapData;
 import pk.pekaeds.pk2.map.PK2Map13;
+import pk.pekaeds.tool.undomanager.ToolUndoManager;
+import pk.pekaeds.tool.undomanager.UndoAction;
 import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.listeners.TileChangeListener;
 import pk.pekaeds.util.TileUtils;
 import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.sprite.PK2Sprite;
-import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.mappanel.MapPanelModel;
 import pk.pekaeds.ui.mappanel.MapPanelPainter;
-import pk.pekaeds.util.undoredo.ActionType;
-import pk.pekaeds.util.undoredo.UndoAction;
-import pk.pekaeds.util.undoredo.UndoManager;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -64,17 +62,24 @@ public abstract class Tool implements PropertyChangeListener {
     
     protected static Rectangle viewRect;
 
+    private static final ToolUndoManager undoManager = new ToolUndoManager();
+    
     public static void setSelection(int[][] tileSelection) {
         selection.setTileSelection(tileSelection);
     }
 
     protected boolean useRightMouseButton = false;
-
-    // TODO I don't think it's necessary to update the mouse position in these two methods. Check if it is, if not make them abstract
+    
+    /**
+     * Tools must call the super.mouse... methods so that undo/redo works!
+     * @param e
+     */
     public void mousePressed(MouseEvent e) {
         mousePosition = e.getPoint();
         
         TileUtils.alignPointToGrid(mousePosition);
+        
+        undoManager.clearRedoStack();
     }
     public void mouseReleased(MouseEvent e) {
         mousePosition = e.getPoint();
@@ -134,6 +139,7 @@ public abstract class Tool implements PropertyChangeListener {
         map = m;
 
         layerHandler.setMap(m);
+        undoManager.setMap(m);
 
         reset();
     }
@@ -145,7 +151,7 @@ public abstract class Tool implements PropertyChangeListener {
     }
     
     public static void setSelectedLayer(int layer) {
-        selectedLayer = layer;
+        selectedLayer = layer == Layer.BOTH ? Layer.FOREGROUND : layer;
 
         layerHandler.setCurrentLayer(selectedLayer);
         
@@ -243,6 +249,42 @@ public abstract class Tool implements PropertyChangeListener {
         return useRightMouseButton;
     }
     
+    public static ToolUndoManager getUndoManager() {
+        return undoManager;
+    }
+    
     public abstract void onSelect();
     public abstract void onDeselect(boolean ignorePrompts);
+    
+    public void onUndo(UndoAction action) {
+        switch (action.getType()) {
+            case PLACE_TILE,
+                    CUT_TOOL_PLACE_FOREGROUND,
+                    CUT_TOOL_PLACE_BACKGROUND,
+                    CUT_TOOL_CUT_FOREGROUND,
+                    CUT_TOOL_CUT_BACKGROUND -> layerHandler.placeTilesScreen(action.getX(), action.getY(), action.getLayer(), action.getOldTiles());
+            
+            case PLACE_SPRITE,
+                    CUT_TOOL_PLACE_SPRITES,
+                    CUT_TOOL_CUT_SPRITES -> layerHandler.placeSpritesScreen(action.getX(), action.getY(), action.getOldTiles());
+        }
+    
+        action.changeIntoRedo();
+    }
+    
+    public void onRedo(UndoAction action) {
+        switch (action.getType()) {
+            case PLACE_TILE,
+                    CUT_TOOL_PLACE_FOREGROUND,
+                    CUT_TOOL_PLACE_BACKGROUND,
+                    CUT_TOOL_CUT_FOREGROUND,
+                    CUT_TOOL_CUT_BACKGROUND -> layerHandler.placeTilesScreen(action.getX(), action.getY(), action.getLayer(), action.getNewTiles());
+            
+            case PLACE_SPRITE,
+                    CUT_TOOL_PLACE_SPRITES,
+                    CUT_TOOL_CUT_SPRITES -> layerHandler.placeSpritesScreen(action.getX(), action.getY(), action.getNewTiles());
+        }
+        
+        action.changeIntoUndo();
+    }
 }

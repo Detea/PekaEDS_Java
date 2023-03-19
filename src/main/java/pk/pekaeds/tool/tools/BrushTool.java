@@ -1,7 +1,10 @@
 package pk.pekaeds.tool.tools;
 
+import pk.pekaeds.data.Layer;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.undomanager.ActionType;
+import pk.pekaeds.tool.undomanager.UndoAction;
 import pk.pekaeds.util.TileUtils;
 
 import javax.swing.*;
@@ -13,12 +16,16 @@ public class BrushTool extends Tool {
     public void mousePressed(MouseEvent e) {
         super.mousePressed(e);
         
+        getUndoManager().startBlock();
+        
         placeSelection(e);
     }
     
     @Override
     public void mouseReleased(MouseEvent e) {
         super.mouseReleased(e);
+        
+        getUndoManager().endBlock();
     }
     
     @Override
@@ -37,8 +44,21 @@ public class BrushTool extends Tool {
         // Have to use SwingUtilities, because for some reason checking for the mouse buttons like in mousePressed doesn't work.
         if (SwingUtilities.isLeftMouseButton(e)) {
             switch (getMode()) {
-                case MODE_TILE -> layerHandler.placeTiles(e.getPoint());
-                case MODE_SPRITE -> layerHandler.placeSprite(e.getPoint());
+                case MODE_TILE -> {
+                    // TODO Clean this stuff up, it's ugly.
+                    int px = ((e.getX() / 32 * 32) - ((selection.getWidth() / 2) * 32) + (32 / 2));
+                    int py = ((e.getY() / 32 * 32) - ((selection.getHeight() / 2) * 32) + (32 / 2));
+                    
+                    getUndoManager().pushTilePlaced(this, px, py, selection.getTileSelection(), layerHandler.getTilesFromArea(px, py, selection.getWidth(), selection.getHeight(), selectedLayer), selectedLayer);
+                    
+                    layerHandler.placeTilesScreen(px, py, selectedLayer, selection.getTileSelection());
+                }
+                
+                case MODE_SPRITE -> {
+                    getUndoManager().pushSpritePlaced(this, e.getX(), e.getY(), selection.getSelectionSprites(), layerHandler.getSpritesFromArea(e.getX(), e.getY(), 1, 1));
+                    
+                    layerHandler.placeSprite(e.getPoint());
+                }
             }
         }
     }
