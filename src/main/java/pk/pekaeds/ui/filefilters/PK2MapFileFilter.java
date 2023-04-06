@@ -8,7 +8,7 @@ public class PK2MapFileFilter extends FileFilter {
     public boolean accept(File f) {
         if (f.isDirectory()) return true;
         
-        return f.getName().endsWith(".map");
+        return f.getName().toLowerCase().endsWith(".map");
     }
     
     @Override

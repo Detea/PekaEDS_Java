@@ -16,7 +16,7 @@ public class MusicFilter extends FileFilter {
     
             if (fileExtension.length == 0 && !f.isDirectory()) return false;
             
-            returnVal = Settings.getMapProfile().getMusicFormats().contains(fileExtension[1]);
+            returnVal = Settings.getMapProfile().getMusicFormats().contains(fileExtension[1].toLowerCase());
         }
         
         return returnVal || f.isDirectory();

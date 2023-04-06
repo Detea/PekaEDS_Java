@@ -8,7 +8,7 @@ import java.io.File;
 public class BMPImageFilter extends FileFilter {
     @Override
     public boolean accept(File f) {
-        return f.getName().endsWith(".bmp") && f.getName().length() <= Settings.getMapProfile().getStringLengthTileset() || f.isDirectory();
+        return f.getName().toLowerCase().endsWith(".bmp") && f.getName().length() <= Settings.getMapProfile().getStringLengthTileset() || f.isDirectory();
     }
     
     @Override
