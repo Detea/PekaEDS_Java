@@ -54,6 +54,7 @@ public class SetPathDialog extends JDialog {
         setSize(new Dimension(400, 120));
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
+        setAlwaysOnTop(true);
         
         pack();
     }
