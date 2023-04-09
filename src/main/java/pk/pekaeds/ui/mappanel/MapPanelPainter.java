@@ -111,7 +111,8 @@ public class MapPanelPainter {
     public void drawForegroundSprites(Graphics2D g) {
         if (mapPanel.getModel().getMap() != null) {
             int[][] layerData = mapPanel.getModel().getMap().getSpritesLayer();
-    
+            
+            // TODO Optimize: Only loop through viewportX + width && viewportY + height
             for (int x = 0; x < 256; x++) {
                 for (int y = 0; y < 224; y++) {
                     if (layerData[y][x] != 255 && layerData[y][x] < mapPanel.getModel().getMap().getSpriteList().size()) {
@@ -129,11 +130,16 @@ public class MapPanelPainter {
     public void drawSprite(Graphics2D g, PK2Sprite spr, int x, int y) {
         if (Settings.showSprites()) {
             g.drawImage(spr.getImage(), x - (spr.getFrameWidth() / 2) + 16, y - (spr.getFrameHeight() - 32), null);
+        }
+    }
     
-            // TODO Fix background sprites rectangle being painted over by foreground tiles
-            if (Settings.highlightSprites()) {
-                g.setColor(Color.WHITE);
-                g.drawRect(x, y, 32, 32);
+    public void drawSpriteHighlights(Graphics2D g, Rectangle viewRect) {
+        for (int y = viewRect.y / 32; y < viewRect.height / 32; y++) {
+            for (int x = viewRect.x / 32; x < viewRect.width / 32; x++) {
+                if (mapPanel.getModel().getMap().getSpriteIdAt(x, y) != 255) {
+                    g.setColor(Color.WHITE);
+                    g.drawRect(x * 32, y * 32, 32, 32);
+                }
             }
         }
     }

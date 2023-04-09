@@ -2,6 +2,7 @@ package pk.pekaeds.ui.mappanel;
 
 import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.map.PK2Map13;
+import pk.pekaeds.settings.Settings;
 import pk.pekaeds.tool.Tool;
 import pk.pekaeds.ui.listeners.PK2MapConsumer;
 import pk.pekaeds.ui.listeners.RepaintListener;
@@ -92,6 +93,10 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
         if (model.getTilesetImage() != null) painter.drawLayers(g2);
         
         painter.drawForegroundSprites(g2);
+        
+        if (Settings.highlightSprites()) {
+            painter.drawSpriteHighlights(g2, model.getViewRect());
+        }
         
         if (model.getTilesetImage() != null) {
             leftMouseTool.draw(g2);
