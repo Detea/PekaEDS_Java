@@ -560,6 +560,7 @@ public class PekaEDSGUI implements ChangeListener {
     public void setSelectedTool(Tool selectedTool, boolean ignorePrompts) {
         if (currentTool != selectedTool) {
             if (currentTool != null) currentTool.onDeselect(ignorePrompts);
+            Tool.setMode(Tool.MODE_TILE);
             
             mapPanel.setLeftMouseTool(selectedTool);
     

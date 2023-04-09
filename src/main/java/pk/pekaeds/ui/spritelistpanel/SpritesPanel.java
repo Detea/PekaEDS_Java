@@ -7,6 +7,8 @@ import pk.pekaeds.pk2.sprite.PK2Sprite;
 import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.tool.Tool;
+import pk.pekaeds.tool.Tools;
+import pk.pekaeds.tool.tools.BrushTool;
 import pk.pekaeds.ui.listeners.PK2MapConsumer;
 import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.main.PekaEDSGUI;
@@ -71,11 +73,11 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     
     private void addListeners() {
         btnAdd.addActionListener(e -> {
-            var fc = new SpriteFileChooser(settings.getSpritesPath());
+            var fc = new SpriteFileChooser(Settings.getSpritesPath());
             fc.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
-                    return f.isDirectory() || f.getName().endsWith(".spr");
+                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".spr");
                 }
             
                 @Override
@@ -142,6 +144,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
         spriteList.addListSelectionListener(l -> {
             Tool.setSelectedSprite(spriteList.getSelectedValue());
             Tool.setMode(Tool.MODE_SPRITE);
+            gui.setSelectedTool(Tools.getTool(BrushTool.class));
         });
         
         Tool.setSpritePlacementListener(this);
