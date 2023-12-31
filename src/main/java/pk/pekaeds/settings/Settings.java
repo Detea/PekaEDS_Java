@@ -9,6 +9,7 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ public class Settings {
     private static final List<String> layerNames = new ArrayList<>();
     
     private static String basePath;
+    private static String dllPath = null;
     private static String tilesetPath;
     private static String backgroundsPath;
     private static String spritesPath;
@@ -231,6 +233,36 @@ public class Settings {
         
         resetKeyboardShortcuts();
     }
+
+    public static final String DLL_NAME_WINDOWS = "pk2_greta.dll"; //Windows
+    public static final String DLL_NAME_LINUX = "pk2_greta.so"; //Linux and Mac OS
+
+
+    private static String mFindDll(String basePath){
+        String osname = System.getProperty("os.name").toLowerCase();
+
+        //Windows
+        if(osname.contains("win")){
+
+            File file = Paths.get(basePath, DLL_NAME_WINDOWS).toFile();
+
+            if(file.exists() && file.isFile()){
+                return file.getAbsolutePath();
+            }
+
+            file = new File(basePath);
+
+            File file2 = Paths.get(file.getParentFile().toString(), DLL_NAME_WINDOWS).toFile();
+            return file2.getAbsolutePath();
+        }
+        //Linux and Mac OS
+        else{
+            File file = new File(basePath);
+
+            File file2 = Paths.get(file.getParentFile().toString(), "bin", DLL_NAME_LINUX).toFile();
+            return file2.getAbsolutePath();
+        }
+    }
     
     /*
         Getters & Setters
@@ -238,8 +270,8 @@ public class Settings {
     
     public static void setBasePath(String path) {
         basePath = path;
-        
-        // TODO Watch out for the / and the end, because Linux. Needs testing on Linux.
+        dllPath = mFindDll(path);
+
         tilesetPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "tiles" + File.separatorChar;
         backgroundsPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "scenery" + File.separatorChar;
         spritesPath = basePath + File.separatorChar + "sprites" + File.separatorChar;
@@ -284,6 +316,10 @@ public class Settings {
     
     public static String getBasePath() {
         return basePath;
+    }
+
+    public static String getDllPath(){
+        return dllPath;
     }
     
     public static String getTilesetPath() {

@@ -72,6 +72,11 @@ public abstract class PK2Map {
     
     public void addSprite(ISpritePrototypeEDS sprite) {
         spritesAmount++;
+
+        String filename = sprite.getFilename();
+        if(filename.endsWith(".spr2")){
+            filename = filename.substring(0, filename.length()-1);
+        }
         
         spriteFilenames.add(sprite.getFilename());
         

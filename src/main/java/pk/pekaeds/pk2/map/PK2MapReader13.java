@@ -110,24 +110,47 @@ public class PK2MapReader13 implements PK2MapReader {
     @Override
     public List<ISpritePrototypeEDS> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex) throws IOException {
         var spriteList = new ArrayList<ISpritePrototypeEDS>();
+
+        boolean usingNativeReader = false;
+
+        if(SpriteReaderNative.handler!=null){
+            SpriteReaderNative.handler.clear();
+
+            //TO DO
+            //obtain episodeName and uncomment
+
+            //SpriteReaderNative.handler.setSearchingDir("episodes" + File.separatorChar + episodeName);
+            usingNativeReader = true;
+        }
         
-        // TODO Look for sprites in the currently loaded levels folder
         for (String filename : spriteFilenames) {
-            var spriteFile = new File(Settings.getSpritesPath() + filename);
+
+            if(usingNativeReader){
+                ISpritePrototypeEDS sprite = SpriteReaders.readerNative.loadImageData(new File(filename), backgroundImage);
+                if(sprite==null){
+                    spriteList.add(new PK2SpriteMissing());
+                }
+                else{
+                    spriteList.add(sprite);
+                }
+            }
+            else{
+                File spriteFile = new File(Settings.getSpritesPath() + filename);
             
-            if (!spriteFile.exists()) {
-                Logger.warn("Unable to find sprite file {}.", filename);
-                
-                spriteList.add(new PK2SpriteMissing());
-            } else {
-                var sprReader = SpriteReaders.getReader(spriteFile);
-                
-                if (sprReader == null) {
-                    Logger.warn("Unable to recognize file as Pekka Kana 2 sprite.");
-                } else {
-                    var spr = sprReader.loadImageData(spriteFile, backgroundImage);
+                if (!spriteFile.exists()) {
+                    Logger.warn("Unable to find sprite file {}.", filename);
                     
-                    spriteList.add(spr);
+                    spriteList.add(new PK2SpriteMissing());
+                } else {
+                    var sprReader = SpriteReaders.getReader(spriteFile);
+                    
+                    if (sprReader == null) {
+                        Logger.warn("Unable to recognize file as Pekka Kana 2 sprite.");
+                    } else {
+                        var spr = sprReader.loadImageData(spriteFile, backgroundImage);
+                        
+                        spriteList.add(spr);
+                    }
                 }
             }
         }

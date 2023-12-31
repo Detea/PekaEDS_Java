@@ -10,7 +10,7 @@ import java.io.*;
 
 import org.tinylog.Logger;
 
-public final class PK2SpriteReader13 implements PK2SpriteReader {
+public final class PK2SpriteReader13 implements ISpriteReader {
     /**
      * Reads only the necessary data from the sprites file. Use this in the level editor. Use load() in the sprite editor.
      * @param filename

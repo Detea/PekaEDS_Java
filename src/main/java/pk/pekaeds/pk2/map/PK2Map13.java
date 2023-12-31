@@ -1,13 +1,17 @@
 package pk.pekaeds.pk2.map;
 
 import org.tinylog.Logger;
-import pk.pekaeds.pk2.sprite.PK2SpriteReader13;
+
+import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pk.pekaeds.pk2.sprite.ISpriteReader;
+import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class PK2Map13 extends PK2Map {
@@ -53,8 +57,9 @@ public class PK2Map13 extends PK2Map {
         
         getSpriteFilenames().clear();
         getSpriteFilenames().add("rooster.spr");
-        
-        var roosterSprite = new PK2SpriteReader13().loadImageData(new File(Settings.getSpritesPath() + File.separatorChar + "rooster.spr"), getBackgroundImage()); // TODO This could return null, what to do then?
+
+        ISpriteReader reader = SpriteReaders.getReader(Paths.get(Settings.getSpritesPath(), "rooster.spr").toFile());
+        ISpritePrototypeEDS roosterSprite = reader.loadImageData(new File(Settings.getSpritesPath() + File.separatorChar + "rooster.spr"), getBackgroundImage()); // TODO This could return null, what to do then?
         
         getSpriteList().clear();
         getSpriteList().add(roosterSprite);

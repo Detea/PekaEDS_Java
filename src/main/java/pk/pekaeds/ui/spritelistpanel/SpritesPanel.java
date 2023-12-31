@@ -77,7 +77,11 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
             fc.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {
-                    return f.isDirectory() || f.getName().toLowerCase().endsWith(".spr");
+                    if(f.isDirectory())return true;
+                    else{
+                        String name = f.getName();
+                        return name.endsWith(".spr2") || name.toLowerCase().endsWith(".spr");
+                    }
                 }
             
                 @Override

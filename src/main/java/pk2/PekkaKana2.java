@@ -15,29 +15,29 @@ public class PekkaKana2{
         //testLevel("Debug Island/debug.map", true);
 
         PrototypesHandler handler = new PrototypesHandler(false, false);
-        Prototype apple = handler.loadPrototype("sprites/apple.spr2"); //handler.loadPrototype("episodes/Debug Island/evilkey.spr");
+        Prototype sprite = handler.loadPrototype("bat.spr2"); //handler.loadPrototype("episodes/Debug Island/evilkey.spr");
 
-        System.out.println("Filename: "+apple.getFilename());
-        System.out.println("Name: "+apple.getName());
-        System.out.println("Type: "+apple.getType());
+        System.out.println("Filename: "+sprite.getFilename());
+        System.out.println("Name: "+sprite.getName());
+        System.out.println("Type: "+sprite.getType());
 
-        System.out.println("Width: "+apple.getWidth());
-        System.out.println("Height: "+apple.getHeight());
+        System.out.println("Width: "+sprite.getWidth());
+        System.out.println("Height: "+sprite.getHeight());
 
-        System.out.println("Texture: "+apple.getTextureName());
-        System.out.println("Color: "+apple.getColor());
+        System.out.println("Texture: "+sprite.getTextureName());
+        System.out.println("Color: "+sprite.getColor());
         
-        System.out.println("Frame x: "+apple.getFrameX());
-        System.out.println("Frame y: "+apple.getFrameY());
-        System.out.println("Frame height: "+apple.getFrameHeight());
-        System.out.println("Frame width: "+apple.getFrameWidth());
+        System.out.println("Frame x: "+sprite.getFrameX());
+        System.out.println("Frame y: "+sprite.getFrameY());
+        System.out.println("Frame height: "+sprite.getFrameHeight());
+        System.out.println("Frame width: "+sprite.getFrameWidth());
 
         quit();
     }
 
     public static void init(){
         Path rootPath = Paths.get("").toAbsolutePath().getParent().getParent();
-        Path libPath = Paths.get(rootPath.toString(),"bin", "pk2");
+        Path libPath = Paths.get(rootPath.toString(),"bin", "pk2_greta");
         Path resPath = Paths.get(rootPath.toString(), "res");
         init(libPath.toString(), resPath.toString());
     }

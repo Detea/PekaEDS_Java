@@ -9,7 +9,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public final class PK2SpriteReader11 implements PK2SpriteReader {
+public final class PK2SpriteReader11 implements ISpriteReader {
     
     @Override
     public PK2SpriteOld loadImageData(File filename, BufferedImage backgroundImage) {

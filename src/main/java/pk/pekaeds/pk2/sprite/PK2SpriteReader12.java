@@ -10,7 +10,7 @@ import java.io.*;
 
 import org.tinylog.Logger;
 
-public final class PK2SpriteReader12 implements PK2SpriteReader {
+public final class PK2SpriteReader12 implements ISpriteReader {
     // TODO Again, code reuse, but the other solution would be hacking this into the PK2SpriteReader13? Not sure. This works... lmao.
     @Override
     public PK2SpriteOld loadImageData(File filename, BufferedImage backgroundImage) {

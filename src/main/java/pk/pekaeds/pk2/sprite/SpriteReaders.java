@@ -9,6 +9,8 @@ public final class SpriteReaders {
     private static final PK2SpriteReader11 reader1_1 = new PK2SpriteReader11();
     private static final PK2SpriteReader12 reader1_2 = new PK2SpriteReader12();
     private static final PK2SpriteReader13 reader1_3 = new PK2SpriteReader13();
+
+    public static final SpriteReaderNative readerNative = new SpriteReaderNative();
     
     private SpriteReaders() {}
     
@@ -17,8 +19,13 @@ public final class SpriteReaders {
      * @param file
      * @return The correct PK2SpriteReader for the file or null.
      */
-    public static PK2SpriteReader getReader(File file) {
-        PK2SpriteReader reader = null;
+    public static ISpriteReader getReader(File file) {
+
+        if(SpriteReaderNative.handler!=null){
+            return readerNative;
+        }
+
+        ISpriteReader reader = null;
         
         try (var dis = new DataInputStream(new FileInputStream(file))) {
             var id = new int[4];
