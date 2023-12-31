@@ -77,8 +77,11 @@ public abstract class PK2Map {
         if(filename.endsWith(".spr2")){
             filename = filename.substring(0, filename.length()-1);
         }
+        else if(!filename.endsWith(".spr")){
+            filename = filename + ".spr";
+        }
         
-        spriteFilenames.add(sprite.getFilename());
+        spriteFilenames.add(filename);
         
         spriteList.add(sprite);
     }
