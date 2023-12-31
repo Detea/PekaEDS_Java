@@ -1,6 +1,7 @@
 .gradle
 **/build/
 !src/**/build/
+bin/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -15,6 +16,13 @@ gradle-app.setting
 .gradletasknamecache
 
 .idea
+.vscode
+
+# Mac OS
+*.DS_Store
+
+# Compiled classes
+*.class
 
 settings.dat
 pkeds_log.txt
