@@ -3,15 +3,12 @@ package pk.pekaeds.tool.tools;
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.tool.Tool;
-import pk.pekaeds.tool.undomanager.ActionType;
-import pk.pekaeds.tool.undomanager.UndoAction;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 // TODO Optimize this class
 public final class FloodFillTool extends Tool {

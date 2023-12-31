@@ -1,6 +1,5 @@
 package pk.pekaeds.ui.actions;
 
-import pk.pekaeds.ui.filefilters.BMPImageFilter;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;

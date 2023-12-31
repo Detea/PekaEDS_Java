@@ -2,7 +2,6 @@ package pk.pekaeds.ui.mapposition;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
 
 public class MapIcon {
     private BufferedImage image;

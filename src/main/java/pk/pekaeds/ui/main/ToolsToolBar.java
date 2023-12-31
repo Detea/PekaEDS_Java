@@ -6,10 +6,8 @@ import pk.pekaeds.tool.tools.*;
 import pk.pekaeds.ui.actions.SetSelectedToolAction;
 
 import javax.swing.*;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * The tools toolbar in of the main UI.
@@ -22,12 +20,12 @@ import java.util.TreeMap;
 public class ToolsToolBar extends JToolBar {
     private final PekaEDSGUI gui;
     
-    private JToggleButton btnBrush;
+    /*private JToggleButton btnBrush;
     private JToggleButton btnEraser;
     private JToggleButton btnLine;
     private JToggleButton btnRect;
     private JToggleButton btnFloodFill;
-    private JToggleButton btnCut;
+    private JToggleButton btnCut;*/
     
     private Map<Class<? extends Tool>, JToggleButton> buttonMap = new LinkedHashMap<>();
     

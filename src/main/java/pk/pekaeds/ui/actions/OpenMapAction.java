@@ -6,9 +6,7 @@ import pk.pekaeds.ui.main.PekaEDSGUI;
 import pk.pekaeds.ui.misc.UnsavedChangesDialog;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
-import java.io.File;
 
 public class OpenMapAction extends AbstractAction {
     private final PekaEDSGUI gui;

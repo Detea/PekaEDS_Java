@@ -1,15 +1,11 @@
 package pk.pekaeds.pk2.map;
 
 import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
-import pk.pekaeds.pk2.sprite.PK2SpriteReader13;
-import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

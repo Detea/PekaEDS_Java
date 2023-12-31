@@ -41,7 +41,7 @@ import java.time.LocalTime;
 import org.tinylog.Logger;
 
 public class PekaEDSGUI implements ChangeListener {
-    private ChangeEvent changeEvent = new ChangeEvent(this);
+    //private ChangeEvent changeEvent = new ChangeEvent(this);
 
     private PekaEDSGUIView view;
     private PekaEDSGUIModel model;

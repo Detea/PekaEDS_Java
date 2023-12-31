@@ -4,11 +4,9 @@ import net.miginfocom.swing.MigLayout;
 import pk.pekaeds.filechooser.ImagePreviewFileChooser;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.actions.BrowseResourceFilesAction;
-import pk.pekaeds.ui.filefilters.BMPImageFilter;
 import pk.pekaeds.ui.filefilters.MusicFilter;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class PanelDefaults extends JPanel {
     private JLabel lblTileset;

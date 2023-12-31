@@ -1,6 +1,5 @@
 package pk.pekaeds.tool.undomanager;
 
-import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.tool.Tool;
 
 import java.util.Stack;
@@ -12,7 +11,7 @@ public class ToolUndoManager {
     private static final Stack<UndoBlock> undoBlockStack = new Stack<>();
     private static final Stack<UndoBlock> redoBlockStack = new Stack<>();
     
-    private PK2Map map;
+    //private PK2Map map;
     
     private int blockStartSize;
     public void startBlock() {
@@ -85,9 +84,9 @@ public class ToolUndoManager {
         redoBlockStack.clear();
     }
     
-    public void setMap(PK2Map map) {
+    /*public void setMap(PK2Map map) {
         this.map = map;
-    }
+    }*/
     
     private static class UndoBlock {
         int start;

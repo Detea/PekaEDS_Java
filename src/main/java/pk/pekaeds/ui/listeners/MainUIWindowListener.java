@@ -1,10 +1,8 @@
 package pk.pekaeds.ui.listeners;
 
 import pk.pekaeds.ui.main.PekaEDSGUI;
-import pk.pekaeds.ui.main.PekaEDSGUIView;
 import pk.pekaeds.ui.misc.UnsavedChangesDialog;
 
-import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 

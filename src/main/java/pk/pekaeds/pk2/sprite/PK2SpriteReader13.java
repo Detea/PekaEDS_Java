@@ -18,8 +18,8 @@ public final class PK2SpriteReader13 implements PK2SpriteReader {
      * @return
      */
     @Override
-    public PK2Sprite loadImageData(File filename, BufferedImage backgroundImage) {
-        var spr = new PK2Sprite();
+    public PK2SpriteOld loadImageData(File filename, BufferedImage backgroundImage) {
+        var spr = new PK2SpriteOld();
         
         try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
             in.readNBytes(4); // Skip the magic number
@@ -134,7 +134,7 @@ public final class PK2SpriteReader13 implements PK2SpriteReader {
     }
     
     @Override
-    public PK2Sprite loadImageData(File filename) {
+    public PK2SpriteOld loadImageData(File filename) {
         return loadImageData(filename, null);
     }
 }

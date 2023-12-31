@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PK2Sprite implements ISpritePrototypeEDS {
+public class PK2SpriteOld implements ISpritePrototypeEDS {
     protected static List<Integer> ID = new ArrayList<>();
     
     

@@ -4,7 +4,6 @@ import pk.pekaeds.settings.Settings;
 
 import javax.swing.filechooser.FileFilter;
 import java.io.File;
-import java.util.Arrays;
 
 public class MusicFilter extends FileFilter {
     @Override

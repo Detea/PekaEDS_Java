@@ -1,6 +1,6 @@
 package pk.pekaeds.util;
 
-import pk.pekaeds.pk2.sprite.PK2Sprite;
+import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
@@ -51,14 +51,14 @@ public final class GFXUtils {
         return newImage;
     }
     
-    public static BufferedImage getFirstSpriteFrame(PK2Sprite spr, BufferedImage spriteSheet) {
+    public static BufferedImage getFirstSpriteFrame(ISpritePrototypeEDS spr, BufferedImage spriteSheet) {
         return spriteSheet.getSubimage(spr.getFrameX(), spr.getFrameY(), spr.getFrameWidth(), spr.getFrameHeight());
     }
     
     public static void adjustSpriteColor(BufferedImage spriteSheet, int paletteIndex) {
         if (paletteIndex != 255 && paletteIndex != 0) {
             var data= ((DataBufferByte) spriteSheet.getRaster().getDataBuffer()).getData();
-            var palette = (IndexColorModel) spriteSheet.getColorModel();
+            //var palette = (IndexColorModel) spriteSheet.getColorModel();
             
             for (int i = 0; i < spriteSheet.getWidth() * spriteSheet.getHeight(); i++) {
                 int color = data[i] & 0xFF;

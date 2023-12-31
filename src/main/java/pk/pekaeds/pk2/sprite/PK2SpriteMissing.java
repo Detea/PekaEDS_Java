@@ -3,11 +3,10 @@ package pk.pekaeds.pk2.sprite;
 import org.tinylog.Logger;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public final class PK2SpriteMissing extends PK2Sprite {
+public final class PK2SpriteMissing extends PK2SpriteOld {
     private static BufferedImage image = null;
     
     static {

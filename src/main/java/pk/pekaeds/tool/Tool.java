@@ -2,7 +2,6 @@ package pk.pekaeds.tool;
 
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.data.MapData;
-import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.tool.undomanager.ToolUndoManager;
 import pk.pekaeds.tool.undomanager.UndoAction;
 import pk.pekaeds.ui.listeners.SpritePlacementListener;
@@ -13,7 +12,6 @@ import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
 import pk.pekaeds.ui.mappanel.MapPanelModel;
 import pk.pekaeds.ui.mappanel.MapPanelPainter;
 
-import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
@@ -79,7 +77,7 @@ public abstract class Tool implements PropertyChangeListener {
         
         TileUtils.alignPointToGrid(mousePosition);
         
-        undoManager.clearRedoStack();
+        ToolUndoManager.clearRedoStack();
     }
     public void mouseReleased(MouseEvent e) {
         mousePosition = e.getPoint();
@@ -139,7 +137,7 @@ public abstract class Tool implements PropertyChangeListener {
         map = m;
 
         layerHandler.setMap(m);
-        undoManager.setMap(m);
+        //undoManager.setMap(m);
 
         reset();
     }
@@ -153,7 +151,7 @@ public abstract class Tool implements PropertyChangeListener {
     public static void setSelectedLayer(int layer) {
         selectedLayer = layer == Layer.BOTH ? Layer.FOREGROUND : layer;
 
-        layerHandler.setCurrentLayer(selectedLayer);
+        //layerHandler.setCurrentLayer(selectedLayer);
         
         onLayerChange();
     }

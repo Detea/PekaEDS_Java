@@ -13,7 +13,7 @@ import java.util.List;
 import org.tinylog.Logger;
 
 public class PK2MapReader13 implements PK2MapReader {
-    private final Settings settings = new Settings();
+    //private final Settings settings = new Settings();
     
     @Override
     public PK2Map13 load(File filename) throws IOException {
@@ -31,7 +31,8 @@ public class PK2MapReader13 implements PK2MapReader {
         
         if (!validMap) {
             Logger.warn("Unable to recognize file as a Pekka Kana 2 map of version 1.3.");
-            
+
+            in.close();            
             return null;
         } else {
             String tileset = PK2FileUtils.readString(in, 13);

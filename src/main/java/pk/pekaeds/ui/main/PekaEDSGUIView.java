@@ -9,7 +9,6 @@ import pk.pekaeds.ui.actions.OpenMapAction;
 import pk.pekaeds.ui.actions.SaveMapAction;
 import pk.pekaeds.ui.episodepanel.EpisodePanel;
 import pk.pekaeds.ui.listeners.MainUIWindowListener;
-import pk.pekaeds.ui.mappanel.MapPanelView;
 import pk.pekaeds.ui.settings.SettingsDialog;
 import pk.pekaeds.ui.toolpropertiespanel.ToolPropertiesPanel;
 
@@ -37,14 +36,14 @@ public class PekaEDSGUIView {
     private JMenuItem mEpisodeOpen;
     private JMenuItem mEpisodeExport;
 
-    private JMenu mFolders;
+    //private JMenu mFolders;
     private JMenuItem mfBase;
     private JMenuItem mfEpisodes;
     private JMenuItem mfTilesets;
     private JMenuItem mfBackgrounds;
     private JMenuItem mfSprites;
     private JMenuItem mfMusic;
-    private JMenuItem mfSounds;
+    //private JMenuItem mfSounds;
 
     private JMenu mOther;
     private JMenuItem mOtherSettings;

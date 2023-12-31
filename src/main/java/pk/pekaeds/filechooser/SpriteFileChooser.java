@@ -5,7 +5,6 @@ import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.misc.ImagePanel;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

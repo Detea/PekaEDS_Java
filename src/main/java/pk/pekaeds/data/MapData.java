@@ -4,7 +4,7 @@ import pk.pekaeds.util.GFXUtils;
 import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.map.PK2Map13;
 
-import javax.swing.*;
+//import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -18,7 +18,7 @@ public final class MapData {
     
     private PK2Map map = new PK2Map13();
   
-    private JList list;
+    //private JList list;
     
     public void setTilesetImage(BufferedImage tsetImage) {
         pcs.firePropertyChange("tilesetImage", tilesetImage, tsetImage);

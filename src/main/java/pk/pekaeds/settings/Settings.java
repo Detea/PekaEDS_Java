@@ -63,14 +63,14 @@ public class Settings {
     
     private static boolean highlightSelection = true;
     
-    public Settings() {
+    /*public Settings() {
         // TODO Just for testing
         if (layerNames.isEmpty()) {
             layerNames.add("Both");
             layerNames.add("Foreground");
             layerNames.add("Background");
         }
-    }
+    }*/
     
     /**
      * Register actions with keystrokes.

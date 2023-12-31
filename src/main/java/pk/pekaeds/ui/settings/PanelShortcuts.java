@@ -6,12 +6,8 @@ import pk.pekaeds.settings.Shortcuts;
 
 import javax.swing.*;
 import java.awt.event.*;
-import java.security.Key;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 public class PanelShortcuts extends JPanel {
     private final Map<String, KeyStroke> shortcutMap = new HashMap<>();

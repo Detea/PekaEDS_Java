@@ -8,8 +8,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PK2Map13 extends PK2Map {
@@ -17,10 +15,8 @@ public class PK2Map13 extends PK2Map {
     public static final int WIDTH = 256;
     public static final int HEIGHT = 224;
     
-    public static final List<Integer> ID = List.of(0x31, 0x2E, 0x33, 0x00, 0xCD);
-    
-    private final static Settings settings = new Settings();
-    
+    public static final List<Integer> ID = List.of(0x31, 0x2E, 0x33, 0x00, 0xCD);   
+   
     public PK2Map13() {
         layers.add(new int[HEIGHT][WIDTH]);
         layers.add(new int[HEIGHT][WIDTH]);
@@ -58,7 +54,7 @@ public class PK2Map13 extends PK2Map {
         getSpriteFilenames().clear();
         getSpriteFilenames().add("rooster.spr");
         
-        var roosterSprite = new PK2SpriteReader13().loadImageData(new File(settings.getSpritesPath() + File.separatorChar + "rooster.spr"), getBackgroundImage()); // TODO This could return null, what to do then?
+        var roosterSprite = new PK2SpriteReader13().loadImageData(new File(Settings.getSpritesPath() + File.separatorChar + "rooster.spr"), getBackgroundImage()); // TODO This could return null, what to do then?
         
         getSpriteList().clear();
         getSpriteList().add(roosterSprite);

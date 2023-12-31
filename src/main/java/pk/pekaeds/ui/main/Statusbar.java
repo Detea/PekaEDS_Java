@@ -23,10 +23,10 @@ public class Statusbar extends JPanel implements ChangeListener {
     
     private JLabel lblLastSavedVal;
     
-    private PekaEDSGUI eds;
+    //private PekaEDSGUI eds;
     
     public Statusbar(PekaEDSGUI edsUI) {
-        this.eds = edsUI;
+        //this.eds = edsUI;
         
         setupUI();
     }

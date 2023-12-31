@@ -27,6 +27,8 @@ final class EpisodeIO {
         for (int i = 0; i < fileCount; i++) {
             fileList.add(new File(in.readUTF()));
         }
+
+        in.close();
         
         return new Episode(fileList, new File(folder), name);
     }

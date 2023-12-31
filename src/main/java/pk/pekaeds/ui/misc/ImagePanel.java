@@ -1,12 +1,8 @@
 package pk.pekaeds.ui.misc;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Logger;
 
 public class ImagePanel extends JComponent {
     private BufferedImage image = null;

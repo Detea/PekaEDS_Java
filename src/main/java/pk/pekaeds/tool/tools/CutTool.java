@@ -22,7 +22,7 @@ public final class CutTool extends Tool {
     private int[][] backgroundLayer = new int[1][1];
     private int[][] spritesLayer = new int[1][1];
 
-    private Point selectionStart, selectionEnd;
+    private Point selectionStart;//, selectionEnd;
     private Rectangle selectionRect = new Rectangle();
     private boolean selecting = false;
     private boolean cutSelection = true;

@@ -4,7 +4,6 @@ import org.tinylog.Logger;
 import pk.pekaeds.data.EditorConstants;
 import pk.pekaeds.pk2.map.MapIO;
 import pk.pekaeds.pk2.map.PK2Map;
-import pk.pekaeds.pk2.map.PK2Map13;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.episodepanel.EpisodeChangeListener;
 import pk.pekaeds.ui.mapposition.MapIcon;

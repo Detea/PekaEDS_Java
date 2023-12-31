@@ -3,7 +3,6 @@ package pk.pekaeds.ui.settings;
 import net.miginfocom.swing.MigLayout;
 import org.tinylog.Logger;
 import pk.pekaeds.settings.Settings;
-import pk.pekaeds.settings.Shortcuts;
 import pk.pekaeds.ui.main.PekaEDSGUI;
 
 import javax.swing.*;

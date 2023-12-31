@@ -1,7 +1,6 @@
 package pk.pekaeds.ui.episodepanel;
 
 import net.miginfocom.swing.MigLayout;
-import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.filefilters.FileFilters;
 import pk.pekaeds.ui.main.PekaEDSGUI;
 import pk.pekaeds.ui.misc.UnsavedChangesDialog;

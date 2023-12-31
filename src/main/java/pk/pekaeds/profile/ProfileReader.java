@@ -1,11 +1,9 @@
 package pk.pekaeds.profile;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Logger;
+//import java.util.logging.Logger;
 
 public final class ProfileReader {
-    private static final Logger logger = Logger.getLogger(ProfileReader.class.getName());
+    //private static final Logger logger = Logger.getLogger(ProfileReader.class.getName());
     
     public static MapProfile readMapProfile(String filename) {
         /*var mapper = new YAMLMapper(new YAMLFactory());

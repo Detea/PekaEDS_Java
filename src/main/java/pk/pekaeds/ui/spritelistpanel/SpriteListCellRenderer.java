@@ -1,7 +1,6 @@
 package pk.pekaeds.ui.spritelistpanel;
 
 import net.miginfocom.swing.MigLayout;
-import org.tinylog.Logger;
 import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.misc.ImagePanel;

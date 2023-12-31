@@ -21,12 +21,12 @@ import java.awt.*;
 import java.io.File;
 
 public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacementListener {
-    private final Settings settings = new Settings();
+    //private final Settings settings = new Settings();
     
     private ChangeListener changeListener;
     private ChangeEvent changeEvent = new ChangeEvent(this);
     
-    private JButton btnEditSprite;
+    //private JButton btnEditSprite;
     private JButton btnAdd;
     private JButton btnRemove;
     private JButton btnSetPlayer;
@@ -48,7 +48,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
         btnAdd = new JButton("Add");
         btnRemove = new JButton("Remove");
         btnSetPlayer = new JButton("Set Player");
-        btnEditSprite = new JButton("Edit");
+        //btnEditSprite = new JButton("Edit");
         
         var btnPanel = new JPanel();
         btnPanel.add(btnAdd);

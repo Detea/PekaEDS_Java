@@ -1,8 +1,6 @@
 package pk.pekaeds.tool.tools;
 
 import pk.pekaeds.tool.Tool;
-import pk.pekaeds.tool.undomanager.ActionType;
-import pk.pekaeds.tool.undomanager.UndoAction;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;

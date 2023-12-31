@@ -16,7 +16,7 @@ public final class LayerHandler {
     private PK2Map map;
 
     private int gridX = 32, gridY = 32;
-    private int currentLayer;
+    //private int currentLayer;
 
     private TileChangeListener tileChangeListener;
     private SpritePlacementListener spritePlacementListener;
@@ -246,13 +246,13 @@ public final class LayerHandler {
     }
 
     public void setGrid(int x, int y) {
-        this.gridX = gridX;
-        this.gridY = gridY;
+        this.gridX = x;
+        this.gridY = y;
     }
 
-    public void setCurrentLayer(int layer) {
+    /*public void setCurrentLayer(int layer) {
         this.currentLayer = layer;
-    }
+    }*/
 
     public void setTileChangeListener(TileChangeListener listener) {
         this.tileChangeListener = listener;

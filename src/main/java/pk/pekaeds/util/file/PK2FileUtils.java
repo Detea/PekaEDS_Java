@@ -1,7 +1,6 @@
 package pk.pekaeds.util.file;
 
 import java.io.*;
-import java.util.Arrays;
 
 public final class PK2FileUtils {
     private PK2FileUtils() {}
@@ -50,11 +49,11 @@ public final class PK2FileUtils {
         out.writeByte(0); // Terminate the string with \0
     }
     
-    private static void writeStringAsBytes(DataOutputStream out, String string) throws IOException {
+    /*private static void writeStringAsBytes(DataOutputStream out, String string) throws IOException {
         for (char c : string.toCharArray()) {
             out.writeByte(c);
         }
-    }
+    }*/
     
     /**
      *  Reads a "PK2 integer" from an InputStream.

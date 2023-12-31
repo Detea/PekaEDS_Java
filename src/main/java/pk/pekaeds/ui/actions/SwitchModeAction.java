@@ -7,11 +7,11 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class SwitchModeAction extends AbstractAction {
-    private final PekaEDSGUI gui;
+    //private final PekaEDSGUI gui;
     private int mode;
     
     public SwitchModeAction(PekaEDSGUI ui, int m) {
-        this.gui = ui;
+        //this.gui = ui;
         this.mode = m;
     }
     

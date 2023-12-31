@@ -1,11 +1,10 @@
 package pk.pekaeds.profile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class SpriteProfile {
-    private static class AiTablePair {
+    protected static class AiTablePair {
         private int id;
         private String description;
     
