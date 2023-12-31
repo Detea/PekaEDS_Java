@@ -22,7 +22,7 @@ public final class PK2SpriteReader11 implements PK2SpriteReader {
             
             spr.setImageFile(PK2FileUtils.readString(in, 13));
     
-            System.out.println(spr.getImageFile());
+            System.out.println(spr.getTextureName());
             
             // Skip sound files
             for (int i = 0; i < 7; i++) {
@@ -102,7 +102,7 @@ public final class PK2SpriteReader11 implements PK2SpriteReader {
             
             spr.setFilename(filename.getName());
             
-            var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
+            var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getTextureName())); // TODO Look for sprites in current episodes directory
             GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
             
             if (backgroundImage != null) {

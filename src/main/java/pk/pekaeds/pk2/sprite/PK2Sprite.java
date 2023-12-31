@@ -4,7 +4,9 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PK2Sprite {
+import pk2.sprite.IPrototype;
+
+public class PK2Sprite implements IPrototype {
     protected static List<Integer> ID = new ArrayList<>();
     
     public static final int TYPE_BACKGROUND = 5;
@@ -114,7 +116,7 @@ public class PK2Sprite {
         this.type = type;
     }
     
-    public String getImageFile() {
+    public String getTextureName() {
         return imageFile;
     }
     

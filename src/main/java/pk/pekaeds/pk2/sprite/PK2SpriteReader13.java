@@ -106,10 +106,10 @@ public final class PK2SpriteReader13 implements PK2SpriteReader {
             
             spr.setFilename(filename.getName());
             
-            var spriteImageFile = new File(Settings.getSpritesPath() + File.separatorChar + spr.getImageFile());
+            var spriteImageFile = new File(Settings.getSpritesPath() + File.separatorChar + spr.getTextureName());
             
             if (spriteImageFile.exists()) {
-                var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getImageFile())); // TODO Look for sprites in current episodes directory
+                var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getTextureName())); // TODO Look for sprites in current episodes directory
                 GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
     
                 if (backgroundImage != null) {
