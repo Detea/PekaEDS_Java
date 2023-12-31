@@ -4,13 +4,10 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import pk2.sprite.IPrototype;
-
-public class PK2Sprite implements IPrototype {
+public class PK2Sprite implements ISpritePrototypeEDS {
     protected static List<Integer> ID = new ArrayList<>();
     
-    public static final int TYPE_BACKGROUND = 5;
-    public static final int TYPE_CHARACTER = 1;
+    
     
     protected String filename;
     

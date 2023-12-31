@@ -3,7 +3,7 @@ package pk.pekaeds.ui.spritelistpanel;
 import net.miginfocom.swing.MigLayout;
 import pk.pekaeds.filechooser.SpriteFileChooser;
 import pk.pekaeds.pk2.map.PK2Map;
-import pk.pekaeds.pk2.sprite.PK2Sprite;
+import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
 import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.tool.Tool;
@@ -33,8 +33,8 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     
     private PekaEDSGUI gui;
     
-    private JList<PK2Sprite> spriteList;
-    private DefaultListModel<PK2Sprite> listModel = new DefaultListModel<>();
+    private JList<ISpritePrototypeEDS> spriteList;
+    private DefaultListModel<ISpritePrototypeEDS> listModel = new DefaultListModel<>();
     
     private PK2Map map;
     
@@ -113,7 +113,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
         });
     
         btnSetPlayer.addActionListener(e -> {
-            if (spriteList.getSelectedValue().getType() == PK2Sprite.TYPE_CHARACTER) {
+            if (spriteList.getSelectedValue().getType() == ISpritePrototypeEDS.TYPE_CHARACTER) {
                 var currentPlayerSprite = map.getSprite(map.getPlayerSpriteId());
                 if (currentPlayerSprite != null) currentPlayerSprite.setPlayerSprite(false);
 

@@ -9,7 +9,7 @@ import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.listeners.TileChangeListener;
 import pk.pekaeds.util.TileUtils;
 import pk.pekaeds.pk2.map.PK2Map;
-import pk.pekaeds.pk2.sprite.PK2Sprite;
+import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
 import pk.pekaeds.ui.mappanel.MapPanelModel;
 import pk.pekaeds.ui.mappanel.MapPanelPainter;
 
@@ -177,7 +177,7 @@ public abstract class Tool implements PropertyChangeListener {
         }
     }
 
-    public static void setSelectedSprite(PK2Sprite newSprite) {
+    public static void setSelectedSprite(ISpritePrototypeEDS newSprite) {
         // TODO Change grid size to size of selected sprite?
 
         for (int i = 0; i < map.getSpriteList().size(); i++) {

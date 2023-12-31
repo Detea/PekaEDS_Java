@@ -6,6 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public interface PK2SpriteReader {
-    PK2Sprite loadImageData(File filename, BufferedImage backgroundImage);
-    PK2Sprite loadImageData(File filename);
+    ISpritePrototypeEDS loadImageData(File filename, BufferedImage backgroundImage);
+    ISpritePrototypeEDS loadImageData(File filename);
 }

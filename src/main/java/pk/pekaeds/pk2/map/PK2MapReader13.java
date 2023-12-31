@@ -107,8 +107,8 @@ public class PK2MapReader13 implements PK2MapReader {
     }
     
     @Override
-    public List<PK2Sprite> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex) throws IOException {
-        var spriteList = new ArrayList<PK2Sprite>();
+    public List<ISpritePrototypeEDS> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex) throws IOException {
+        var spriteList = new ArrayList<ISpritePrototypeEDS>();
         
         // TODO Look for sprites in the currently loaded levels folder
         for (String filename : spriteFilenames) {

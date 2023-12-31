@@ -3,7 +3,7 @@ package pk.pekaeds.tool;
 import pk.pekaeds.data.Layer;
 import pk.pekaeds.pk2.map.PK2Map;
 import pk.pekaeds.pk2.map.PK2Map13;
-import pk.pekaeds.pk2.sprite.PK2Sprite;
+import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
 import pk.pekaeds.settings.Settings;
 import pk.pekaeds.ui.listeners.SpritePlacementListener;
 import pk.pekaeds.ui.listeners.TileChangeListener;
@@ -165,8 +165,8 @@ public final class LayerHandler {
         if (position.x >= 0 && position.x <= Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y <= Settings.getMapProfile().getMapHeight()) {
             int oldSprite = map.getSpriteIdAt(position.x, position.y);
             
-            PK2Sprite spriteOld = map.getSpriteAt(position.x, position.y);
-            PK2Sprite spriteNew = map.getSprite(newSprite);
+            ISpritePrototypeEDS spriteOld = map.getSpriteAt(position.x, position.y);
+            ISpritePrototypeEDS spriteNew = map.getSprite(newSprite);
 
             if (oldSprite != 255) {
                 if (newSprite != oldSprite) {

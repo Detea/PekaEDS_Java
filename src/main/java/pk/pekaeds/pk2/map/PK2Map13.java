@@ -1,7 +1,6 @@
 package pk.pekaeds.pk2.map;
 
 import org.tinylog.Logger;
-import pk.pekaeds.pk2.sprite.PK2Sprite;
 import pk.pekaeds.pk2.sprite.PK2SpriteReader13;
 import pk.pekaeds.settings.Settings;
 

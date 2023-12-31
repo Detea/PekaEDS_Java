@@ -1,6 +1,6 @@
 package pk.pekaeds.pk2.map;
 
-import pk.pekaeds.pk2.sprite.PK2Sprite;
+import pk.pekaeds.pk2.sprite.ISpritePrototypeEDS;
 import pk.pekaeds.pk2.sprite.PK2SpriteReader13;
 import pk.pekaeds.pk2.sprite.SpriteReaders;
 import pk.pekaeds.settings.Settings;
@@ -50,7 +50,7 @@ public abstract class PK2Map {
     protected List<int[][]> layers = new ArrayList<>();
     protected int[][] spritesLayer;
     
-    protected List<PK2Sprite> spriteList = new ArrayList<>();
+    protected List<ISpritePrototypeEDS> spriteList = new ArrayList<>();
     
     public PK2Map() {
         layers.add(new int[224][256]);
@@ -74,7 +74,7 @@ public abstract class PK2Map {
         return true;
     }
     
-    public void addSprite(PK2Sprite sprite) {
+    public void addSprite(ISpritePrototypeEDS sprite) {
         spritesAmount++;
         
         spriteFilenames.add(sprite.getFilename());
@@ -83,7 +83,7 @@ public abstract class PK2Map {
     }
     
     /**
-     * Removes a sprite from the sprite filename list, the PK2Sprite sprite object list and from the sprite layer array.
+     * Removes a sprite from the sprite filename list, the ISpritePrototypeEDS sprite object list and from the sprite layer array.
      * @param filename The filename of the sprite. (Example: rooster.spr)
      */
     public void removeSprite(String filename) {
@@ -154,7 +154,7 @@ public abstract class PK2Map {
         return 255;
     }
     
-    public PK2Sprite getSpriteAt(int x, int y) {
+    public ISpritePrototypeEDS getSpriteAt(int x, int y) {
         if (getSpriteIdAt(x, y) != 255) {
             return spriteList.get(getSpriteIdAt(x, y));
         }
@@ -162,7 +162,7 @@ public abstract class PK2Map {
         return null;
     }
     
-    public List<PK2Sprite> getSpriteList() {
+    public List<ISpritePrototypeEDS> getSpriteList() {
         return spriteList;
     }
     
@@ -311,7 +311,7 @@ public abstract class PK2Map {
      * @param index
      * @return
      */
-    public PK2Sprite getSprite(int index) {
+    public ISpritePrototypeEDS getSprite(int index) {
         if (index >= 0 && index < spriteList.size()) {
             return spriteList.get(index);
         }
@@ -319,7 +319,7 @@ public abstract class PK2Map {
         return null;
     }
     
-    public void setSpriteList(List<PK2Sprite> list) {
+    public void setSpriteList(List<ISpritePrototypeEDS> list) {
         this.spriteList = list;
     }
     
