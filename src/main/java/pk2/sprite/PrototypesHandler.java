@@ -16,10 +16,12 @@ public class PrototypesHandler{
         return this.id;
     }
 
-    public native void clear();
-    public native void setSearchingDir(String directory);
-
     private native void mCreate(boolean shouldLoadDependencies, boolean jsonPriority);
     private native int mLoadSprite(String path);
+
+
+    public native void setSearchingDir(String directory);
+    public native void clear();
+    
     private int id = -1;
 };
