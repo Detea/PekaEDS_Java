@@ -5,12 +5,14 @@ import pk.pekaeds.ui.misc.UnsavedChangesDialog;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-
+import java.io.File;
+import java.nio.file.Paths;
 
 import pk2.PekkaKana2;
 
 public class PlayMapAction extends AbstractAction {
     private PekaEDSGUI gui;
+    private boolean isPlaying = false;
     
     public PlayMapAction(PekaEDSGUI ui) {
         this.gui = ui;
@@ -30,10 +32,16 @@ public class PlayMapAction extends AbstractAction {
     }
     
     private void playMap() {
-        if (gui.getCurrentFile() != null) {
+        if (gui.getCurrentFile() != null && !isPlaying) {
+            isPlaying = true;
 
-            String mapFileStr = gui.getCurrentFile().getAbsolutePath().toString();
-            PekkaKana2.testLevel(mapFileStr, true);
+            File mapFile = gui.getCurrentFile();
+            File episodeDir = mapFile.getParentFile();
+
+            String arg = Paths.get(episodeDir.getName(), mapFile.getName().toString()).toString();
+
+            PekkaKana2.testLevel(arg, true);
+            isPlaying = false;
         }
     }
 }

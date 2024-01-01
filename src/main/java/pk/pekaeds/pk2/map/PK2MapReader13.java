@@ -108,7 +108,7 @@ public class PK2MapReader13 implements PK2MapReader {
     }
     
     @Override
-    public List<ISpritePrototypeEDS> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex) throws IOException {
+    public List<ISpritePrototypeEDS> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex, File mapFile) throws IOException {
         var spriteList = new ArrayList<ISpritePrototypeEDS>();
 
         boolean usingNativeReader = false;
@@ -116,10 +116,10 @@ public class PK2MapReader13 implements PK2MapReader {
         if(SpriteReaderNative.handler!=null){
             SpriteReaderNative.handler.clear();
 
-            //TO DO
-            //obtain episodeName and uncomment
-
-            //SpriteReaderNative.handler.setSearchingDir("episodes" + File.separatorChar + episodeName);
+            File episode = mapFile.getParentFile();
+            String episodeName = episode.getName();
+            
+            SpriteReaderNative.handler.setSearchingDir("episodes" + File.separatorChar + episodeName);
             usingNativeReader = true;
         }
         

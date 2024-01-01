@@ -11,7 +11,7 @@ import java.util.List;
 public interface PK2MapReader {
     PK2Map load(File filename) throws IOException;
     
-    List<ISpritePrototypeEDS> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex) throws IOException;
+    List<ISpritePrototypeEDS> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex, File mapFile) throws IOException;
     
     PK2Map loadIconDataOnly(File file);
 }

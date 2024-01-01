@@ -305,7 +305,7 @@ public class PekaEDSGUI implements ChangeListener {
                 Logger.info("Map loaded successfully.");
 
                 if (map.getBackgroundImage() != null) {
-                    map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId()));
+                    map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId(), file));
                     SpriteUtils.calculatePlacementAmountForSprites(map.getSpritesLayer(), map.getSpriteList());
 
                     spritesPanel.setMap(map);
