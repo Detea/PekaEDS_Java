@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'pk.pekaeds'
-version '0.7g-beta'
+version '0.8-alpha'
 
 repositories {
     mavenCentral()
@@ -21,14 +21,14 @@ dependencies {
 }
 
 application {
-    mainClass = 'pk.pekaeds.PekaEDS'
+    mainClass = 'pekaeds.PekaEDS'
 }
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
     manifest {
-        attributes "Main-Class": "pk.pekaeds.PekaEDS"
+        attributes "Main-Class": "pekaeds.PekaEDS"
     }
 
     from {
