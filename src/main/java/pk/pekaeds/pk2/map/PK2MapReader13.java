@@ -113,11 +113,13 @@ public class PK2MapReader13 implements PK2MapReader {
 
         boolean usingNativeReader = false;
 
+        String episodeName = null;
+
         if(SpriteReaderNative.handler!=null){
             SpriteReaderNative.handler.clear();
 
             File episode = mapFile.getParentFile();
-            String episodeName = episode.getName();
+            episodeName = episode.getName();
             
             SpriteReaderNative.handler.setSearchingDir("episodes" + File.separatorChar + episodeName);
             usingNativeReader = true;
@@ -126,7 +128,7 @@ public class PK2MapReader13 implements PK2MapReader {
         for (String filename : spriteFilenames) {
 
             if(usingNativeReader){
-                ISpritePrototypeEDS sprite = SpriteReaders.readerNative.loadImageData(new File(filename), backgroundImage);
+                ISpritePrototypeEDS sprite = SpriteReaders.readerNative.loadImageData(new File(filename), episodeName, backgroundImage);
                 if(sprite==null){
                     spriteList.add(new PK2SpriteMissing());
                 }

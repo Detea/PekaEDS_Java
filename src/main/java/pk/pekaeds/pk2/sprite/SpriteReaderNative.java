@@ -19,8 +19,32 @@ public class SpriteReaderNative implements ISpriteReader {
     
     public static PrototypesHandler handler = null;
 
+    private BufferedImage mProcessSpriteImage(ISpritePrototypeEDS spriteProto,
+        BufferedImage image, BufferedImage backgroundImage){
+        
+        GFXUtils.adjustSpriteColor(image, spriteProto.getColor());
+        if (backgroundImage != null) {
+            image = GFXUtils.setPaletteToBackgrounds(image, backgroundImage);
+        } else {
+            image = GFXUtils.makeTransparent(image);
+        }
+
+        image = GFXUtils.getFirstSpriteFrame(spriteProto, image);
+        return image;
+    }
+
+    @Override
+    public ISpritePrototypeEDS loadImageData(File filename){
+        return loadImageData(filename, null, null);
+    }
+
     @Override
     public ISpritePrototypeEDS loadImageData(File filename, BufferedImage backgroundImage){
+
+        return this.loadImageData(filename, null, null);
+
+    }
+    public ISpritePrototypeEDS loadImageData(File filename, String episode_dir, BufferedImage backgroundImage){
         Prototype prototype = handler.loadPrototype(filename.getName());
 
         if(prototype!=null){
@@ -28,22 +52,24 @@ public class SpriteReaderNative implements ISpriteReader {
             SpritePrototypeEDS prototypeEDS = new SpritePrototypeEDS(prototype);
 
             BufferedImage image = null;
-            File imgFile = Paths.get(Settings.getSpritesPath(), prototype.getTextureName()).toFile();
+
             try{
-                if(imgFile.exists() && imgFile.isFile()){
-                    image = ImageIO.read(imgFile);
-                    GFXUtils.adjustSpriteColor(image, prototype.getColor());
-
-                    if (backgroundImage != null) {
-                        image = GFXUtils.setPaletteToBackgrounds(image, backgroundImage);
-                    } else {
-                        image = GFXUtils.makeTransparent(image);
+                File imgFile = null;
+                if(episode_dir!=null){
+                    String imageStr = pk2.PekkaKana2.findAsset(episode_dir, "sprites", prototype.getTextureName());
+                    if(imageStr!=null){
+                        imgFile = Paths.get(Settings.getBasePath(), imageStr).toFile();
                     }
+                }
+                else{
+                    imgFile = Paths.get(Settings.getSpritesPath(), prototype.getTextureName()).toFile();
+                }
 
-                    image = GFXUtils.getFirstSpriteFrame(prototypeEDS, image);
+                if(imgFile!=null && imgFile.exists() && imgFile.isFile()){
+                    image = mProcessSpriteImage(prototypeEDS, ImageIO.read(imgFile), backgroundImage);
                 }
             }
-            catch (IOException e){
+            catch(IOException e){
                 Logger.warn(e, "Unable to load sprite image data.");
             }
 
@@ -58,10 +84,4 @@ public class SpriteReaderNative implements ISpriteReader {
 
         return null;
     }
-
-    @Override
-    public ISpritePrototypeEDS loadImageData(File filename){
-        return loadImageData(filename, null);
-    }
-
 }

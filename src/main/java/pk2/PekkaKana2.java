@@ -103,8 +103,8 @@ public class PekkaKana2{
         mInit(assetsPath);
     }
 
-    private static native void mInit(String assetsPath);
-        
+    private static native void mInit(String assetsPath);    
     public static native void quit();
     public static native boolean testLevel(String name, boolean dev_mode);
+    public static native String findAsset(String episode_name, String default_dir, String name);
 }

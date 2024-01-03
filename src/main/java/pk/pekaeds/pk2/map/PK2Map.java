@@ -90,7 +90,22 @@ public abstract class PK2Map {
      * Removes a sprite from the sprite filename list, the ISpritePrototypeEDS sprite object list and from the sprite layer array.
      * @param filename The filename of the sprite. (Example: rooster.spr)
      */
-    public void removeSprite(String filename) {
+    public void removeSprite(String spriteName){
+        if(spriteFilenames.contains(spriteName)){
+            this.mRemoveSprite(spriteName);
+        }
+        else if(spriteFilenames.contains(spriteName+".spr")){
+            this.mRemoveSprite(spriteName + ".spr");
+        }
+        else if(spriteFilenames.contains(spriteName+".spr2")){
+            this.mRemoveSprite(spriteName + ".spr2");
+        }
+        else{
+            throw new RuntimeException("Cannot remove sprite: \""+spriteName+"\"");
+        }
+    }
+
+    private void mRemoveSprite(String filename) {
         if (spriteFilenames.contains(filename)) {
             // TODO Should spriteList be checked as well? It should contain this sprite when spriteFilenames has it.
             spriteFilenames.remove(filename);
@@ -123,6 +138,9 @@ public abstract class PK2Map {
                 
                 changeListener.stateChanged(changeEvent);
             }
+        }
+        else{
+            throw new RuntimeException("Cannot remove sprite: \""+filename+"\"");
         }
     }
     

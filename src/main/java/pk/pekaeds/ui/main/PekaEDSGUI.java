@@ -24,6 +24,7 @@ import pk.pekaeds.util.episodemanager.EpisodeManager;
 import pk.pekaeds.util.file.AutoSaveManager;
 import pk.pekaeds.util.file.LastSessionManager;
 import pk.pekaeds.util.file.PathUtils;
+import pk2.PekkaKana2;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -221,36 +222,68 @@ public class PekaEDSGUI implements ChangeListener {
     /*
         * Map related methods
      */
-    public void loadMap(PK2Map map) {
+    public void loadMap(PK2Map map, File mapFile) {
+        
+
+        
+
+        String tilesetName = null;
+        String backgroundName = null;
+
+        if(mapFile!=null&&Settings.getDllPath()!=null){
+
+            File episode = mapFile.getParentFile();
+            String episodeName = episode.getName();
+            
+            tilesetName = PekkaKana2.findAsset(episodeName, "gfx"+File.separatorChar+"tiles", map.getTileset());
+            backgroundName = PekkaKana2.findAsset(episodeName, "gfx"+File.separatorChar+"scenery", map.getBackground());
+
+            if(tilesetName!=null){
+                tilesetName = Settings.getBasePath() +File.separatorChar + tilesetName;
+            }
+
+            if(backgroundName!=null){
+                backgroundName = Settings.getBasePath() +File.separatorChar + backgroundName;
+            }
+
+        }
+        else{
+            tilesetName = Settings.getTilesetPath() + map.getTileset();
+            backgroundName = Settings.getBackgroundsPath() + map.getBackground();
+        }
+
         BufferedImage tilesetImage = null;
 
-        // TODO Handle filename case sensitivity on linux
-        try {
-            tilesetImage = ImageIO.read(new File(Settings.getTilesetPath() + map.getTileset()));
-        } catch (IOException e) {
-            Logger.error(e, "Unable to load tileset image.");
-            
+        if(tilesetName!=null){
+            try {
+                tilesetImage = ImageIO.read(new File(tilesetName));
+            } catch (IOException e) {
+                System.out.println(tilesetName);
+                Logger.error(e, "Unable to load tileset image.");
+            }
+        }
+
+        if(tilesetImage==null){             
             JOptionPane.showMessageDialog(null, "Unable to load tileset image file. File: '" + map.getTileset() + "'", "Unable to find tileset", JOptionPane.ERROR_MESSAGE);
-            
             return;
         }
     
         BufferedImage backgroundImage = null;
-        
-        try {
-            backgroundImage = ImageIO.read(new File(Settings.getBackgroundsPath() + map.getBackground()));
-        } catch (IOException e) {
-            Logger.error(e, "Unable to load background image.");
-        
+        if(backgroundName!=null){
+            try {
+                backgroundImage = ImageIO.read(new File(backgroundName));
+            } catch (IOException e) {
+                System.out.println(backgroundName);
+                Logger.error(e, "Unable to load background image.");
+            }
+        }
+
+        if(backgroundImage==null){
             JOptionPane.showMessageDialog(null, "Unable to load background image file. File: '" + map.getBackground() + "'", "Unable to find background", JOptionPane.ERROR_MESSAGE);
-            
             return;
         }
   
-        if (tilesetImage != null && backgroundImage != null) {
-            tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);
-        }
-    
+        tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);    
         if (Settings.useBGTileset() && backgroundImage != null) {
             // Check if the tileset has a _bg version, if it does load and set it to the background tileset.
             BufferedImage bgTilesetImage = null;
@@ -300,7 +333,7 @@ public class PekaEDSGUI implements ChangeListener {
             map = r.load(file);
             
             if (map != null) {
-                loadMap(map);
+                loadMap(map, file);
 
                 Logger.info("Map loaded successfully.");
 
@@ -373,7 +406,7 @@ public class PekaEDSGUI implements ChangeListener {
         var map = new PK2Map13();
         map.reset();
     
-        loadMap(map);
+        loadMap(map, null);
         
         model.setCurrentMapFile(null);
         autosaveManager.setFile(null);
