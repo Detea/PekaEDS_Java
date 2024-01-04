@@ -22,6 +22,12 @@ import pekaeds.profile.SpriteProfile;
  */
 public class Settings {
     private static final List<String> layerNames = new ArrayList<>();
+
+    static{
+        layerNames.add("Both");
+        layerNames.add("Foreground");
+        layerNames.add("Background");
+    }
     
     private static String basePath;
     private static String dllPath = null;
@@ -65,14 +71,6 @@ public class Settings {
     
     private static boolean highlightSelection = true;
     
-    /*public Settings() {
-        // TODO Just for testing
-        if (layerNames.isEmpty()) {
-            layerNames.add("Both");
-            layerNames.add("Foreground");
-            layerNames.add("Background");
-        }
-    }*/
     
     /**
      * Register actions with keystrokes.
@@ -202,10 +200,6 @@ public class Settings {
     }
     
     public static void reset() {
-        layerNames.clear();
-        layerNames.add("Both");
-        layerNames.add("Foreground");
-        layerNames.add("Background");
     
         defaultTileset = "tiles01.bmp";
         defaultBackground = "castle.bmp";
