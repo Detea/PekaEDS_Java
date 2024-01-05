@@ -13,6 +13,9 @@ import java.time.format.DateTimeFormatter;
 public class Statusbar extends JPanel implements ChangeListener {
     private JLabel lblMouseXVal;
     private JLabel lblMouseYVal;
+
+    private JLabel lblMouseTileXVal;
+    private JLabel lblMouseTileYVal;
     
     private JLabel lblForegroundTileVal;
     private JLabel lblBackgroundTileVal;
@@ -37,6 +40,13 @@ public class Statusbar extends JPanel implements ChangeListener {
         
         var lblMouseY = new JLabel("Y:");
         lblMouseYVal = new JLabel("0");
+
+        var lblMouseTileX = new JLabel("TileX:");
+        var lblMouseTileY = new JLabel("TileX:");
+
+        this.lblMouseTileXVal = new JLabel("0");
+        this.lblMouseTileYVal = new JLabel("0");
+
         
         var lblForegroundTile = new JLabel("Foreground:");
         lblForegroundTileVal = new JLabel("255");
@@ -49,14 +59,12 @@ public class Statusbar extends JPanel implements ChangeListener {
         
         lblSpriteFilename = new JLabel("(none)");
         
-        // TODO Track this shit, notify the user when they have reached the sprite limit. But not in this class.
         var lblSpritesPlaced = new JLabel("Sprites placed: ");
         lblSpritesPlacedVal = new JLabel("0");
         
         var lblLastSaved = new JLabel("Last saved:");
         lblLastSavedVal = new JLabel("Not yet");
 
-        // TODO Make the labels stay in place when values change.
         setLayout(new MigLayout());
         add(lblSpritesPlaced);
         add(lblSpritesPlacedVal);
@@ -66,6 +74,13 @@ public class Statusbar extends JPanel implements ChangeListener {
         add(lblMouseXVal);
         add(lblMouseY);
         add(lblMouseYVal);
+
+        add(new JSeparator());
+        add(lblMouseTileX);
+        add(lblMouseTileXVal);
+
+        add(lblMouseTileY);
+        add(lblMouseTileYVal);
         
         add(new JSeparator());
         add(lblForegroundTile);
@@ -77,12 +92,13 @@ public class Statusbar extends JPanel implements ChangeListener {
         add(lblSprite);
         add(lblSpriteVal);
         add(lblSpriteFilename);
+
+
         
         add(new JSeparator());
         add(new JPanel(), "width 100%");
         add(lblLastSaved);
         add(lblLastSavedVal);
-
         setPreferredSize(new Dimension(getWidth(), 30));
     }
     
@@ -90,6 +106,9 @@ public class Statusbar extends JPanel implements ChangeListener {
     public void stateChanged(ChangeEvent e) {
         lblMouseXVal.setText(Integer.toString(Tool.getToolInformation().getX()));
         lblMouseYVal.setText(Integer.toString(Tool.getToolInformation().getY()));
+
+        this.lblMouseTileXVal.setText(Integer.toString(Tool.getToolInformation().getTileX()));
+        this.lblMouseTileYVal.setText(Integer.toString(Tool.getToolInformation().getTileY()));
         
         lblForegroundTileVal.setText(Integer.toString(Tool.getToolInformation().getForegroundTile()));
         lblBackgroundTileVal.setText(Integer.toString(Tool.getToolInformation().getBackgroundTile()));

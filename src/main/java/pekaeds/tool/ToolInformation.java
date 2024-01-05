@@ -10,6 +10,8 @@ package pekaeds.tool;
 public class ToolInformation {
     private int x;
     private int y;
+    private int tileX;
+    private int tileY;
     
     private int foregroundTile;
     private int backgroundTile;
@@ -21,18 +23,28 @@ public class ToolInformation {
     }
     
     public int getX() {
-        return x;
+        return this.x;
+    }
+
+    public int getTileX(){
+        return this.tileX;
     }
     
     void setX(int x) {
+        this.tileX = x / 32;
         this.x = x;
     }
     
     public int getY() {
-        return y;
+        return this.y;
+    }
+
+    public int getTileY(){
+        return this.tileY;
     }
     
     void setY(int y) {
+        this.tileY = y / 32;
         this.y = y;
     }
     
