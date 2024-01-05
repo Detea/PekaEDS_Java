@@ -31,7 +31,7 @@ public class SpriteProfile {
     private int amountOfAnimations = 20;
     private int amountOfAI = 10;
     
-    private List<String> types = List.of("Character", "Bonus Item", "Ammo", "Teleport", "Background");
+    private List<String> types = List.of("Character", "Bonus Item", "Ammo", "Teleport", "Background", "Foreground");
     
     private List<AiTablePair> aiTable = new ArrayList<>();
     
