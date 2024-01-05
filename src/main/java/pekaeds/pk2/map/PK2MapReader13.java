@@ -119,9 +119,9 @@ public class PK2MapReader13 implements PK2MapReader {
             SpriteReaderNative.handler.clear();
 
             File episode = mapFile.getParentFile();
-            episodeName = episode.getName();
+            episodeName = episode.getAbsolutePath();
             
-            SpriteReaderNative.handler.setSearchingDir("episodes" + File.separatorChar + episodeName);
+            SpriteReaderNative.handler.setSearchingDir(episodeName);
             usingNativeReader = true;
         }
         

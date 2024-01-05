@@ -57,9 +57,12 @@ public class SpriteReaderNative implements ISpriteReader {
             try{
                 File imgFile = null;
                 if(episode_dir!=null){
-                    String imageStr = pk2.PekkaKana2.findAsset(episode_dir, "sprites", prototype.getTextureName());
+                    String imageStr = pk2.PekkaKana2.findAsset(episode_dir + File.separatorChar + prototype.getTextureName(), "sprites");
                     if(imageStr!=null){
-                        imgFile = Paths.get(Settings.getBasePath(), imageStr).toFile();
+                        imgFile = new File(imageStr);
+                        if(!imgFile.isAbsolute()){
+                            imgFile = Paths.get(Settings.getBasePath(), imageStr).toFile();
+                        }
                     }
                 }
                 else{

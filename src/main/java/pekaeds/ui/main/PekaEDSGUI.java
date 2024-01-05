@@ -234,16 +234,16 @@ public class PekaEDSGUI implements ChangeListener {
         if(mapFile!=null&&Settings.getDllPath()!=null){
 
             File episode = mapFile.getParentFile();
-            String episodeName = episode.getName();
+            String episodeName = episode.getAbsolutePath();
             
-            tilesetName = PekkaKana2.findAsset(episodeName, "gfx"+File.separatorChar+"tiles", map.getTileset());
-            backgroundName = PekkaKana2.findAsset(episodeName, "gfx"+File.separatorChar+"scenery", map.getBackground());
+            tilesetName = PekkaKana2.findAsset(episodeName + File.separatorChar + map.getTileset(), "gfx"+File.separatorChar+"tiles");
+            backgroundName = PekkaKana2.findAsset(episodeName + File.separatorChar + map.getBackground(), "gfx"+File.separatorChar+"scenery");
 
-            if(tilesetName!=null){
+            if(tilesetName!=null && !new File(tilesetName).isAbsolute()){
                 tilesetName = Settings.getBasePath() +File.separatorChar + tilesetName;
             }
 
-            if(backgroundName!=null){
+            if(backgroundName!=null && !new File(backgroundName).isAbsolute()){
                 backgroundName = Settings.getBasePath() +File.separatorChar + backgroundName;
             }
 
