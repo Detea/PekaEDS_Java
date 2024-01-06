@@ -3,8 +3,8 @@ plugins {
     id 'application'
 }
 
-group 'pk.pekaeds'
-version '0.9-alpha'
+group 'pekaeds'
+version '0.10J'
 
 repositories {
     mavenCentral()

@@ -59,7 +59,7 @@ public final class PekaEDSGUILauncher {
                     else{
                         JOptionPane.showMessageDialog(null,
                         "Missing essential file: "+Settings.DLL_NAME_WINDOWS+" or "+Settings.DLL_NAME_LINUX,
-                        "Unable to find the PK2 DLL", JOptionPane.ERROR_MESSAGE);
+                        "This editor requires PK2 Greta v0.59 (snapshot-11) or newer.", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }

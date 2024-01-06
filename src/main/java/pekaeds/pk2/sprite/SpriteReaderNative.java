@@ -33,18 +33,17 @@ public class SpriteReaderNative implements ISpriteReader {
         image = GFXUtils.getFirstSpriteFrame(spriteProto, image);
         return image;
     }
-
     @Override
     public ISpritePrototypeEDS loadImageData(File filename){
-        return loadImageData(filename, null, null);
+        return this.loadImageData(filename, null, null);
     }
 
     @Override
-    public ISpritePrototypeEDS loadImageData(File filename, BufferedImage backgroundImage){
-
-        return this.loadImageData(filename, null, null);
-
+    public ISpritePrototypeEDS loadImageData(File filename, String episode_dir){
+        return this.loadImageData(filename, episode_dir, null);
     }
+
+    @Override
     public ISpritePrototypeEDS loadImageData(File filename, String episode_dir, BufferedImage backgroundImage){
         Prototype prototype = handler.loadPrototype(filename.getName());
 

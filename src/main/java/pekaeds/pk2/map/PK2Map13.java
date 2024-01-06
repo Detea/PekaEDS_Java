@@ -59,7 +59,7 @@ public class PK2Map13 extends PK2Map {
         getSpriteFilenames().add("rooster.spr");
 
         ISpriteReader reader = SpriteReaders.getReader(Paths.get(Settings.getSpritesPath(), "rooster.spr").toFile());
-        ISpritePrototypeEDS roosterSprite = reader.loadImageData(new File(Settings.getSpritesPath() + File.separatorChar + "rooster.spr"), getBackgroundImage()); // TODO This could return null, what to do then?
+        ISpritePrototypeEDS roosterSprite = reader.loadImageData(new File(Settings.getSpritesPath() + File.separatorChar + "rooster.spr"), null, getBackgroundImage()); // TODO This could return null, what to do then?
         
         getSpriteList().clear();
         getSpriteList().add(roosterSprite);

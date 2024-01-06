@@ -4,6 +4,7 @@ import net.miginfocom.swing.MigLayout;
 import pekaeds.filechooser.SpriteFileChooser;
 import pekaeds.pk2.map.PK2Map;
 import pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.ISpriteReader;
 import pekaeds.pk2.sprite.SpriteReaders;
 import pekaeds.settings.Settings;
 import pekaeds.tool.Tool;
@@ -93,11 +94,11 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
             var res = fc.showOpenDialog(this);
         
             if (res == JFileChooser.APPROVE_OPTION) {
-                var hasReader = SpriteReaders.getReader(fc.getSelectedFile());
-                
-                if (hasReader != null) {
-                    var spr = hasReader.loadImageData(fc.getSelectedFile());
-    
+                ISpriteReader reader = SpriteReaders.getReader(fc.getSelectedFile());
+                ISpritePrototypeEDS spr = reader==null?null:reader.loadImageData(fc.getSelectedFile(), map.getEpisodeDirStr());
+
+                if(spr!=null){
+
                     // TODO Prevent sprite to be added multiple times
                     
                     listModel.addElement(spr);
@@ -109,10 +110,19 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
                     Tool.setSelectedSprite(spr);
                     Tool.setMode(Tool.MODE_SPRITE);
     
-                    changeListener.stateChanged(changeEvent);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Can't recognize file as Pekka Kana 2 sprite file.", "Wrong format?", JOptionPane.ERROR_MESSAGE);
+                    changeListener.stateChanged(changeEvent);                    
                 }
+                
+                else {
+                    StringBuilder builder = new StringBuilder();
+                    builder.append("Can't load sprite: ");
+                    builder.append(fc.getSelectedFile());
+                    builder.append("!\n");
+                    builder.append("File not found, format not recognized, the sprite is malformed or has lacking dependecies!");
+    
+                    JOptionPane.showMessageDialog(this, builder.toString(), "Can't load sprite!", JOptionPane.ERROR_MESSAGE);
+                }
+
             }
         });
     

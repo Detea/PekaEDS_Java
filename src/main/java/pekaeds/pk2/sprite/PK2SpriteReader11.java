@@ -13,7 +13,7 @@ import java.io.*;
 public final class PK2SpriteReader11 implements ISpriteReader {
     
     @Override
-    public PK2SpriteOld loadImageData(File filename, BufferedImage backgroundImage) {
+    public PK2SpriteOld loadImageData(File filename,String episodeDir, BufferedImage backgroundImage) {
         var spr = new PK2SpriteOld();
         
         try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
@@ -122,7 +122,12 @@ public final class PK2SpriteReader11 implements ISpriteReader {
     }
     
     @Override
-    public PK2SpriteOld loadImageData(File filename) {
-        return loadImageData(filename, null);
+    public PK2SpriteOld loadImageData(File filename, String episodeDir) {
+        return loadImageData(filename, episodeDir, null);
+    }
+
+    @Override
+    public PK2SpriteOld loadImageData(File filename){
+        return this.loadImageData(filename, null);
     }
 }

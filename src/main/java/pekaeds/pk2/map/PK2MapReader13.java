@@ -113,22 +113,22 @@ public class PK2MapReader13 implements PK2MapReader {
 
         boolean usingNativeReader = false;
 
-        String episodeName = null;
+        String episodeDirStr = null;
 
         if(SpriteReaderNative.handler!=null){
             SpriteReaderNative.handler.clear();
 
             File episode = mapFile.getParentFile();
-            episodeName = episode.getAbsolutePath();
+            episodeDirStr = episode.getAbsolutePath();
             
-            SpriteReaderNative.handler.setSearchingDir(episodeName);
+            SpriteReaderNative.handler.setSearchingDir(episodeDirStr);
             usingNativeReader = true;
         }
         
         for (String filename : spriteFilenames) {
 
             if(usingNativeReader){
-                ISpritePrototypeEDS sprite = SpriteReaders.readerNative.loadImageData(new File(filename), episodeName, backgroundImage);
+                ISpritePrototypeEDS sprite = SpriteReaders.readerNative.loadImageData(new File(filename), episodeDirStr, backgroundImage);
                 if(sprite==null){
                     spriteList.add(new PK2SpriteMissing());
                 }
@@ -149,7 +149,7 @@ public class PK2MapReader13 implements PK2MapReader {
                     if (sprReader == null) {
                         Logger.warn("Unable to recognize file as Pekka Kana 2 sprite.");
                     } else {
-                        var spr = sprReader.loadImageData(spriteFile, backgroundImage);
+                        var spr = sprReader.loadImageData(spriteFile,episodeDirStr, backgroundImage);
                         
                         spriteList.add(spr);
                     }

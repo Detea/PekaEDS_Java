@@ -13,7 +13,7 @@ import pekaeds.util.file.PK2FileUtils;
 public final class PK2SpriteReader12 implements ISpriteReader {
     // TODO Again, code reuse, but the other solution would be hacking this into the PK2SpriteReader13? Not sure. This works... lmao.
     @Override
-    public PK2SpriteOld loadImageData(File filename, BufferedImage backgroundImage) {
+    public PK2SpriteOld loadImageData(File filename,String episodeDir, BufferedImage backgroundImage) {
         var spr = new PK2SpriteOld();
     
         try (DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(filename)))) {
@@ -120,8 +120,12 @@ public final class PK2SpriteReader12 implements ISpriteReader {
     }
     
     @Override
-    public PK2SpriteOld loadImageData(File filename) {
-        return loadImageData(filename, null);
+    public PK2SpriteOld loadImageData(File filename, String episodeDir) {
+        return loadImageData(filename, episodeDir, null);
     }
     
+    @Override
+    public PK2SpriteOld loadImageData(File filename){
+        return this.loadImageData(filename, null);
+    }
 }

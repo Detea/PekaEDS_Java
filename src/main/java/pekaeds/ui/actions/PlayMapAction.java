@@ -31,8 +31,12 @@ public class PlayMapAction extends AbstractAction {
             playMap();
         }
     }
+
+    private void playMap(){
+        JOptionPane.showMessageDialog(null, "Level testing is temporarily unavailable. It will be fixed and available in the future version.", "Unavailable feature", JOptionPane.ERROR_MESSAGE);
+    }
     
-    private void playMap() {
+    public void playMapX() {
         if (gui.getCurrentFile() != null && !isPlaying) {
             isPlaying = true;
 

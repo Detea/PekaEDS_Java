@@ -7,10 +7,15 @@ import pekaeds.pk2.sprite.ISpritePrototypeEDS;
 import pekaeds.settings.Settings;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class PK2Map {
+
+    private File file = null;
+
+
     private ChangeListener changeListener;
     private ChangeEvent changeEvent = new ChangeEvent(this);
     
@@ -372,5 +377,20 @@ public abstract class PK2Map {
     
     public BufferedImage getBackgroundTilesetImage() {
         return backgroundTilesetImage;
+    }
+
+    public void setFile(File file){
+        this.file = file;
+    }
+
+    public File getFile(){
+        return this.file;
+    }
+
+    public String getEpisodeDirStr(){
+        if(this.file==null)return null;
+        
+        File episode = this.file.getParentFile();
+        return episode.getAbsolutePath();
     }
 }
