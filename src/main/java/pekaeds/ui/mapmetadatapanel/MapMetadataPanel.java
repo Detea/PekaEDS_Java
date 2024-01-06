@@ -1,17 +1,16 @@
 package pekaeds.ui.mapmetadatapanel;
 
 import net.miginfocom.swing.MigLayout;
-import pekaeds.filechooser.ImagePreviewFileChooser;
+import pekaeds.ui.listeners.TextFieldChangeListener;
+import pekaeds.ui.mapposition.MapPositionDialog;
+import pekaeds.util.GFXUtils;
 import pekaeds.pk2.map.PK2Map;
 import pekaeds.settings.Settings;
 import pekaeds.ui.filefilters.BMPImageFilter;
 import pekaeds.ui.filefilters.MusicFilter;
-import pekaeds.ui.listeners.PK2MapConsumer;
-import pekaeds.ui.listeners.TextFieldChangeListener;
 import pekaeds.ui.main.PekaEDSGUI;
-import pekaeds.ui.mapposition.MapPositionDialog;
-import pekaeds.util.GFXUtils;
-import pekaeds.util.file.PathUtils;
+import pekaeds.ui.listeners.PK2MapConsumer;
+import pekaeds.filechooser.ImagePreviewFileChooser;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.tinylog.Logger;
+import pekaeds.util.file.PathUtils;
 
 // TODO The ChangeListener stuff ist pretty messy. It works but it should probably be cleaned up. Some time... maybe...
 public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
@@ -371,7 +371,13 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         @Override
         public void stateChanged(ChangeEvent e) {
             if (canFireChanges) {
-                // More hacky shit
+                map.setName(tfMapName.getText());
+                map.setAuthor((tfAuthor.getText()));
+
+                map.setMusic(tfMusic.getText());
+                map.setTileset(tfTileset.getText());
+                map.setBackground(tfBackground.getText());
+                
                 map.setLevelNumber((int) spLevelNumber.getValue());
                 map.setTime((int) spTime.getValue());
                 
@@ -384,6 +390,10 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         var tfl = new TextFieldChangeListener(new ChangeListenerWrapper());
         tfMapName.getDocument().addDocumentListener(tfl);
         tfAuthor.getDocument().addDocumentListener(tfl);
+
+        tfTileset.getDocument().addDocumentListener(tfl);
+        tfMusic.getDocument().addDocumentListener(tfl);
+        tfTileset.getDocument().addDocumentListener(tfl);
     
         spLevelNumber.addChangeListener(new ChangeListenerWrapper());
         spTime.addChangeListener(new ChangeListenerWrapper());
@@ -398,7 +408,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
             // Even more hacky shit, yo
             map.setAuthor(tfAuthor.getText());
             map.setName(tfMapName.getText());
-    
+            
             map.setWeatherType(cbWeather.getSelectedIndex());
             map.setScrollType(cbScrollingType.getSelectedIndex());
             

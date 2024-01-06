@@ -28,3 +28,5 @@ settings.dat
 pkeds_log.txt
 /episodes/
 /last.session
+
+start.sh
