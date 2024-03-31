@@ -218,7 +218,7 @@ public abstract class Tool implements PropertyChangeListener {
         return toolInformation;
     }
 
-    public int getMode() {
+    public static int getMode() {
         return mode;
     }
     

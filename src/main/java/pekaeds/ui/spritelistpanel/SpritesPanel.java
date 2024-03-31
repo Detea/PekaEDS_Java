@@ -18,7 +18,11 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
+
+import org.w3c.dom.events.MouseEvent;
+
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.io.File;
 
 public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacementListener {
@@ -159,6 +163,12 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
             Tool.setSelectedSprite(spriteList.getSelectedValue());
             Tool.setMode(Tool.MODE_SPRITE);
             gui.setSelectedTool(Tools.getTool(BrushTool.class));
+        });
+
+        spriteList.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                Tool.setMode(Tool.MODE_SPRITE);
+            }
         });
         
         Tool.setSpritePlacementListener(this);
