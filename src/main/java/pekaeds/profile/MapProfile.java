@@ -59,6 +59,7 @@ public class MapProfile {
         defaultWeatherTypes.add("Leaves");
         defaultWeatherTypes.add("Rain & Leaves");
         defaultWeatherTypes.add("Snow");
+        defaultWeatherTypes.add("Dandelions");
         
         scrollingTypes.clear();
         scrollingTypes.addAll(defaultScrollingTypes);

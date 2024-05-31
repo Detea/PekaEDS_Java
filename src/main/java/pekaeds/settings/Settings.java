@@ -139,6 +139,10 @@ public class Settings {
             for (int i = 0; i < weatherTypesAmount; i++) {
                 mapProfile.getWeatherTypes().add(dis.readUTF());
             }
+
+            if(mapProfile.getWeatherTypes().size() < 6){
+                mapProfile.getWeatherTypes().add("Dandelions");
+            }
             
             int shortcutAmount = dis.readInt();
             for (int i = 0; i < shortcutAmount; i++) {
