@@ -1,11 +1,15 @@
 package pekaeds.filechooser;
 
 import net.miginfocom.swing.MigLayout;
-import pekaeds.pk2.sprite.SpriteReaders;
+import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.sprite.io.SpriteIO;
 import pekaeds.settings.Settings;
 import pekaeds.ui.misc.ImagePanel;
 
 import javax.swing.*;
+
+import org.tinylog.Logger;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -87,11 +91,10 @@ public class SpriteFileChooser extends JFileChooser implements PropertyChangeLis
             var selectedFile = (File) e.getNewValue();
             
             if (selectedFile != null) {
-                var reader = SpriteReaders.getReader(selectedFile);
-                
-                if (reader != null) {
-                    var spr = reader.loadImageData(selectedFile);
-    
+
+                try{
+                    ISpritePrototype spr = SpriteIO.loadSprite(selectedFile);
+
                     imagePanel.setImage(spr.getImage(), true, 256, 200);
     
                     lblNameVal.setText(spr.getName());
@@ -109,6 +112,10 @@ public class SpriteFileChooser extends JFileChooser implements PropertyChangeLis
     
                     lblFileCreatedVal.setText(df.format(attributes.creationTime().toMillis()));
                     lblFileModifiedVal.setText(df.format(attributes.lastModifiedTime().toMillis()));
+
+                }
+                catch(Exception spriteException){
+                    Logger.error(spriteException);
                 }
             }
         }

@@ -5,13 +5,11 @@ import javax.swing.event.ChangeListener;
 
 import org.json.JSONArray;
 
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
-
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PK2Sprite implements ISpritePrototypeEDS {
+public class PK2Sprite implements ISpritePrototype {
     public static final byte[] VERSION_13 = {0x31, 0x2E, 0x33, 0x00};
     
     private final ChangeEvent changeEvent = new ChangeEvent(this);

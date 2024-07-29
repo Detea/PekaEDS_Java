@@ -5,7 +5,7 @@ import java.awt.image.BufferedImage;
 
 import pekaeds.data.Layer;
 import pekaeds.pk2.map.PK2Map13;
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.ISpritePrototype;
 import pekaeds.settings.Settings;
 
 // TODO Optimize drawing
@@ -99,7 +99,7 @@ public class MapPanelPainter {
                     if (layerData[y][x] != 255 && layerData[y][x] < mapPanel.getModel().getMap().getSpriteList().size()) {
                         var spr = mapPanel.getModel().getMap().getSprite(layerData[y][x]);
                 
-                        if (spr.getType() == ISpritePrototypeEDS.TYPE_BACKGROUND) {
+                        if (spr.getType() == ISpritePrototype.TYPE_BACKGROUND) {
                             drawSprite(g, spr, x * 32, y * 32);
                         }
                     }
@@ -118,7 +118,7 @@ public class MapPanelPainter {
                     if (layerData[y][x] != 255 && layerData[y][x] < mapPanel.getModel().getMap().getSpriteList().size()) {
                         var spr = mapPanel.getModel().getMap().getSprite(layerData[y][x]);
                 
-                        if (spr.getType() != ISpritePrototypeEDS.TYPE_BACKGROUND) {
+                        if (spr.getType() != ISpritePrototype.TYPE_BACKGROUND) {
                             drawSprite(g, spr, x * 32, y * 32);
                         }
                     }
@@ -127,7 +127,7 @@ public class MapPanelPainter {
         }
     }
     
-    public void drawSprite(Graphics2D g, ISpritePrototypeEDS spr, int x, int y) {
+    public void drawSprite(Graphics2D g, ISpritePrototype spr, int x, int y) {
         if (Settings.showSprites()) {
             g.drawImage(spr.getImage(), x - (spr.getFrameWidth() / 2) + 16, y - (spr.getFrameHeight() - 32), null);
         }

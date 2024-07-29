@@ -1,10 +1,12 @@
-package pekaeds.pk2.sprite.old;
+package pekaeds.pk2.sprite.io;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PK2SpriteOld implements ISpritePrototypeEDS {
+import pekaeds.pk2.sprite.ISpritePrototype;
+
+public class SpriteOld implements ISpritePrototype {
     protected static List<Integer> ID = new ArrayList<>();
     
     

@@ -3,9 +3,8 @@ package pekaeds.pk2.map;
 import org.tinylog.Logger;
 
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.pk2.sprite.SpriteReaders;
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
-import pekaeds.pk2.sprite.old.ISpriteReader;
+import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.sprite.io.SpriteIO;
 import pekaeds.settings.Settings;
 
 import javax.imageio.ImageIO;
@@ -59,19 +58,19 @@ public class PK2Map13 extends PK2Map {
         getSpriteFilenames().add("rooster.spr");
 
         //ISpriteReader reader = SpriteReaders.getReader(Paths.get(Settings.getSpritesPath(), "rooster.spr").toFile());
-        
 
-        //TODO Check if the file exists
-        File roosterFile = PK2FileSystem.INSTANCE.findSprite("rooster.spr");
-
-        ISpriteReader reader = SpriteReaders.getReader(roosterFile);
-        ISpritePrototypeEDS roosterSprite = reader.loadImageData(roosterFile);
-
-
-        
         getSpriteList().clear();
-        getSpriteList().add(roosterSprite);
-        
+
+        try{
+            File roosterFile = PK2FileSystem.INSTANCE.findSprite("rooster.spr");
+            ISpritePrototype roosterSprite = SpriteIO.loadSprite(roosterFile, getBackgroundImage());
+            getSpriteList().add(roosterSprite);
+
+        }
+        catch(Exception e){
+            JOptionPane.showMessageDialog(null, "Unable to load \"rooster.spr\"", "Missing rooster sprite", JOptionPane.ERROR_MESSAGE);
+        }
+
         setPlayerSpriteId(0);
         
         // TODO Maybe find a better way to do this

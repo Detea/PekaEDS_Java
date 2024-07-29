@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.ISpritePrototype;
 
 public final class GFXUtils {
     private GFXUtils() {}
@@ -51,7 +51,7 @@ public final class GFXUtils {
         return newImage;
     }
     
-    public static BufferedImage getFirstSpriteFrame(ISpritePrototypeEDS spr, BufferedImage spriteSheet) {
+    public static BufferedImage getFirstSpriteFrame(ISpritePrototype spr, BufferedImage spriteSheet) {
         return spriteSheet.getSubimage(spr.getFrameX(), spr.getFrameY(), spr.getFrameWidth(), spr.getFrameHeight());
     }
     

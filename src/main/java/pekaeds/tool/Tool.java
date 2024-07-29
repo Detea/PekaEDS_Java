@@ -6,7 +6,7 @@ import javax.swing.event.ChangeListener;
 import pekaeds.data.Layer;
 import pekaeds.data.MapData;
 import pekaeds.pk2.map.PK2Map;
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.ISpritePrototype;
 import pekaeds.tool.undomanager.ToolUndoManager;
 import pekaeds.tool.undomanager.UndoAction;
 import pekaeds.ui.listeners.SpritePlacementListener;
@@ -176,7 +176,7 @@ public abstract class Tool implements PropertyChangeListener {
         }
     }
 
-    public static void setSelectedSprite(ISpritePrototypeEDS newSprite) {
+    public static void setSelectedSprite(ISpritePrototype newSprite) {
         // TODO Change grid size to size of selected sprite?
 
         for (int i = 0; i < map.getSpriteList().size(); i++) {

@@ -3,7 +3,7 @@ package pekaeds.pk2.map;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.ISpritePrototype;
 import pekaeds.settings.Settings;
 
 import java.awt.image.BufferedImage;
@@ -52,7 +52,7 @@ public abstract class PK2Map {
     protected List<int[][]> layers = new ArrayList<>();
     protected int[][] spritesLayer;
     
-    protected List<ISpritePrototypeEDS> spriteList = new ArrayList<>();
+    protected List<ISpritePrototype> spriteList = new ArrayList<>();
     
     public PK2Map() {
         layers.add(new int[224][256]);
@@ -76,7 +76,7 @@ public abstract class PK2Map {
         return true;
     }
     
-    public void addSprite(ISpritePrototypeEDS sprite) {
+    public void addSprite(ISpritePrototype sprite) {
         spritesAmount++;
 
         String filename = sprite.getFilename();
@@ -182,7 +182,7 @@ public abstract class PK2Map {
         return 255;
     }
     
-    public ISpritePrototypeEDS getSpriteAt(int x, int y) {
+    public ISpritePrototype getSpriteAt(int x, int y) {
         if (getSpriteIdAt(x, y) != 255) {
             return spriteList.get(getSpriteIdAt(x, y));
         }
@@ -190,7 +190,7 @@ public abstract class PK2Map {
         return null;
     }
     
-    public List<ISpritePrototypeEDS> getSpriteList() {
+    public List<ISpritePrototype> getSpriteList() {
         return spriteList;
     }
     
@@ -339,7 +339,7 @@ public abstract class PK2Map {
      * @param index
      * @return
      */
-    public ISpritePrototypeEDS getSprite(int index) {
+    public ISpritePrototype getSprite(int index) {
         if (index >= 0 && index < spriteList.size()) {
             return spriteList.get(index);
         }
@@ -347,7 +347,7 @@ public abstract class PK2Map {
         return null;
     }
     
-    public void setSpriteList(List<ISpritePrototypeEDS> list) {
+    public void setSpriteList(List<ISpritePrototype> list) {
         this.spriteList = list;
     }
     

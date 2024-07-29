@@ -1,12 +1,8 @@
 package pekaeds.ui;
 
-
-import pk2.sprite.PrototypesHandler;
-
 import javax.swing.*;
 
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.pk2.sprite.old.SpriteReaderNative;
 import pekaeds.settings.Settings;
 import pekaeds.ui.main.PekaEDSGUI;
 import pekaeds.ui.misc.SetPathDialog;
@@ -39,21 +35,9 @@ public final class PekaEDSGUILauncher {
              * If there's something wrong, not PK2 directory and so on, it throws an exception
              */
             PK2FileSystem.INSTANCE.setAssetsPath(file);
+
+            SwingUtilities.invokeLater(PekaEDSGUI::new);
             
-            System.out.println("DLL path: "+ Settings.getDllPath());
-            file = new File(Settings.getDllPath());
-            if(file.exists()){
-                pk2.PekkaKana2.init(Settings.getDllPath(), Settings.getBasePath());
-
-                SpriteReaderNative.handler = new PrototypesHandler(true,true);
-
-                SwingUtilities.invokeLater(PekaEDSGUI::new);
-            }
-            else{
-                JOptionPane.showMessageDialog(null,
-                "Missing essential file: "+Settings.DLL_NAME_WINDOWS+" or "+Settings.DLL_NAME_LINUX,
-                "This editor requires PK2 Greta v0.59 (snapshot-11) or newer.", JOptionPane.ERROR_MESSAGE);
-            }
 
         } catch(FileNotFoundException e){
             createNewSettingsFile();

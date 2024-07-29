@@ -10,9 +10,8 @@ import org.tinylog.Logger;
 import pekaeds.data.Layer;
 import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.sprite.*;
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
-import pekaeds.pk2.sprite.old.PK2SpriteMissing;
-import pekaeds.pk2.sprite.old.SpriteReaderNative;
+import pekaeds.pk2.sprite.io.SpriteIO;
+import pekaeds.pk2.sprite.io.SpriteMissing;
 import pekaeds.util.file.PK2FileUtils;
 
 public class PK2MapReader13 implements PK2MapReader {
@@ -111,52 +110,18 @@ public class PK2MapReader13 implements PK2MapReader {
     }
     
     @Override
-    public List<ISpritePrototypeEDS> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex, File mapFile) throws IOException {
-        var spriteList = new ArrayList<ISpritePrototypeEDS>();
-
-        boolean usingNativeReader = false;
-
-        String episodeDirStr = null;
-
-        if(SpriteReaderNative.handler!=null){
-            SpriteReaderNative.handler.clear();
-
-            File episode = mapFile.getParentFile();
-            episodeDirStr = episode.getAbsolutePath();
-            
-            SpriteReaderNative.handler.setSearchingDir(episodeDirStr);
-            usingNativeReader = true;
-        }
-        
+    public List<ISpritePrototype> loadSpriteList(List<String> spriteFilenames, BufferedImage backgroundImage, int playerSpriteIndex, File mapFile) throws IOException {
+        var spriteList = new ArrayList<ISpritePrototype>();
         for (String filename : spriteFilenames) {
 
-            if(usingNativeReader){
-                ISpritePrototypeEDS sprite = SpriteReaders.readerNative.loadImageData(new File(filename), episodeDirStr, backgroundImage);
-                if(sprite==null){
-                    spriteList.add(new PK2SpriteMissing());
-                }
-                else{
-                    spriteList.add(sprite);
-                }
+            try{
+                File file = PK2FileSystem.INSTANCE.findSprite(filename);
+                ISpritePrototype sprite = SpriteIO.loadSprite(file, backgroundImage);
+                spriteList.add(sprite);
             }
-            else{
-                //File spriteFile = new File(Settings.getSpritesPath() + filename);
-
-                File spriteFile = PK2FileSystem.INSTANCE.findSprite(filename);
-                if(spriteFile==null){
-                    Logger.warn("Unable to find sprite file {}.", filename);
-                    spriteList.add(new PK2SpriteMissing());
-                }
-                else{
-                    var sprReader = SpriteReaders.getReader(spriteFile);
-                    if (sprReader == null) {
-                        Logger.warn("Unable to recognize file as Pekka Kana 2 sprite.");
-                    } else {
-                        var spr = sprReader.loadImageData(spriteFile,episodeDirStr, backgroundImage);
-                        
-                        spriteList.add(spr);
-                    }
-                }
+            catch(Exception e){
+                Logger.error(e);
+                spriteList.add(new SpriteMissing());
             }
         }
         

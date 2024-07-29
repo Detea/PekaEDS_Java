@@ -2,7 +2,7 @@ package pekaeds.util;
 
 import java.util.List;
 
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.ISpritePrototype;
 
 public final class SpriteUtils {
     private SpriteUtils() {}
@@ -12,7 +12,7 @@ public final class SpriteUtils {
      * @param layer The sprites layer
      * @param spriteList The list of PK2Sprites, used in the map
      */
-    public static void calculatePlacementAmountForSprites(int[][] layer, List<ISpritePrototypeEDS> spriteList) {
+    public static void calculatePlacementAmountForSprites(int[][] layer, List<ISpritePrototype> spriteList) {
         for (int x = 0; x < layer[0].length; x++) {
             for (int y = 0; y < layer.length; y++) {
                 int sprite = layer[y][x];

@@ -1,15 +1,15 @@
 package pekaeds.ui.spritelistpanel;
 
 import net.miginfocom.swing.MigLayout;
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.ISpritePrototype;
 import pekaeds.settings.Settings;
 import pekaeds.ui.misc.ImagePanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<ISpritePrototypeEDS> {
-    private ISpritePrototypeEDS sprite;
+public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<ISpritePrototype> {
+    private ISpritePrototype sprite;
     private ImagePanel imgPanel;
     private JLabel spriteName;
     private JLabel filename;
@@ -24,7 +24,7 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<I
         setup();
     }
     
-    public void setSprite(ISpritePrototypeEDS spr) {
+    public void setSprite(ISpritePrototype spr) {
         this.sprite = spr;
         
         setValues();
@@ -97,7 +97,7 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<I
     }
     
     @Override
-    public Component getListCellRendererComponent(JList<? extends ISpritePrototypeEDS> list, ISpritePrototypeEDS value, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList<? extends ISpritePrototype> list, ISpritePrototype value, int index, boolean isSelected, boolean cellHasFocus) {
         setSprite(value);
         setSelected(isSelected);
         

@@ -1,12 +1,13 @@
 package pekaeds.ui.spritelistpanel;
 
+
+import org.tinylog.Logger;
 import net.miginfocom.swing.MigLayout;
 import pekaeds.filechooser.SpriteFileChooser;
 import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.map.PK2Map;
-import pekaeds.pk2.sprite.SpriteReaders;
-import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
-import pekaeds.pk2.sprite.old.ISpriteReader;
+import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.sprite.io.SpriteIO;
 import pekaeds.tool.Tool;
 import pekaeds.tool.Tools;
 import pekaeds.tool.tools.BrushTool;
@@ -38,8 +39,8 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     
     private PekaEDSGUI gui;
     
-    private JList<ISpritePrototypeEDS> spriteList;
-    private DefaultListModel<ISpritePrototypeEDS> listModel = new DefaultListModel<>();
+    private JList<ISpritePrototype> spriteList;
+    private DefaultListModel<ISpritePrototype> listModel = new DefaultListModel<>();
     
     private PK2Map map;
     
@@ -101,10 +102,9 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
             var res = fc.showOpenDialog(this);
         
             if (res == JFileChooser.APPROVE_OPTION) {
-                ISpriteReader reader = SpriteReaders.getReader(fc.getSelectedFile());
-                ISpritePrototypeEDS spr = reader==null?null:reader.loadImageData(fc.getSelectedFile(), map.getEpisodeDirStr());
 
-                if(spr!=null){
+                try{
+                    ISpritePrototype spr = SpriteIO.loadSprite(fc.getSelectedFile());
 
                     // TODO Prevent sprite to be added multiple times
                     
@@ -117,24 +117,22 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
                     Tool.setSelectedSprite(spr);
                     Tool.setMode(Tool.MODE_SPRITE);
     
-                    changeListener.stateChanged(changeEvent);                    
+                    changeListener.stateChanged(changeEvent);
                 }
-                
-                else {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append("Can't load sprite: ");
-                    builder.append(fc.getSelectedFile());
-                    builder.append("!\n");
-                    builder.append("File not found, format not recognized, the sprite is malformed or has lacking dependecies!");
-    
-                    JOptionPane.showMessageDialog(this, builder.toString(), "Can't load sprite!", JOptionPane.ERROR_MESSAGE);
-                }
+                catch(Exception spriteException){
+                    Logger.error(spriteException);                    
 
+                    StringBuilder builder = new StringBuilder();
+                    builder.append(fc.getSelectedFile());
+                    builder.append(spriteException);
+
+                    JOptionPane.showMessageDialog(this, builder.toString(), "Cannot load a sprite!", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     
         btnSetPlayer.addActionListener(e -> {
-            if (spriteList.getSelectedValue().getType() == ISpritePrototypeEDS.TYPE_CHARACTER) {
+            if (spriteList.getSelectedValue().getType() == ISpritePrototype.TYPE_CHARACTER) {
                 var currentPlayerSprite = map.getSprite(map.getPlayerSpriteId());
                 if (currentPlayerSprite != null) currentPlayerSprite.setPlayerSprite(false);
 
