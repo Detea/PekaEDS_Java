@@ -18,6 +18,7 @@ dependencies {
     implementation 'org.tinylog:tinylog-impl:2.6.0'
     implementation 'com.formdev:flatlaf:2.6'
     implementation 'com.miglayout:miglayout-swing:11.0'
+    implementation 'org.json:json:20231013'
 }
 
 application {
