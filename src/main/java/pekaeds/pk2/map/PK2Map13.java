@@ -2,16 +2,16 @@ package pekaeds.pk2.map;
 
 import org.tinylog.Logger;
 
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
-import pekaeds.pk2.sprite.ISpriteReader;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.sprite.SpriteReaders;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpriteReader;
 import pekaeds.settings.Settings;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class PK2Map13 extends PK2Map {
@@ -36,8 +36,8 @@ public class PK2Map13 extends PK2Map {
         
         // TODO Not necessary to do this?
         try {
-            setBackgroundImage(ImageIO.read(new File(Settings.getBackgroundsPath() + getBackground())));
-            setTilesetImage(ImageIO.read(new File(Settings.getTilesetPath() + getTileset())));
+            setBackgroundImage(ImageIO.read(PK2FileSystem.INSTANCE.findAsset(this.getBackground(), PK2FileSystem.SCENERY_DIR)));
+            setTilesetImage(ImageIO.read(PK2FileSystem.INSTANCE.findAsset(this.getTileset(), PK2FileSystem.TILESET_DIR)));
         } catch (IOException e) {
             Logger.error("Unable to load default background and/or tileset image(s).");
     
@@ -58,8 +58,16 @@ public class PK2Map13 extends PK2Map {
         getSpriteFilenames().clear();
         getSpriteFilenames().add("rooster.spr");
 
-        ISpriteReader reader = SpriteReaders.getReader(Paths.get(Settings.getSpritesPath(), "rooster.spr").toFile());
-        ISpritePrototypeEDS roosterSprite = reader.loadImageData(new File(Settings.getSpritesPath() + File.separatorChar + "rooster.spr"), null, getBackgroundImage()); // TODO This could return null, what to do then?
+        //ISpriteReader reader = SpriteReaders.getReader(Paths.get(Settings.getSpritesPath(), "rooster.spr").toFile());
+        
+
+        //TODO Check if the file exists
+        File roosterFile = PK2FileSystem.INSTANCE.findSprite("rooster.spr");
+
+        ISpriteReader reader = SpriteReaders.getReader(roosterFile);
+        ISpritePrototypeEDS roosterSprite = reader.loadImageData(roosterFile);
+
+
         
         getSpriteList().clear();
         getSpriteList().add(roosterSprite);

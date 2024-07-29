@@ -1,17 +1,23 @@
-package pekaeds.pk2.sprite;
-
-import org.tinylog.Logger;
-
-import pekaeds.settings.Settings;
-import pekaeds.util.GFXUtils;
-import pekaeds.util.file.PK2FileUtils;
+package pekaeds.pk2.sprite.old;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
 
-public final class PK2SpriteReader11 implements ISpriteReader {
-    
+import org.tinylog.Logger;
+
+import pekaeds.pk2.file.PK2FileSystem;
+import pekaeds.settings.Settings;
+import pekaeds.util.GFXUtils;
+import pekaeds.util.file.PK2FileUtils;
+
+public final class PK2SpriteReader13 implements ISpriteReader {
+    /**
+     * Reads only the necessary data from the sprites file. Use this in the level editor. Use load() in the sprite editor.
+     * @param filename
+     * @param backgroundImage
+     * @return
+     */
     @Override
     public PK2SpriteOld loadImageData(File filename,String episodeDir, BufferedImage backgroundImage) {
         var spr = new PK2SpriteOld();
@@ -20,18 +26,16 @@ public final class PK2SpriteReader11 implements ISpriteReader {
             in.readNBytes(4); // Skip the magic number
             
             spr.setType(Integer.reverseBytes(in.readInt()));
-            
-            spr.setImageFile(PK2FileUtils.readString(in, 13));
-    
-            System.out.println(spr.getTextureName());
+  
+            spr.setImageFile(PK2FileUtils.readString(in, Settings.getSpriteProfile().getStringLengthFiles()));
             
             // Skip sound files
-            for (int i = 0; i < 7; i++) {
-                in.readNBytes(13);
+            for (int i = 0; i < Settings.getSpriteProfile().getAmountOfSounds(); i++) {
+                in.readNBytes(100);
             }
             
             // Skip unused data
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < Settings.getSpriteProfile().getAmountOfSounds(); i++) {
                 in.readInt();
             }
             
@@ -39,7 +43,7 @@ public final class PK2SpriteReader11 implements ISpriteReader {
             spr.setFramesAmount((int) in.readByte() & 0xFF);
             
             // Skip animation data
-            for (int i = 0; i < 20; i++) {
+            for (int i = 0; i < Settings.getSpriteProfile().getAmountOfAnimations(); i++) {
                 for (int j = 0; j < 10; j++) {
                     in.readByte();
                 }
@@ -61,8 +65,8 @@ public final class PK2SpriteReader11 implements ISpriteReader {
             
             in.readInt(); // Frame distance, doesn't seem to be used.
             
-            spr.setName(PK2FileUtils.readString(in, 30));
-            
+            spr.setName(PK2FileUtils.readString(in, Settings.getSpriteProfile().getStringLengthName()));
+ 
             in.readInt(); // width
             in.readInt(); // height
             
@@ -85,7 +89,7 @@ public final class PK2SpriteReader11 implements ISpriteReader {
             
             in.readInt(); // score
             
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 in.readInt(); // AI
             }
             
@@ -103,21 +107,31 @@ public final class PK2SpriteReader11 implements ISpriteReader {
             
             spr.setFilename(filename.getName());
             
-            var spriteImageSheet = ImageIO.read(new File(Settings.getSpritesPath() + File.separatorChar + spr.getTextureName())); // TODO Look for sprites in current episodes directory
-            GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
+            File spriteImageFile = PK2FileSystem.INSTANCE.findAsset(spr.getTextureName(),PK2FileSystem.SPRITES_DIR);
             
-            if (backgroundImage != null) {
-                spriteImageSheet = GFXUtils.setPaletteToBackgrounds(spriteImageSheet, backgroundImage);
+            if (spriteImageFile!=null) {
+
+                var spriteImageSheet = ImageIO.read(spriteImageFile);
+                GFXUtils.adjustSpriteColor(spriteImageSheet, spr.getColor());
+    
+                if (backgroundImage != null) {
+                    spriteImageSheet = GFXUtils.setPaletteToBackgrounds(spriteImageSheet, backgroundImage);
+                } else {
+                    spriteImageSheet = GFXUtils.makeTransparent(spriteImageSheet);
+                }
+    
+                spr.setImage(GFXUtils.getFirstSpriteFrame(spr, spriteImageSheet));
             } else {
-                spriteImageSheet = GFXUtils.makeTransparent(spriteImageSheet);
+                spr.setImage(PK2SpriteMissing.getMissingImage());
+                spr.setFrameX(0);
+                spr.setFrameY(0);
+                spr.setFrameWidth(32);
+                spr.setFrameHeight(32);
             }
-            
-            spr.setImage(GFXUtils.getFirstSpriteFrame(spr, spriteImageSheet));
-            
         } catch (IOException e) {
             Logger.warn(e, "Unable to load sprite image data.");
         }
-        
+    
         return spr;
     }
     

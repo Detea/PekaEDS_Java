@@ -2,7 +2,7 @@ package pekaeds.ui.actions;
 
 import javax.swing.*;
 
-import pekaeds.settings.Settings;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.ui.filefilters.FileFilters;
 import pekaeds.ui.main.PekaEDSGUI;
 import pekaeds.ui.misc.UnsavedChangesDialog;
@@ -18,7 +18,7 @@ public class OpenMapAction extends AbstractAction {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        var fc = new JFileChooser(Settings.getEpisodesPath());
+        var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR));
     
         fc.setFileFilter(FileFilters.PK2_MAP_FILTER);
         

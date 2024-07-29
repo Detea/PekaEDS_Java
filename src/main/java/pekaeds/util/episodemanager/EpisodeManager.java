@@ -3,9 +3,9 @@ package pekaeds.util.episodemanager;
 import org.tinylog.Logger;
 
 import pekaeds.data.EditorConstants;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.map.MapIO;
 import pekaeds.pk2.map.PK2Map;
-import pekaeds.settings.Settings;
 import pekaeds.ui.episodepanel.EpisodeChangeListener;
 import pekaeds.ui.mapposition.MapIcon;
 import pekaeds.util.GFXUtils;
@@ -105,7 +105,7 @@ public final class EpisodeManager {
         if (map != null) {
             BufferedImage iconSheet = null;
             try {
-                iconSheet = ImageIO.read(new File(Settings.getPK2stuffFilePath()));
+                iconSheet = ImageIO.read( PK2FileSystem.INSTANCE.getPK2StuffFile());
     
                 iconSheet = GFXUtils.makeTransparent(iconSheet);
                 var iconImage = iconSheet.getSubimage(1 + (map.getIcon() * 28), 452, 27, 27);

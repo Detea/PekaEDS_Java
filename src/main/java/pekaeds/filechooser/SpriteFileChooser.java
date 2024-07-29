@@ -33,7 +33,7 @@ public class SpriteFileChooser extends JFileChooser implements PropertyChangeLis
     private JLabel lblFileModified;
     private JLabel lblFileModifiedVal;
     
-    public SpriteFileChooser(String basePath) {
+    public SpriteFileChooser(File basePath) {
         super(basePath);
         
         setup();

@@ -1,4 +1,4 @@
-package pekaeds.pk2.sprite;
+package pekaeds.pk2.sprite.old;
 
 import java.awt.image.BufferedImage;
 

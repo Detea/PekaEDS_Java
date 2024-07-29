@@ -8,8 +8,11 @@ import java.util.List;
 import org.tinylog.Logger;
 
 import pekaeds.data.Layer;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.sprite.*;
-import pekaeds.settings.Settings;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.PK2SpriteMissing;
+import pekaeds.pk2.sprite.old.SpriteReaderNative;
 import pekaeds.util.file.PK2FileUtils;
 
 public class PK2MapReader13 implements PK2MapReader {
@@ -137,15 +140,15 @@ public class PK2MapReader13 implements PK2MapReader {
                 }
             }
             else{
-                File spriteFile = new File(Settings.getSpritesPath() + filename);
-            
-                if (!spriteFile.exists()) {
+                //File spriteFile = new File(Settings.getSpritesPath() + filename);
+
+                File spriteFile = PK2FileSystem.INSTANCE.findSprite(filename);
+                if(spriteFile==null){
                     Logger.warn("Unable to find sprite file {}.", filename);
-                    
                     spriteList.add(new PK2SpriteMissing());
-                } else {
+                }
+                else{
                     var sprReader = SpriteReaders.getReader(spriteFile);
-                    
                     if (sprReader == null) {
                         Logger.warn("Unable to recognize file as Pekka Kana 2 sprite.");
                     } else {

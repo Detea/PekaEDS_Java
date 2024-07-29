@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.IndexColorModel;
 
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
 
 public final class GFXUtils {
     private GFXUtils() {}

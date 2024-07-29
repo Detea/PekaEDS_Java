@@ -4,6 +4,7 @@ import net.miginfocom.swing.MigLayout;
 import pekaeds.ui.listeners.TextFieldChangeListener;
 import pekaeds.ui.mapposition.MapPositionDialog;
 import pekaeds.util.GFXUtils;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.map.PK2Map;
 import pekaeds.settings.Settings;
 import pekaeds.ui.filefilters.BMPImageFilter;
@@ -18,16 +19,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.tinylog.Logger;
-import pekaeds.util.file.PathUtils;
 
 // TODO The ChangeListener stuff ist pretty messy. It works but it should probably be cleaned up. Some time... maybe...
 public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
@@ -78,7 +75,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     // TODO Optimization: Put this in a SwingWorker?
     private void loadIcons() {
         try {
-            var iconSheet = ImageIO.read(new File(Settings.getPK2stuffFilePath()));
+            var iconSheet = ImageIO.read( PK2FileSystem.INSTANCE.getPK2StuffFile());
             iconSheet = GFXUtils.makeTransparent(iconSheet);
             
             for (int i = 0; i < Settings.getMapProfile().getIconNames().length; i++) {
@@ -87,7 +84,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
                 iconMap.put(Settings.getMapProfile().getIconNames()[i], img);
             }
         } catch (IOException e) {
-            Logger.warn(e, "Unable to load icon image file: {}", Settings.getPK2stuffFilePath());
+            Logger.warn(e, "Unable to load icon image file: {}", PK2FileSystem.INSTANCE.getPK2StuffFile());
         }
     }
     
@@ -255,7 +252,10 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         });
     
         btnBrowseTileset.addActionListener(e -> {
-            var fc = new ImagePreviewFileChooser(Settings.getTilesetPath(), ImagePreviewFileChooser.PREVIEW_TILESET);
+            var fc = new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.TILESET_DIR),
+            ImagePreviewFileChooser.PREVIEW_TILESET);
+
+            
             fc.setDialogTitle("Select a tileset image...");
             fc.setFileFilter(new BMPImageFilter());
             
@@ -268,18 +268,18 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
                     map.setTileset(fc.getSelectedFile().getName());
                     map.setTilesetImage(tilesetImage);
                 
-                    if (Settings.useBGTileset()) {
-                        var bgTileset = PathUtils.getTilesetAsBackgroundTileset(fc.getSelectedFile().getAbsolutePath());
-                        if (Files.exists(Path.of(bgTileset))) {
-                            var bgTilesetImage = ImageIO.read(new File(bgTileset));
+                    // if (Settings.useBGTileset()) {
+                    //     var bgTileset = PathUtils.getTilesetAsBackgroundTileset(fc.getSelectedFile().getAbsolutePath());
+                    //     if (Files.exists(Path.of(bgTileset))) {
+                    //         var bgTilesetImage = ImageIO.read(new File(bgTileset));
         
-                            bgTilesetImage = GFXUtils.setPaletteToBackgrounds(bgTilesetImage, map.getBackgroundImage());
+                    //         bgTilesetImage = GFXUtils.setPaletteToBackgrounds(bgTilesetImage, map.getBackgroundImage());
         
-                            map.setBackgroundTilesetImage(bgTilesetImage);
-                        } else {
-                            map.setBackgroundTilesetImage(null);
-                        }
-                    }
+                    //         map.setBackgroundTilesetImage(bgTilesetImage);
+                    //     } else {
+                    //         map.setBackgroundTilesetImage(null);
+                    //     }
+                    // }
                     
                     tfTileset.setText(fc.getSelectedFile().getName()); // TODO What about files in the episodes folder? Display tileset/tileset.bmp vs tileset.bmp? episode/tileset.bmp vs tileset/bmp?
     
@@ -293,7 +293,9 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         });
         
         btnBrowseBackground.addActionListener(e -> {
-            var fc = new ImagePreviewFileChooser(Settings.getBackgroundPath(), ImagePreviewFileChooser.PREVIEW_BACKGROUND); // TODO Set to background directory or last choosen directory
+            var fc = new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SCENERY_DIR),
+            ImagePreviewFileChooser.PREVIEW_BACKGROUND); // TODO Set to background directory or last choosen directory
+
             fc.setDialogTitle("Select a background image...");
             fc.setFileFilter(new BMPImageFilter());
     
@@ -324,7 +326,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         });
         
         btnBrowseMusic.addActionListener(e -> {
-            var fc = new JFileChooser(Settings.getMusicPath());
+            var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.MUSIC_DIR));
             fc.setDialogTitle("Select a music file...");
             fc.setFileFilter(new MusicFilter());
             

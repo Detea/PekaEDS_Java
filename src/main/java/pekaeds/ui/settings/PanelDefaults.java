@@ -2,6 +2,7 @@ package pekaeds.ui.settings;
 
 import net.miginfocom.swing.MigLayout;
 import pekaeds.filechooser.ImagePreviewFileChooser;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.settings.Settings;
 import pekaeds.ui.actions.BrowseResourceFilesAction;
 import pekaeds.ui.filefilters.MusicFilter;
@@ -77,9 +78,12 @@ public class PanelDefaults extends JPanel {
     
     // TODO There is a big performance problem with BrowseResourceFileAction or ImagePreviewFileChooser
     private void setActionListeners() {
-        btnTilesetBrowse.addActionListener(new BrowseResourceFilesAction(tfTileset, new ImagePreviewFileChooser(Settings.getTilesetPath(), ImagePreviewFileChooser.PREVIEW_TILESET)));
-        btnBackgroundBrowse.addActionListener(new BrowseResourceFilesAction(tfBackground, new ImagePreviewFileChooser(Settings.getBackgroundPath(), ImagePreviewFileChooser.PREVIEW_BACKGROUND)));
-        btnMusicBrowse.addActionListener(new BrowseResourceFilesAction(tfMusic, new MusicFilter(), Settings.getMusicPath()));
+        btnTilesetBrowse.addActionListener(new BrowseResourceFilesAction(tfTileset, new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.TILESET_DIR),
+            ImagePreviewFileChooser.PREVIEW_TILESET)));
+        
+        btnBackgroundBrowse.addActionListener(new BrowseResourceFilesAction(tfBackground, new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SCENERY_DIR), 
+            ImagePreviewFileChooser.PREVIEW_BACKGROUND)));
+        btnMusicBrowse.addActionListener(new BrowseResourceFilesAction(tfMusic, new MusicFilter(), PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.MUSIC_DIR)));
     }
     
     void resetValues() {

@@ -1,6 +1,6 @@
 package pekaeds.ui.actions;
 
-
+import java.io.File;
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.event.ActionEvent;
@@ -11,7 +11,7 @@ public class BrowseResourceFilesAction extends AbstractAction {
     
     private JFileChooser fileChooser;
     
-    public BrowseResourceFilesAction(JTextField txtField, FileFilter fFilter, String startingDirectory) {
+    public BrowseResourceFilesAction(JTextField txtField, FileFilter fFilter, File startingDirectory) {
         this.textField = txtField;
         this.fileFilter = fFilter;
 

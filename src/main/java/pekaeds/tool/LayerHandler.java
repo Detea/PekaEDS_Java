@@ -5,7 +5,7 @@ import java.awt.*;
 import pekaeds.data.Layer;
 import pekaeds.pk2.map.PK2Map;
 import pekaeds.pk2.map.PK2Map13;
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
 import pekaeds.settings.Settings;
 import pekaeds.ui.listeners.SpritePlacementListener;
 import pekaeds.ui.listeners.TileChangeListener;

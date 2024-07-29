@@ -2,11 +2,11 @@ package pekaeds.ui.spritelistpanel;
 
 import net.miginfocom.swing.MigLayout;
 import pekaeds.filechooser.SpriteFileChooser;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.map.PK2Map;
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
-import pekaeds.pk2.sprite.ISpriteReader;
 import pekaeds.pk2.sprite.SpriteReaders;
-import pekaeds.settings.Settings;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpriteReader;
 import pekaeds.tool.Tool;
 import pekaeds.tool.Tools;
 import pekaeds.tool.tools.BrushTool;
@@ -78,7 +78,10 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     
     private void addListeners() {
         btnAdd.addActionListener(e -> {
-            var fc = new SpriteFileChooser(Settings.getSpritesPath());
+
+            var fc = new SpriteFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SPRITES_DIR));
+
+
             fc.setFileFilter(new FileFilter() {
                 @Override
                 public boolean accept(File f) {

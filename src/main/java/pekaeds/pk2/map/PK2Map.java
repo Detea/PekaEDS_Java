@@ -3,7 +3,7 @@ package pekaeds.pk2.map;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
 import pekaeds.settings.Settings;
 
 import java.awt.image.BufferedImage;

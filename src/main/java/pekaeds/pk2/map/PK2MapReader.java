@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
 
 public interface PK2MapReader {
     PK2Map load(File filename) throws IOException;

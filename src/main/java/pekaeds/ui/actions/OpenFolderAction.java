@@ -11,8 +11,8 @@ import java.io.IOException;
 public final class OpenFolderAction extends AbstractAction {
     private File file;
 
-    public OpenFolderAction(String folderPath) {
-        this.file = new File(folderPath);
+    public OpenFolderAction(File folderPath) {
+        this.file = folderPath;
     }
 
     @Override

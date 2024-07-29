@@ -1,81 +1,100 @@
 package pekaeds.pk2.sprite;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import org.json.JSONArray;
+
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PK2SpriteOld implements ISpritePrototypeEDS {
-    protected static List<Integer> ID = new ArrayList<>();
+public class PK2Sprite implements ISpritePrototypeEDS {
+    public static final byte[] VERSION_13 = {0x31, 0x2E, 0x33, 0x00};
     
+    private final ChangeEvent changeEvent = new ChangeEvent(this);
     
+    private List<ChangeListener> changeListeners = new ArrayList<>();
     
-    protected String filename;
+    protected String filename = "";
     
     private int type;
     
-    protected String imageFile;
+    protected String imageFile = "";
+    
     protected String[] soundFiles = new String[7];
+    protected List<String> soundFilesList = new ArrayList<>();
     
-    protected int framesAmount;
+    protected List<PK2SpriteAnimation> animationsList = new ArrayList<>();
     
-    protected int animationsAmount;
-    protected int frameRate;
+    private List<BufferedImage> framesList = new ArrayList<>();
     
-    protected int frameX;
-    protected int frameY;
+    private int framesAmount;
     
-    protected int frameWidth;
-    protected int frameHeight;
-    protected int frameDistance;
+    private int animationsAmount; // not used
+    private int frameRate;
     
-    protected String name;
-    protected int width;
-    protected int height;
+    private int frameX;
+    private int frameY;
     
-    protected String transformationSpriteFile;
-    protected String bonusSpriteFile;
+    private int frameWidth;
+    private int frameHeight;
+    private int frameDistance;
     
-    protected double weight;
+    private String name;
+    private int width;
+    private int height;
     
-    protected boolean enemy;
-    protected int energy;
-    protected int damage;
+    private String transformationSpriteFile = "";
+    private String bonusSpriteFile = "";
+    
+    private double weight;
+    
+    private boolean enemy;
+    private int energy;
+    private int damage;
     private int immunityToDamageType;
-    protected int damageType;
-    protected int score;
+    private int damageType;
+    private int score;
     
-    protected int attack1Duration;
-    protected int attack2Duration;
+    private int attack1Duration;
+    private int attack2Duration;
     
-    protected String attack1SpriteFile;
-    protected String attack2SpriteFile;
+    private String attack1SpriteFile = "";
+    private String attack2SpriteFile = "";
     
-    protected int attackPause;
+    private int attackPause;
     
-    protected int[] aiList = new int[10];
+    private ArrayList<Integer> aiList = new ArrayList<Integer>();
     
-    protected int maxJump;
-    protected double maxSpeed;
+    private int maxJump;
+    private double maxSpeed;
     
-    protected int color; // index to a color in the color palette
+    private int color; // index to a color in the color palette
     
-    protected boolean obstacle;
-    protected boolean boss;
-    protected boolean tileCheck;
+    private boolean obstacle;
+    private boolean boss;   // Not used
+    private boolean tileCheck;
     
-    protected boolean wallUp;
-    protected boolean wallDown;
-    protected boolean wallLeft;
-    protected boolean wallRight;
+    private boolean wallUp;
+    private boolean wallDown;
+    private boolean wallLeft;
+    private boolean wallRight;
     
-    protected int destruction; // effect?
+    private int destruction; // effect?
+    private boolean indestructible = false;
     
-    protected boolean key;
-    protected boolean shakes;
+    private boolean key;
+    private boolean shakes;
     
-    protected int parallaxFactor;
+    private int parallaxFactor;
     
     private boolean isPlayerSprite;
+    
+    private int bonusAmount;
+    private int info_id;
     
     protected boolean randomSoundFrequency;
     protected boolean glide;        // Sprite can glide, like Pekka
@@ -85,7 +104,79 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     protected BufferedImage image;
     
-    protected int placedAmount = 0;
+    // Greta Engine spr2 properties
+    private boolean alwaysActive;
+    private double deadWeight = 0.0;
+    private boolean hasDeadWeight = false;
+    
+    private JSONArray commands = new JSONArray();
+    
+    public boolean isAlwaysActive() {
+        return alwaysActive;
+    }
+    
+    public void setAlwaysActive(boolean always) {
+        this.alwaysActive = always;
+    }
+    
+    public double getDeadWeight() {
+        return deadWeight;
+    }
+    
+    public void setDeadWeight(double deadWeight) {
+        this.deadWeight = deadWeight;
+        
+        hasDeadWeight = true;
+    }
+    
+    public void setHasDeadWeight(boolean has) {
+        hasDeadWeight = has;
+    }
+    
+    public JSONArray getCommands() { return commands; }
+    public void setCommands(JSONArray commands) {
+        this.commands = commands;
+    }
+    
+    public boolean hasDeadWeight() { return hasDeadWeight; }
+    
+    public int getLoadTime() {
+        return loadTime;
+    }
+    
+    public void setLoadTime(int loadTime) {
+        this.loadTime = loadTime;
+    }
+    
+    private int loadTime;
+    
+    public int getSoundFrequency() {
+        return soundFrequency;
+    }
+    
+    public void setSoundFrequency(int soundFrequency) {
+        this.soundFrequency = soundFrequency;
+    }
+    
+    private int soundFrequency;
+    
+    public int getBonusAmount() {
+        return bonusAmount;
+    }
+    
+    public void setBonusAmount(int bonusAmount) {
+        this.bonusAmount = bonusAmount;
+    }
+    
+    public PK2Sprite() {
+        for (int i = 0; i < 7; i++) {
+            soundFilesList.add("");
+        }
+        
+        for (int i = 0; i < 20; i++) {
+            animationsList.add(new PK2SpriteAnimation(new byte[10], 0, false));
+        }
+    }
     
     public void setImage(BufferedImage img) {
         this.image = img;
@@ -99,6 +190,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setPlayerSprite(boolean is) {
         isPlayerSprite = is;
+        
+        fireChanges();
     }
     
     public boolean isPlayerSprite() {
@@ -111,14 +204,22 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setType(int type) {
         this.type = type;
+        
+        fireChanges();
     }
     
-    public String getTextureName() {
+    public String getImageFile() {
         return imageFile;
+    }
+
+    public String getTextureName(){
+        return this.getImageFile();
     }
     
     public void setImageFile(String imageFile) {
         this.imageFile = imageFile;
+        
+        fireChanges();
     }
     
     public String getFilename() {
@@ -127,6 +228,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFilename(String filename) {
         this.filename = filename;
+        
+        fireChanges();
     }
     
     public int getAnimationsAmount() {
@@ -135,6 +238,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setAnimationsAmount(int animationsAmount) {
         this.animationsAmount = animationsAmount;
+        
+        fireChanges();
     }
     
     public int getFrameRate() {
@@ -143,6 +248,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFrameRate(int frameRate) {
         this.frameRate = frameRate;
+        
+        fireChanges();
     }
     
     public int getFrameX() {
@@ -151,6 +258,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFrameX(int frameX) {
         this.frameX = frameX;
+        
+        fireChanges();
     }
     
     public int getFrameY() {
@@ -159,6 +268,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFrameY(int frameY) {
         this.frameY = frameY;
+        
+        fireChanges();
     }
     
     public int getFrameWidth() {
@@ -167,6 +278,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFrameWidth(int frameWidth) {
         this.frameWidth = frameWidth;
+        
+        fireChanges();
     }
     
     public int getFrameHeight() {
@@ -175,6 +288,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFrameHeight(int frameHeight) {
         this.frameHeight = frameHeight;
+        
+        fireChanges();
     }
     
     public int getFrameDistance() {
@@ -183,6 +298,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFrameDistance(int frameDistance) {
         this.frameDistance = frameDistance;
+        
+        fireChanges();
     }
     
     public String getName() {
@@ -191,6 +308,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setName(String name) {
         this.name = name;
+        
+        fireChanges();
     }
     
     public int getWidth() {
@@ -199,6 +318,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setWidth(int width) {
         this.width = width;
+        
+        fireChanges();
     }
     
     public int getHeight() {
@@ -207,6 +328,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setHeight(int height) {
         this.height = height;
+        
+        fireChanges();
     }
     
     public String getTransformationSpriteFile() {
@@ -215,6 +338,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setTransformationSpriteFile(String transformationSpriteFile) {
         this.transformationSpriteFile = transformationSpriteFile;
+        
+        fireChanges();
     }
     
     public String getBonusSpriteFile() {
@@ -223,6 +348,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setBonusSpriteFile(String bonusSpriteFile) {
         this.bonusSpriteFile = bonusSpriteFile;
+        
+        fireChanges();
     }
     
     public double getWeight() {
@@ -231,6 +358,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setWeight(double weight) {
         this.weight = weight;
+        
+        fireChanges();
     }
     
     public boolean isEnemy() {
@@ -239,6 +368,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setEnemy(boolean enemy) {
         this.enemy = enemy;
+        
+        fireChanges();
     }
     
     public int getEnergy() {
@@ -247,6 +378,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setEnergy(int energy) {
         this.energy = energy;
+        
+        fireChanges();
     }
     
     public int getDamage() {
@@ -255,6 +388,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setDamage(int damage) {
         this.damage = damage;
+        
+        fireChanges();
     }
     
     public int getDamageType() {
@@ -263,6 +398,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setDamageType(int damageType) {
         this.damageType = damageType;
+        
+        fireChanges();
     }
     
     public int getImmunityToDamageType() {
@@ -271,6 +408,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setImmunityToDamageType(int immunityToDamageType) {
         this.immunityToDamageType = immunityToDamageType;
+        
+        fireChanges();
     }
     
     public int getScore() {
@@ -279,6 +418,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setScore(int score) {
         this.score = score;
+        
+        fireChanges();
     }
     
     public int getAttack1Duration() {
@@ -287,6 +428,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setAttack1Duration(int attack1Duration) {
         this.attack1Duration = attack1Duration;
+        
+        fireChanges();
     }
     
     public int getAttack2Duration() {
@@ -295,6 +438,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setAttack2Duration(int attack2Duration) {
         this.attack2Duration = attack2Duration;
+        
+        fireChanges();
     }
     
     public String getAttack1SpriteFile() {
@@ -303,6 +448,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setAttack1SpriteFile(String attack1SpriteFile) {
         this.attack1SpriteFile = attack1SpriteFile;
+        
+        fireChanges();
     }
     
     public String getAttack2SpriteFile() {
@@ -311,6 +458,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setAttack2SpriteFile(String attack2SpriteFile) {
         this.attack2SpriteFile = attack2SpriteFile;
+        
+        fireChanges();
     }
     
     public int getAttackPause() {
@@ -319,14 +468,18 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setAttackPause(int attackPause) {
         this.attackPause = attackPause;
+        
+        fireChanges();
     }
     
-    public int[] getAiList() {
+    public ArrayList<Integer> getAiList() {
         return aiList;
     }
     
-    public void setAiList(int[] aiList) {
+    public void setAiList(ArrayList<Integer> aiList) {
         this.aiList = aiList;
+        
+        fireChanges();
     }
     
     public int getMaxJump() {
@@ -335,6 +488,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setMaxJump(int maxJump) {
         this.maxJump = maxJump;
+        
+        fireChanges();
     }
     
     public double getMaxSpeed() {
@@ -343,6 +498,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setMaxSpeed(double maxSpeed) {
         this.maxSpeed = maxSpeed;
+        
+        fireChanges();
     }
     
     public int getColor() {
@@ -351,6 +508,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setColor(int color) {
         this.color = color;
+        
+        fireChanges();
     }
     
     public boolean isObstacle() {
@@ -359,6 +518,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setObstacle(boolean obstacle) {
         this.obstacle = obstacle;
+        
+        fireChanges();
     }
     
     public boolean isBoss() {
@@ -367,6 +528,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setBoss(boolean boss) {
         this.boss = boss;
+        
+        fireChanges();
     }
     
     public boolean isTileCheck() {
@@ -375,6 +538,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setTileCheck(boolean tileCheck) {
         this.tileCheck = tileCheck;
+        
+        fireChanges();
     }
     
     public boolean isWallUp() {
@@ -383,6 +548,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setWallUp(boolean wallUp) {
         this.wallUp = wallUp;
+        
+        fireChanges();
     }
     
     public boolean isWallDown() {
@@ -391,6 +558,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setWallDown(boolean wallDown) {
         this.wallDown = wallDown;
+        
+        fireChanges();
     }
     
     public boolean isWallLeft() {
@@ -399,6 +568,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setWallLeft(boolean wallLeft) {
         this.wallLeft = wallLeft;
+        
+        fireChanges();
     }
     
     public boolean isWallRight() {
@@ -407,6 +578,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setWallRight(boolean wallRight) {
         this.wallRight = wallRight;
+        
+        fireChanges();
     }
     
     public int getDestruction() {
@@ -415,6 +588,18 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setDestruction(int destruction) {
         this.destruction = destruction;
+        
+        fireChanges();
+    }
+
+    public boolean isIndestructible(){
+        return this.indestructible;
+    }
+
+    public void setIndestructible(boolean indestructible){
+        this.indestructible = indestructible;
+
+        fireChanges();
     }
     
     public boolean isKey() {
@@ -423,6 +608,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setKey(boolean key) {
         this.key = key;
+        
+        fireChanges();
     }
     
     public boolean isShakes() {
@@ -431,6 +618,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setShakes(boolean shakes) {
         this.shakes = shakes;
+        
+        fireChanges();
     }
     
     public int getParallaxFactor() {
@@ -439,6 +628,8 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setParallaxFactor(int parallaxFactor) {
         this.parallaxFactor = parallaxFactor;
+        
+        fireChanges();
     }
     
     public boolean isRandomSoundFrequency() {
@@ -447,14 +638,18 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setRandomSoundFrequency(boolean randomSoundFrequency) {
         this.randomSoundFrequency = randomSoundFrequency;
+        
+        fireChanges();
     }
     
-    public boolean isGlide() {
+    public boolean canGlide() {
         return glide;
     }
     
     public void setGlide(boolean glide) {
         this.glide = glide;
+        
+        fireChanges();
     }
     
     public boolean isAlwaysBonus() {
@@ -463,14 +658,18 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setAlwaysBonus(boolean alwaysBonus) {
         this.alwaysBonus = alwaysBonus;
+        
+        fireChanges();
     }
     
-    public boolean isSwim() {
+    public boolean canSwim() {
         return swim;
     }
     
     public void setSwim(boolean swim) {
         this.swim = swim;
+        
+        fireChanges();
     }
     
     public int getFramesAmount() {
@@ -479,8 +678,65 @@ public class PK2SpriteOld implements ISpritePrototypeEDS {
     
     public void setFramesAmount(int framesAmount) {
         this.framesAmount = framesAmount;
+        
+        fireChanges();
     }
     
+    private void fireChanges() {
+        for (var cl : changeListeners) {
+            cl.stateChanged(changeEvent);
+        }
+    }
+    
+    public void addChangeListener(ChangeListener listener) {
+        if (!changeListeners.contains(listener)) {
+            changeListeners.add(listener);
+        }
+    }
+    
+    public void setSoundFile(String file, int number) {
+        soundFiles[number] = file;
+    }
+    
+    public String getSoundFile(int index) {
+        return soundFiles[index];
+    }
+    
+    public List<String> getSoundFilesList() {
+        return soundFilesList;
+    }
+    
+    public void setAnimationsList(List<PK2SpriteAnimation> animations) {
+        this.animationsList = animations;
+    }
+    
+    public List<PK2SpriteAnimation> getAnimationsList() {
+        return animationsList;
+    }
+    
+    public void setFramesList(List<BufferedImage> frames) {
+        this.framesList = frames;
+    }
+    
+    public List<BufferedImage> getFramesList() {
+        return framesList;
+    }
+
+    public int getInfoID(){
+        return this.info_id;
+    }
+
+    public void setInfoID(int info_id){
+        this.info_id = info_id;
+
+        fireChanges();
+    }
+
+    /**
+     * For levels editor
+     */
+
+    int placedAmount = 0;
     public int getPlacedAmount() {
         return placedAmount;
     }

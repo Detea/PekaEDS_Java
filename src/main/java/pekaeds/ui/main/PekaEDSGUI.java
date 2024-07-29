@@ -1,7 +1,5 @@
 package pekaeds.ui.main;
 
-import pk2.PekkaKana2;
-
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -11,15 +9,14 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalTime;
 
+import java.time.LocalTime;
 import org.tinylog.Logger;
 
 import pekaeds.data.EditorConstants;
 import pekaeds.data.Layer;
 import pekaeds.data.PekaEDSVersion;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.pk2.map.*;
 import pekaeds.settings.Settings;
 import pekaeds.settings.Shortcuts;
@@ -40,7 +37,6 @@ import pekaeds.util.*;
 import pekaeds.util.episodemanager.EpisodeManager;
 import pekaeds.util.file.AutoSaveManager;
 import pekaeds.util.file.LastSessionManager;
-import pekaeds.util.file.PathUtils;
 
 public class PekaEDSGUI implements ChangeListener {
     //private ChangeEvent changeEvent = new ChangeEvent(this);
@@ -224,42 +220,31 @@ public class PekaEDSGUI implements ChangeListener {
         * Map related methods
      */
     public void loadMap(PK2Map map, File mapFile) {
-        
 
-        
+        if(mapFile!=null){
 
-        String tilesetName = null;
-        String backgroundName = null;
-
-        if(mapFile!=null&&Settings.getDllPath()!=null){
-
-            File episode = mapFile.getParentFile();
-            String episodeName = episode.getAbsolutePath();
-            
-            tilesetName = PekkaKana2.findAsset(episodeName + File.separatorChar + map.getTileset(), "gfx"+File.separatorChar+"tiles");
-            backgroundName = PekkaKana2.findAsset(episodeName + File.separatorChar + map.getBackground(), "gfx"+File.separatorChar+"scenery");
-
-            if(tilesetName!=null && !new File(tilesetName).isAbsolute()){
-                tilesetName = Settings.getBasePath() +File.separatorChar + tilesetName;
+            File episodeDir = mapFile.getParentFile();
+            if(episodeDir.exists()){
+                PK2FileSystem.INSTANCE.SetEpisodeName(episodeDir.getName());
             }
-
-            if(backgroundName!=null && !new File(backgroundName).isAbsolute()){
-                backgroundName = Settings.getBasePath() +File.separatorChar + backgroundName;
+            else{
+                PK2FileSystem.INSTANCE.SetEpisodeName(null);
             }
-
         }
         else{
-            tilesetName = Settings.getTilesetPath() + map.getTileset();
-            backgroundName = Settings.getBackgroundsPath() + map.getBackground();
+            PK2FileSystem.INSTANCE.SetEpisodeName(null);
         }
+
+        File tilesetFile = PK2FileSystem.INSTANCE.findAsset(map.getTileset(), PK2FileSystem.TILESET_DIR);
+        File backgroundFile = PK2FileSystem.INSTANCE.findAsset(map.getBackground(), PK2FileSystem.SCENERY_DIR);
 
         BufferedImage tilesetImage = null;
 
-        if(tilesetName!=null){
+        if(tilesetFile!=null){
             try {
-                tilesetImage = ImageIO.read(new File(tilesetName));
+                tilesetImage = ImageIO.read(tilesetFile);
             } catch (IOException e) {
-                System.out.println(tilesetName);
+                System.out.println(tilesetFile);
                 Logger.error(e, "Unable to load tileset image.");
             }
         }
@@ -270,11 +255,11 @@ public class PekaEDSGUI implements ChangeListener {
         }
     
         BufferedImage backgroundImage = null;
-        if(backgroundName!=null){
+        if(backgroundFile!=null){
             try {
-                backgroundImage = ImageIO.read(new File(backgroundName));
+                backgroundImage = ImageIO.read(backgroundFile);
             } catch (IOException e) {
-                System.out.println(backgroundName);
+                System.out.println(backgroundFile);
                 Logger.error(e, "Unable to load background image.");
             }
         }
@@ -285,25 +270,25 @@ public class PekaEDSGUI implements ChangeListener {
         }
   
         tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);    
-        if (Settings.useBGTileset() && backgroundImage != null) {
-            // Check if the tileset has a _bg version, if it does load and set it to the background tileset.
-            BufferedImage bgTilesetImage = null;
-            var bgTilesetFileStr = PathUtils.getTilesetAsBackgroundTileset(Settings.getTilesetPath() + map.getTileset());
+        // if (Settings.useBGTileset() && backgroundImage != null) {
+        //     // Check if the tileset has a _bg version, if it does load and set it to the background tileset.
+        //     BufferedImage bgTilesetImage = null;
+        //     var bgTilesetFileStr = PathUtils.getTilesetAsBackgroundTileset(Settings.getTilesetPath() + map.getTileset());
         
-            if (Files.exists(Path.of(bgTilesetFileStr))) {
-                try {
-                    bgTilesetImage = ImageIO.read(new File(bgTilesetFileStr));
+        //     if (Files.exists(Path.of(bgTilesetFileStr))) {
+        //         try {
+        //             bgTilesetImage = ImageIO.read(new File(bgTilesetFileStr));
                     
-                    bgTilesetImage = GFXUtils.setPaletteToBackgrounds(bgTilesetImage, backgroundImage); // TODO Does the game do this?
+        //             bgTilesetImage = GFXUtils.setPaletteToBackgrounds(bgTilesetImage, backgroundImage); // TODO Does the game do this?
     
-                    map.setBackgroundTilesetImage(bgTilesetImage);
-                } catch (IOException e) {
-                    Logger.warn("Unable to load background tileset image.");
+        //             map.setBackgroundTilesetImage(bgTilesetImage);
+        //         } catch (IOException e) {
+        //             Logger.warn("Unable to load background tileset image.");
                     
-                    JOptionPane.showMessageDialog(null, "Unable to load background tileset image.");
-                }
-            }
-        }
+        //             JOptionPane.showMessageDialog(null, "Unable to load background tileset image.");
+        //         }
+        //     }
+        // }
     
         Tool.reset();
         setSelectedTool(Tools.getTool(BrushTool.class));
@@ -362,7 +347,7 @@ public class PekaEDSGUI implements ChangeListener {
     public void saveMap() {
         // If the file has not been saved yet, ask the user to give it a name and location
         if (model.getCurrentMapFile() == null) {
-            var fc = new JFileChooser(Settings.getEpisodesPath());
+            var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR));
             fc.setDialogTitle("Save map...");
         
             if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -380,6 +365,13 @@ public class PekaEDSGUI implements ChangeListener {
     
     public void saveMap(File file) {
         if (file != null) {
+
+            {
+                File episodeDir = file.getParentFile();
+                if(episodeDir.exists()){
+                    PK2FileSystem.INSTANCE.SetEpisodeName(episodeDir.getName());
+                }
+            }
             mapMetadataPanel.commitSpinnerValues();
             
             try {

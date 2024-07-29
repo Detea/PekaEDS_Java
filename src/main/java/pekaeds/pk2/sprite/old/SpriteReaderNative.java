@@ -1,9 +1,8 @@
-package pekaeds.pk2.sprite;
+package pekaeds.pk2.sprite.old;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 
 
 import javax.imageio.ImageIO;
@@ -13,7 +12,7 @@ import pk2.sprite.PrototypesHandler;
 
 import org.tinylog.Logger;
 
-import pekaeds.settings.Settings;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.util.GFXUtils;
 
 public class SpriteReaderNative implements ISpriteReader {
@@ -54,22 +53,9 @@ public class SpriteReaderNative implements ISpriteReader {
             BufferedImage image = null;
 
             try{
-                File imgFile = null;
-                if(episode_dir!=null){
-                    String imageStr = pk2.PekkaKana2.findAsset(episode_dir + File.separatorChar + prototype.getTextureName(), "sprites");
-                    if(imageStr!=null){
-                        imgFile = new File(imageStr);
-                        if(!imgFile.isAbsolute()){
-                            imgFile = Paths.get(Settings.getBasePath(), imageStr).toFile();
-                        }
-                    }
-                }
-                else{
-                    imgFile = Paths.get(Settings.getSpritesPath(), prototype.getTextureName()).toFile();
-                }
-
-                if(imgFile!=null && imgFile.exists() && imgFile.isFile()){
-                    image = mProcessSpriteImage(prototypeEDS, ImageIO.read(imgFile), backgroundImage);
+                File spriteImageFile = PK2FileSystem.INSTANCE.findAsset(prototype.getTextureName(),PK2FileSystem.SPRITES_DIR);
+                if(spriteImageFile!=null){
+                    image = mProcessSpriteImage(prototypeEDS, ImageIO.read(spriteImageFile), backgroundImage);
                 }
             }
             catch(IOException e){

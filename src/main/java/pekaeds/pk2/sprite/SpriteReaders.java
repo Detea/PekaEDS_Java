@@ -5,6 +5,12 @@ import java.util.*;
 
 import org.tinylog.Logger;
 
+import pekaeds.pk2.sprite.old.ISpriteReader;
+import pekaeds.pk2.sprite.old.PK2SpriteReader11;
+import pekaeds.pk2.sprite.old.PK2SpriteReader12;
+import pekaeds.pk2.sprite.old.PK2SpriteReader13;
+import pekaeds.pk2.sprite.old.SpriteReaderNative;
+
 public final class SpriteReaders {
     private static final PK2SpriteReader11 reader1_1 = new PK2SpriteReader11();
     private static final PK2SpriteReader12 reader1_2 = new PK2SpriteReader12();

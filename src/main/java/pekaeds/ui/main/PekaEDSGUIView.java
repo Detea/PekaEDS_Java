@@ -2,7 +2,7 @@ package pekaeds.ui.main;
 
 import net.miginfocom.swing.MigLayout;
 import pekaeds.data.PekaEDSVersion;
-import pekaeds.settings.Settings;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.ui.actions.NewMapAction;
 import pekaeds.ui.actions.OpenFolderAction;
 import pekaeds.ui.actions.OpenMapAction;
@@ -240,7 +240,7 @@ public class PekaEDSGUIView {
         mFileExit.addActionListener(e -> System.exit(0));
         
         mEpisodeNew.addActionListener(e -> {
-            var fc = new JFileChooser(Settings.getEpisodesPath());
+            var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR));
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fc.setDialogTitle("Select an episode folder to add...");
             
@@ -274,12 +274,17 @@ public class PekaEDSGUIView {
             }
         });
 
-        mfBase.addActionListener(new OpenFolderAction(Settings.getBasePath()));
-        mfEpisodes.addActionListener(new OpenFolderAction(Settings.getEpisodesPath()));
-        mfTilesets.addActionListener(new OpenFolderAction(Settings.getTilesetPath()));
-        mfBackgrounds.addActionListener(new OpenFolderAction(Settings.getBackgroundPath()));
-        mfSprites.addActionListener(new OpenFolderAction(Settings.getSpritesPath()));
-        mfMusic.addActionListener(new OpenFolderAction(Settings.getMusicPath()));
+        mfBase.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath()));
+
+        mfEpisodes.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR)));
+
+        mfTilesets.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.TILESET_DIR)));
+
+        mfBackgrounds.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SCENERY_DIR)));
+
+        mfSprites.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SPRITES_DIR)));
+
+        mfMusic.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.MUSIC_DIR)));
     }
     
     void setFrameTitle(String title) {

@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
 
+
 public class PK2FileSystem {
 
 public static final PK2FileSystem INSTANCE = new PK2FileSystem();
@@ -27,7 +28,7 @@ public static void main(String[] args){
 
         System.out.println("--------\nTEST: findAsset:");
 
-        File f = INSTANCE.findAsset("main.lua", "lua");
+        File f = INSTANCE.findAsset("tiles01.bmp", TILESET_DIR);
         System.out.println(f);
 
         /**
@@ -48,10 +49,15 @@ public static void main(String[] args){
     }
 }
 
-
 public static final String PK2_STUFF_NAME = "pk2stuff.bmp";
-public static final String DEFAULT_SPRITES_DIR = "sprites";
-public static final String DEFAULT_EPISODES_DIR = "episodes";
+public static final String SPRITES_DIR = "sprites";
+public static final String EPISODES_DIR = "episodes";
+
+public static final String TILESET_DIR = "gfx"+File.separator+"tiles";
+public static final String SCENERY_DIR = "gfx"+File.separator+"scenery";
+
+public static final String MUSIC_DIR = "music";
+public static final String LUA_DIR = "lua";
 
 private File mAssetsPath;
 private String mEpisodeName;
@@ -82,15 +88,23 @@ public void setAssetsPath(File assetsPath) throws FileNotFoundException{
     }
 }
 
-public final File getAssetsPath(){
+public File getAssetsPath(){
     return this.mAssetsPath;
+}
+
+public File getAssetsPath(String subfolder){
+    return Paths.get(this.mAssetsPath.getPath(), subfolder).toFile();
+}
+
+public File getPK2StuffFile(){
+    return Paths.get(this.mAssetsPath.getPath(), "gfx", PK2_STUFF_NAME).toFile();
 }
 
 public void SetEpisodeName(String name){
     this.mEpisodeName = name;
 }
 
-public final String GetEpisodeName(){
+public String GetEpisodeName(){
     return this.mEpisodeName;
 }
 
@@ -121,12 +135,12 @@ public File findAsset(String assetName, String defaultDir){
 
     if(this.isEpisodeSet()){
         f = findFile(
-            Paths.get(mAssetsPath.getPath(), DEFAULT_EPISODES_DIR, this.mEpisodeName).toFile(),lowercase);
+            Paths.get(mAssetsPath.getPath(), EPISODES_DIR, this.mEpisodeName).toFile(),lowercase);
         
         if(f!=null)return f;
 
         f = findFile(
-            Paths.get(mAssetsPath.getPath(), DEFAULT_EPISODES_DIR,this.mEpisodeName, defaultDir).toFile(),lowercase);
+            Paths.get(mAssetsPath.getPath(), EPISODES_DIR,this.mEpisodeName, defaultDir).toFile(),lowercase);
 
         if(f!=null)return f;
     }
@@ -140,15 +154,16 @@ public File findSprite(String spriteName){
     if(spriteName.toLowerCase().endsWith(".spr")){
 
         //.spr2 first
-        File f = findAsset(spriteName + "2", DEFAULT_SPRITES_DIR);
+        File f = findAsset(spriteName + "2", SPRITES_DIR);
         if(f!=null)return f;
 
         //.spr
-        return findAsset(spriteName, DEFAULT_SPRITES_DIR);
+        return findAsset(spriteName, SPRITES_DIR);
     }
     else{
-        return findAsset(spriteName, DEFAULT_SPRITES_DIR);
+        return findAsset(spriteName, SPRITES_DIR);
     }
 }
+
 
 }

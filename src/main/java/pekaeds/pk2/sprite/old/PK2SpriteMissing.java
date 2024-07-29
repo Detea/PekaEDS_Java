@@ -1,4 +1,4 @@
-package pekaeds.pk2.sprite;
+package pekaeds.pk2.sprite.old;
 
 import org.tinylog.Logger;
 

@@ -31,11 +31,13 @@ public class Settings {
     
     private static String basePath;
     private static String dllPath = null;
-    private static String tilesetPath;
-    private static String backgroundsPath;
-    private static String spritesPath;
-    private static String episodesPath;
-    private static String musicPath;
+
+
+    // private static String tilesetPath;
+    // private static String backgroundsPath;
+    // private static String spritesPath;
+    // private static String episodesPath;
+    // private static String musicPath;
     
     private static String defaultTileset = "tiles01.bmp";
     private static String defaultBackground = "castle.bmp";
@@ -50,8 +52,8 @@ public class Settings {
     private static MapProfile mapProfile = new MapProfile();
     private static SpriteProfile spriteProfile = new SpriteProfile();
     
-    private static String pk2stuffFile;
-    private static final String pk2Stuff = "pk2stuff.bmp";
+    //private static String pk2stuffFile;
+    //private static final String pk2Stuff = "pk2stuff.bmp";
     
     private static boolean highlightSprites = true;
     private static boolean showTileNumberInTileset = true;
@@ -270,14 +272,14 @@ public class Settings {
         basePath = path;
         dllPath = mFindDll(path);
 
-        tilesetPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "tiles" + File.separatorChar;
-        backgroundsPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "scenery" + File.separatorChar;
-        spritesPath = basePath + File.separatorChar + "sprites" + File.separatorChar;
-        episodesPath = basePath + File.separatorChar + "episodes" + File.separatorChar;
+        // tilesetPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "tiles" + File.separatorChar;
+        // backgroundsPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "scenery" + File.separatorChar;
+        // spritesPath = basePath + File.separatorChar + "sprites" + File.separatorChar;
+        // episodesPath = basePath + File.separatorChar + "episodes" + File.separatorChar;
         
-        musicPath = basePath + File.separatorChar + "music" + File.separatorChar;
+        // musicPath = basePath + File.separatorChar + "music" + File.separatorChar;
         
-        pk2stuffFile = basePath + File.separatorChar + "gfx" + File.separatorChar + pk2Stuff;
+        // pk2stuffFile = basePath + File.separatorChar + "gfx" + File.separatorChar + pk2Stuff;
     }
     
     public static void setKeyboardShortcutFor(String actionName, KeyStroke keyStroke) {
@@ -320,13 +322,13 @@ public class Settings {
         return dllPath;
     }
     
-    public static String getTilesetPath() {
-        return tilesetPath;
-    }
+    // public static String getTilesetPath() {
+    //     return tilesetPath;
+    // }
     
-    public static String getBackgroundsPath() {
-        return backgroundsPath;
-    }
+    // public static String getBackgroundsPath() {
+    //     return backgroundsPath;
+    // }
     
     public static String getDefaultTileset() {
         return defaultTileset;
@@ -336,13 +338,13 @@ public class Settings {
         return defaultBackground;
     }
 
-    public static String getSpritesPath() {
-        return spritesPath;
-    }
+    // public static String getSpritesPath() {
+    //     return spritesPath;
+    // }
     
-    public static String getEpisodesPath() {
-        return episodesPath;
-    }
+    // public static String getEpisodesPath() {
+    //     return episodesPath;
+    // }
     
     public static void setDefaultTileset(String tileset) {
         defaultTileset = tileset;
@@ -352,17 +354,17 @@ public class Settings {
         defaultBackground = background;
     }
     
-    public static String getPK2stuffFilePath() {
+    /*public static String getPK2stuffFilePath() {
         return pk2stuffFile;
-    }
+    }*/
     
     public static String getGFXPath() {
         return basePath + File.separatorChar + "gfx" + File.separatorChar;
     }
     
-    public static String getMusicPath() {
-        return musicPath;
-    }
+    // public static String getMusicPath() {
+    //     return musicPath;
+    // }
     
     public static void setHighlightSprites(boolean hSprites) {
         highlightSprites = hSprites;
@@ -408,9 +410,9 @@ public class Settings {
         return testingParameter;
     }
     
-    public static String getBackgroundPath() {
-        return backgroundsPath;
-    }
+    // public static String getBackgroundPath() {
+    //     return backgroundsPath;
+    // }
     
     public static boolean useBGTileset() {
         return useBGTileset;

@@ -19,7 +19,7 @@ public class ImagePreviewFileChooser extends JFileChooser implements PropertyCha
     
     private int previewType;
     
-    public ImagePreviewFileChooser(String basePath, int preview) {
+    public ImagePreviewFileChooser(File basePath, int preview) {
         super(basePath);
         
         this.previewType = preview;

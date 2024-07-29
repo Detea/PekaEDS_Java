@@ -6,7 +6,7 @@ import javax.swing.event.ChangeListener;
 import pekaeds.data.Layer;
 import pekaeds.data.MapData;
 import pekaeds.pk2.map.PK2Map;
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
 import pekaeds.tool.undomanager.ToolUndoManager;
 import pekaeds.tool.undomanager.UndoAction;
 import pekaeds.ui.listeners.SpritePlacementListener;

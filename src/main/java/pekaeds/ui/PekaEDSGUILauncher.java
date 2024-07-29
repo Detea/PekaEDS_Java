@@ -5,13 +5,14 @@ import pk2.sprite.PrototypesHandler;
 
 import javax.swing.*;
 
-import pekaeds.pk2.sprite.SpriteReaderNative;
+import pekaeds.pk2.file.PK2FileSystem;
+import pekaeds.pk2.sprite.old.SpriteReaderNative;
 import pekaeds.settings.Settings;
 import pekaeds.ui.main.PekaEDSGUI;
 import pekaeds.ui.misc.SetPathDialog;
-import pekaeds.util.file.PathUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 public final class PekaEDSGUILauncher {
@@ -26,47 +27,39 @@ public final class PekaEDSGUILauncher {
             checkSettingsFile();
         }
 
-        /*String basePath = Settings.getBasePath();
-        String dllPath = Settings.getDllPath();
-        pk2.PekkaKana2.init(dllPath, basePath);*/
     }
     
     private static void checkSettingsFile() {
         try {
             Settings.load();
-   
-            var file = new File(Settings.getBasePath());
-            if (!file.exists() || !PathUtils.isPK2Directory(file) || !Settings.doesBasePathExist()) {
-                createNewSettingsFile();
-            } else {
-                System.out.println("THE END!");
-                System.out.println("DLL path: "+ Settings.getDllPath());
 
-                if (!PathUtils.isPK2StuffPresent(Settings.getBasePath())) {
-                    JOptionPane.showMessageDialog(null, "Missing essential file: pk2stuff.bmp\nExpecting it in: " + Settings.getGFXPath(), "Unable to find pk2stuff.bmp", JOptionPane.ERROR_MESSAGE);
-                } else if (!PathUtils.isMapImagePresent(Settings.getBasePath())) {
-                    JOptionPane.showMessageDialog(null, "Missing essential file: map.bmp\nExpecting it in: " + Settings.getGFXPath(), "Unable to find map.bmp", JOptionPane.ERROR_MESSAGE);
-                } else {
-
-                    file = new File(Settings.getDllPath());
-                    if(file.exists()){
-                        pk2.PekkaKana2.init(Settings.getDllPath(), Settings.getBasePath());
-
-                        SpriteReaderNative.handler = new PrototypesHandler(true,true);
-
-                        SwingUtilities.invokeLater(PekaEDSGUI::new);
-                    }
-                    else{
-                        JOptionPane.showMessageDialog(null,
-                        "Missing essential file: "+Settings.DLL_NAME_WINDOWS+" or "+Settings.DLL_NAME_LINUX,
-                        "This editor requires PK2 Greta v0.59 (snapshot-11) or newer.", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            File file = new File(Settings.getBasePath());
             
+            /**
+             * If there's something wrong, not PK2 directory and so on, it throws an exception
+             */
+            PK2FileSystem.INSTANCE.setAssetsPath(file);
+            
+            System.out.println("DLL path: "+ Settings.getDllPath());
+            file = new File(Settings.getDllPath());
+            if(file.exists()){
+                pk2.PekkaKana2.init(Settings.getDllPath(), Settings.getBasePath());
+
+                SpriteReaderNative.handler = new PrototypesHandler(true,true);
+
+                SwingUtilities.invokeLater(PekaEDSGUI::new);
+            }
+            else{
+                JOptionPane.showMessageDialog(null,
+                "Missing essential file: "+Settings.DLL_NAME_WINDOWS+" or "+Settings.DLL_NAME_LINUX,
+                "This editor requires PK2 Greta v0.59 (snapshot-11) or newer.", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch(FileNotFoundException e){
             createNewSettingsFile();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
         }
     }
     
@@ -76,18 +69,15 @@ public final class PekaEDSGUILauncher {
             If selectedFile is null that means the user clicked the close button of the dialog and wants to exit, so we don't do anything and just let the application stop on its own.
          */
         File selectedFile = pathDialog.showDialog();
-        
-        if (selectedFile.exists()) {
-            if (PathUtils.isPK2Directory(selectedFile)) {
-                Settings.reset();
-                Settings.setBasePath(selectedFile.getPath());        
-                Settings.save();
-                
-                checkSettingsFile();
-            } else {
-                createNewSettingsNonExistent();
-            }
-        } else {
+
+        try{
+            PK2FileSystem.INSTANCE.setAssetsPath(selectedFile);
+
+            Settings.reset();
+            Settings.setBasePath(selectedFile.getPath());
+            Settings.save();
+        }
+        catch(FileNotFoundException e){
             createNewSettingsNonExistent();
         }
     }

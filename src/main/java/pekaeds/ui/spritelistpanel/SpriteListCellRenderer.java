@@ -1,7 +1,7 @@
 package pekaeds.ui.spritelistpanel;
 
 import net.miginfocom.swing.MigLayout;
-import pekaeds.pk2.sprite.ISpritePrototypeEDS;
+import pekaeds.pk2.sprite.old.ISpritePrototypeEDS;
 import pekaeds.settings.Settings;
 import pekaeds.ui.misc.ImagePanel;
 
