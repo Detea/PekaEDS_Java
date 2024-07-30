@@ -1,6 +1,12 @@
 package pekaeds.util.file;
 
 import java.io.*;
+import java.util.Map;
+
+import org.json.JSONObject;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.cbor.CBORFactory;
 
 public final class PK2FileUtils {
     private PK2FileUtils() {}
@@ -80,5 +86,36 @@ public final class PK2FileUtils {
                 out.writeByte(0);
             }
         }
+    }
+
+    public static JSONObject readCBOR(DataInputStream in) throws IOException{
+        long bufferSize = Long.reverseBytes(in.readLong());
+       
+        byte[] buffer  = new byte[(int)bufferSize];
+        in.read(buffer);
+
+        CBORFactory cborFactory = new CBORFactory();
+        ObjectMapper objectMapper = new ObjectMapper(cborFactory);
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> cborMap = objectMapper.readValue(new ByteArrayInputStream(buffer), Map.class);
+        return new JSONObject(cborMap);
+    }
+
+    public static void writeCBOR(DataOutputStream out, JSONObject jsonObject) throws IOException{
+        
+        CBORFactory cborFactory = new CBORFactory();
+        ObjectMapper cborMapper = new ObjectMapper(cborFactory);
+
+        // Convert JSONObject to CBOR
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        cborMapper.writeValue(outputStream, jsonObject.toMap());
+
+        byte[] buffer = outputStream.toByteArray();
+
+        long size = Long.reverseBytes((long)buffer.length);
+        
+        out.writeLong(size);
+        out.write(buffer);
     }
 }

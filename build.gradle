@@ -19,6 +19,9 @@ dependencies {
     implementation 'com.formdev:flatlaf:2.6'
     implementation 'com.miglayout:miglayout-swing:11.0'
     implementation 'org.json:json:20231013'
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.14.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-cbor:2.14.0'
 }
 
 application {
