@@ -51,7 +51,7 @@ public class Settings {
     
     private static boolean useBGTileset = false;
     
-    private static final File settingsFile = new File("settings.dat");
+    //private static final File settingsFile = new File("settings.dat");
     
     private static final Map<String, KeyStroke> keyboardShortcuts = new HashMap<>();
     
@@ -96,8 +96,8 @@ public class Settings {
         keyboardShortcuts.put(Shortcuts.TOOL_FLOOD_FILL, KeyStroke.getKeyStroke(KeyEvent.VK_F, 0));
     }
     
-    public static void load() throws IOException {
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(settingsFile))) {
+    public static void load(File file) throws IOException {
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
             basePath = dis.readUTF();
             defaultTileset = dis.readUTF();
             defaultBackground = dis.readUTF();
