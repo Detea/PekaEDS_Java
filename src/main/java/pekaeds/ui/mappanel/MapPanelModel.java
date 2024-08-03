@@ -6,7 +6,8 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 import pekaeds.data.Layer;
-import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.level.PK2Level;
+import pekaeds.pk2.level.PK2LevelSector;
 
 public class MapPanelModel {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
@@ -23,17 +24,27 @@ public class MapPanelModel {
     private BufferedImage backgroundImage;
     private BufferedImage tilesetImage;
 
-    private PK2Map map;
+    private PK2LevelSector sector;
+    private PK2Level level;
     
     private Point zoomPosition = new Point();
     private float zoomAmount = 1;
     
-    public PK2Map getMap() {
-        return map;
+    public PK2LevelSector getSector() {
+        return sector;
     }
+
+    public PK2Level getLevel(){
+        return level;
+    }
+
     
-    public void setMap(PK2Map m) {
-        this.map = m;
+    public void setSector(PK2LevelSector sector) {
+        this.sector = sector;
+    }
+
+    public void setLevel(PK2Level level){
+        this.level = level;
     }
     
     public void setBackgroundImage(BufferedImage image) {

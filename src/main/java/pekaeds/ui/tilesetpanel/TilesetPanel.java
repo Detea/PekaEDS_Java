@@ -2,9 +2,9 @@ package pekaeds.ui.tilesetpanel;
 
 import javax.swing.*;
 
-import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.settings.Settings;
-import pekaeds.ui.listeners.PK2MapConsumer;
+import pekaeds.ui.listeners.PK2SectorConsumer;
 import pekaeds.ui.listeners.RepaintListener;
 import pekaeds.ui.main.PekaEDSGUI;
 import pekaeds.util.TileUtils;
@@ -12,7 +12,7 @@ import pekaeds.util.TileUtils;
 import java.awt.*;
 
 // TODO Clean up this class. Probably should create a TilesetPanelPainter
-public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListener {
+public class TilesetPanel extends JPanel implements PK2SectorConsumer, RepaintListener {
     private TilesetPanelModel model;
     
     private Rectangle selectionRect = new Rectangle(0, 0, 1, 1);
@@ -30,6 +30,8 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
         
         setup();
     }
+
+
     
     private void setup() {
         var mouseHandler = new TilesetPanelMouseHandler(this);
@@ -139,10 +141,14 @@ public class TilesetPanel extends JPanel implements PK2MapConsumer, RepaintListe
     }
     
     @Override
-    public void setMap(PK2Map map) {
+    public void setSector(PK2LevelSector map) {
         model.setMap(map);
         
         repaint();
+    }
+
+    public PK2LevelSector getSector(){
+        return model.getMap();
     }
     
     @Override

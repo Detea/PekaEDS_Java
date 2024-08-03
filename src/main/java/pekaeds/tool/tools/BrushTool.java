@@ -124,7 +124,7 @@ public class BrushTool extends Tool {
                 int selectedSprite = selection.getSelectionSprites()[y][x];
 
                 if (selectedSprite != 255 && selectedSprite >= 0) {
-                    getMapPanelPainter().drawSprite(g, map.getSprite(selectedSprite), getMousePosition().x, getMousePosition().y);
+                    getMapPanelPainter().drawSprite(g, level.getSprite(selectedSprite), getMousePosition().x, getMousePosition().y);
                 }
             }
         }

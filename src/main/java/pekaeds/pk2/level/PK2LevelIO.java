@@ -43,7 +43,7 @@ public final class PK2LevelIO {
                 in.read(data);
 
                 for(int i=0;i<data.length;++i){
-                    array.setByIndex(i, (int)data[i]);
+                    array.setByIndex(i, (int)data[i] & 0xFF);
                 }
             }    
             break;
@@ -89,7 +89,7 @@ public final class PK2LevelIO {
         out.write(data);
     }
     
-    private static PK2Level load15Level(DataInputStream in) throws Exception{
+    private static PK2Level load15Level(DataInputStream in, boolean iconOnly) throws Exception{
 
         PK2Level level = new PK2Level();
 
@@ -103,6 +103,10 @@ public final class PK2LevelIO {
             level.icon_x = header.getInt("icon_x");
             level.icon_y = header.getInt("icon_y");
             level.icon_id = header.getInt("icon_id");
+
+            if(iconOnly){
+                return level;
+            }
 
             sectors_number = header.getInt("regions");
             JSONArray spritesArray = header.getJSONArray("sprite_prototypes");
@@ -167,7 +171,7 @@ public final class PK2LevelIO {
         return level;
     }
 
-    private static PK2Level load13Level(DataInputStream in) throws Exception{
+    private static PK2Level load13Level(DataInputStream in, boolean iconOnly) throws Exception{
 
         PK2Level level = new PK2Level();
         PK2LevelSector sector = new PK2LevelSector(PK2LevelSector.CLASSIC_WIDTH,PK2LevelSector.CLASSIC_HEIGHT);
@@ -202,6 +206,10 @@ public final class PK2LevelIO {
 
         level.icon_id = PK2FileUtils.readInt(in);
 
+        if(iconOnly){
+            return level;
+        }
+
         int spritesAmount = PK2FileUtils.readInt(in);
 
         for (int i = 0; i < spritesAmount; i++) {
@@ -230,6 +238,10 @@ public final class PK2LevelIO {
     }
 
     public static PK2Level loadLevel(File file) throws Exception{
+        return loadLevel(file, false);
+    }
+
+    public static PK2Level loadLevel(File file, boolean iconOnly) throws Exception{
 
         PK2Level res = null;
         DataInputStream in = new DataInputStream(new FileInputStream(file));
@@ -238,10 +250,10 @@ public final class PK2LevelIO {
         in.read(version);
 
         if(checkID(ID1_5, version)){
-            res = load15Level(in);
+            res = load15Level(in, iconOnly);
         }
         else if(checkID(ID1_3, version)){
-            res = load13Level(in);
+            res = load13Level(in, iconOnly);
         }
 
         in.close();

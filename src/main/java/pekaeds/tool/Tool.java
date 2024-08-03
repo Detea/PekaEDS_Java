@@ -4,20 +4,18 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import pekaeds.data.Layer;
-import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.level.PK2Level;
+import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.pk2.sprite.ISpritePrototype;
 import pekaeds.tool.undomanager.ToolUndoManager;
 import pekaeds.tool.undomanager.UndoAction;
 import pekaeds.ui.listeners.SpritePlacementListener;
 import pekaeds.ui.listeners.TileChangeListener;
-import pekaeds.ui.mappanel.MapPanelModel;
 import pekaeds.ui.mappanel.MapPanelPainter;
 import pekaeds.util.TileUtils;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 
 /**
  * Parent class for all Tools.
@@ -35,11 +33,12 @@ import java.beans.PropertyChangeListener;
  *
  * If you want to add a button to the main UI, look at the ToolsToolBar class.
  */
-public abstract class Tool implements PropertyChangeListener {
+public abstract class Tool {
     public static final int MODE_TILE = 0;
     public static final int MODE_SPRITE = 1;
     
-    protected static PK2Map map;
+    protected static PK2LevelSector map;
+    protected static PK2Level level;
 
     private MapPanelPainter mapPainter;
     
@@ -133,7 +132,11 @@ public abstract class Tool implements PropertyChangeListener {
         return mapPainter;
     }
 
-    public static void setMap(PK2Map m) {
+    public static void setLevel(PK2Level m){
+        level = m;
+    }
+
+    public static void setSector(PK2LevelSector m) {
         map = m;
 
         layerHandler.setMap(m);
@@ -161,7 +164,7 @@ public abstract class Tool implements PropertyChangeListener {
     }
     
     // Delete this
-    @Override
+    /*@Override
     public void propertyChange(PropertyChangeEvent evt) {
         if (evt.getSource() instanceof MapPanelModel) {
             if (evt.getPropertyName().equals("selectedLayer")) {
@@ -173,13 +176,13 @@ public abstract class Tool implements PropertyChangeListener {
                 map = (PK2Map) evt.getNewValue();
             }
         }
-    }
+    }*/
 
     public static void setSelectedSprite(ISpritePrototype newSprite) {
         // TODO Change grid size to size of selected sprite?
 
-        for (int i = 0; i < map.getSpriteList().size(); i++) {
-            if (map.getSpriteList().get(i) == newSprite) {
+        for (int i = 0; i < level.getSpriteList().size(); i++) {
+            if (level.getSpriteList().get(i) == newSprite) {
                 selection.setSelectionSprites(new int[][]{{ i }});
 
                 break;
@@ -204,7 +207,7 @@ public abstract class Tool implements PropertyChangeListener {
         String sprFilename = "none";
         if (sprId != 255) {
             if (map != null) {
-                sprFilename = map.getSpriteList().get(sprId).getFilename();
+                sprFilename = level.getSpriteList().get(sprId).getFilename();
             }
         }
         
@@ -265,6 +268,7 @@ public abstract class Tool implements PropertyChangeListener {
             case PLACE_SPRITE,
                     CUT_TOOL_PLACE_SPRITES,
                     CUT_TOOL_CUT_SPRITES -> layerHandler.placeSpritesScreen(action.getX(), action.getY(), action.getOldTiles());
+            default -> throw new IllegalArgumentException("Unexpected value: " + action.getType());
         }
     
         action.changeIntoRedo();
@@ -281,6 +285,7 @@ public abstract class Tool implements PropertyChangeListener {
             case PLACE_SPRITE,
                     CUT_TOOL_PLACE_SPRITES,
                     CUT_TOOL_CUT_SPRITES -> layerHandler.placeSpritesScreen(action.getX(), action.getY(), action.getNewTiles());
+            default -> throw new IllegalArgumentException("Unexpected value: " + action.getType());
         }
         
         action.changeIntoUndo();

@@ -5,12 +5,14 @@ import pekaeds.ui.listeners.TextFieldChangeListener;
 import pekaeds.ui.mapposition.MapPositionDialog;
 import pekaeds.util.GFXUtils;
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.level.PK2Level;
+import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.settings.Settings;
 import pekaeds.ui.filefilters.BMPImageFilter;
 import pekaeds.ui.filefilters.MusicFilter;
 import pekaeds.ui.main.PekaEDSGUI;
-import pekaeds.ui.listeners.PK2MapConsumer;
+import pekaeds.ui.listeners.PK2LevelConsumer;
+import pekaeds.ui.listeners.PK2SectorConsumer;
 import pekaeds.filechooser.ImagePreviewFileChooser;
 
 import javax.imageio.ImageIO;
@@ -27,7 +29,7 @@ import java.util.Map;
 import org.tinylog.Logger;
 
 // TODO The ChangeListener stuff ist pretty messy. It works but it should probably be cleaned up. Some time... maybe...
-public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
+public class MapMetadataPanel extends JPanel implements PK2LevelConsumer, PK2SectorConsumer {
     private ChangeListener changeListener;
     private ChangeEvent changeEvent = new ChangeEvent(this);
     private boolean canFireChanges = false;
@@ -57,8 +59,9 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     
     private MapPositionDialog mapPositionDialog;
     
-    private PK2Map map = null;
-    
+    private PK2Level level = null;
+    private PK2LevelSector sector = null;
+
     private PekaEDSGUI gui;
     
     public MapMetadataPanel(PekaEDSGUI ui) {
@@ -206,22 +209,22 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
             spMapPosX.commitEdit();
             spMapPosY.commitEdit();
             
-            map.setLevelNumber((int) spLevelNumber.getValue());
-            map.setTime((int) spTime.getValue());
-            map.setMapX((int) spMapPosX.getValue());
-            map.setMapY((int) spMapPosY.getValue());
+            level.level_number = (int) spLevelNumber.getValue();
+            level.time = (int) spTime.getValue();
+            level.icon_x = (int) spMapPosX.getValue();
+            level.icon_y = (int) spMapPosY.getValue();
             
             changeListener.stateChanged(changeEvent);
         } catch (ParseException e) {
-            // TODO Does this need to be logged?
+            Logger.error(e);
         }
     }
     
     private void setListeners() {
         cbIcons.addActionListener(e -> {
             mapPositionDialog.updateIconImage(iconMap.get(Settings.getMapProfile().getIconNames()[cbIcons.getSelectedIndex()]));
-    
-            map.setIcon(cbIcons.getSelectedIndex());
+
+            level.icon_id = cbIcons.getSelectedIndex();
             
             fireChanges();
         });
@@ -241,9 +244,9 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     
             int posX = (int) spMapPosX.getValue();
             int posY = (int) spMapPosY.getValue();
-            
-            map.setMapX(posX);
-            map.setMapY(posY);
+
+            level.icon_x = posX;
+            level.icon_y = posY;
             
             mapPositionDialog.updatePosition(new Point(posX, posY));
             mapPositionDialog.setVisible(true);
@@ -263,10 +266,10 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
                 try {
                     var tilesetImage = ImageIO.read(fc.getSelectedFile());
     
-                    tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, map.getBackgroundImage());
+                    tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, sector.getBackgroundImage());
                     
-                    map.setTileset(fc.getSelectedFile().getName());
-                    map.setTilesetImage(tilesetImage);
+                    sector.tilesetName = fc.getSelectedFile().getName();
+                    sector.tilesetImage = tilesetImage;
                 
                     // if (Settings.useBGTileset()) {
                     //     var bgTileset = PathUtils.getTilesetAsBackgroundTileset(fc.getSelectedFile().getAbsolutePath());
@@ -294,7 +297,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         
         btnBrowseBackground.addActionListener(e -> {
             var fc = new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.SCENERY_DIR),
-            ImagePreviewFileChooser.PREVIEW_BACKGROUND); // TODO Set to background directory or last choosen directory
+            ImagePreviewFileChooser.PREVIEW_BACKGROUND);
 
             fc.setDialogTitle("Select a background image...");
             fc.setFileFilter(new BMPImageFilter());
@@ -303,17 +306,17 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
                 try {
                     var backgroundImage= ImageIO.read(fc.getSelectedFile());
             
-                    var tilesetImage = GFXUtils.setPaletteToBackgrounds(map.getTilesetImage(), backgroundImage);
-            
-                    map.setBackgroundImage(backgroundImage);
-                    map.setBackground(fc.getSelectedFile().getName());
+                    var tilesetImage = GFXUtils.setPaletteToBackgrounds(sector.getTilesetImage(), backgroundImage);
+
+                    sector.backgroundImage = backgroundImage;
+                    sector.backgroundName = fc.getSelectedFile().getName();
+
+                    sector.tilesetImage = tilesetImage;
                     
-                    map.setTilesetImage(tilesetImage);
+                    tfBackground.setText(fc.getSelectedFile().getName());
                     
-                    tfBackground.setText(fc.getSelectedFile().getName()); // TODO What about files in the episodes folder?
-                    
-                    for (var spr : map.getSpriteList()) {
-                        spr.setImage(GFXUtils.setPaletteToBackgrounds(spr.getImage(), map.getBackgroundImage()));
+                    for (var spr : level.getSpriteList()) {
+                        spr.setImage(GFXUtils.setPaletteToBackgrounds(spr.getImage(), sector.getBackgroundImage()));
                     }
                     
                     gui.updateRepaintListeners();
@@ -332,8 +335,8 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
             
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 tfMusic.setText(fc.getSelectedFile().getName()); // TODO Handle music files from level directory?
-    
-                map.setMusic(tfMusic.getText());
+
+                sector.musicName = tfMusic.getText();
                 
                 fireChanges();
             }
@@ -364,8 +367,8 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
             cbWeather.addItem(str);
         }
 
-        cbScrollingType.setSelectedIndex(map.getScrollType());
-        cbWeather.setSelectedIndex(map.getWeatherType());
+        cbScrollingType.setSelectedIndex(sector.background_scrolling);
+        cbWeather.setSelectedIndex(sector.weather);
     }
     
     // This seems pretty hacky, but this is a workaround for when the TextField values get set for the first time. This would cause the changeListener to fire, even though it isn't supposed to.
@@ -373,15 +376,17 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         @Override
         public void stateChanged(ChangeEvent e) {
             if (canFireChanges) {
-                map.setName(tfMapName.getText());
-                map.setAuthor((tfAuthor.getText()));
+                level.name = tfMapName.getText();
+                level.author = tfAuthor.getText();
 
-                map.setMusic(tfMusic.getText());
-                map.setTileset(tfTileset.getText());
-                map.setBackground(tfBackground.getText());
-                
-                map.setLevelNumber((int) spLevelNumber.getValue());
-                map.setTime((int) spTime.getValue());
+                sector.musicName = tfMusic.getText();
+                sector.tilesetName = tfTileset.getText();
+
+                sector.backgroundName = tfBackground.getText();
+
+                level.level_number = (int) spLevelNumber.getValue();
+
+                level.time = (int) spTime.getValue();
                 
                 changeListener.stateChanged(changeEvent);
             }
@@ -408,41 +413,48 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     private void fireChanges() {
         if (canFireChanges) {
             // Even more hacky shit, yo
-            map.setAuthor(tfAuthor.getText());
-            map.setName(tfMapName.getText());
-            
-            map.setWeatherType(cbWeather.getSelectedIndex());
-            map.setScrollType(cbScrollingType.getSelectedIndex());
+            level.author = tfAuthor.getText();
+            level.name = tfMapName.getText();
+
+            sector.weather = cbWeather.getSelectedIndex();
+            sector.background_scrolling = cbScrollingType.getSelectedIndex();
             
             changeListener.stateChanged(changeEvent);
         }
     }
     
     @Override
-    public void setMap(PK2Map m) {
-        this.map = m;
+    public void setMap(PK2Level m) {
+        this.level = m;
         
         canFireChanges = false;
         
-        tfMapName.setText(map.getName());
-        tfAuthor.setText(map.getAuthor());
-        tfTileset.setText(map.getTileset());
-        tfBackground.setText(map.getBackground());
-        tfMusic.setText(map.getMusic());
-        
-        spLevelNumber.setValue(map.getLevelNumber());
-        spTime.setValue(map.getTime());
-        
-        cbWeather.setSelectedIndex(map.getWeatherType());
-        cbScrollingType.setSelectedIndex(map.getScrollType());
-        cbIcons.setSelectedIndex(map.getIcon());
-        
-        spMapPosX.setValue(map.getMapX());
-        spMapPosY.setValue(map.getMapY());
+        tfMapName.setText(level.name);
+        tfAuthor.setText(level.author);
+
+        spLevelNumber.setValue(level.level_number);
+        spTime.setValue(level.time);
+                
+        spMapPosX.setValue(level.icon_x);
+        spMapPosY.setValue(level.icon_y);
+
+        cbIcons.setSelectedIndex(level.icon_id);
         
         // TODO Check episodemanager
-        mapPositionDialog.setMapIcon(iconMap.get(Settings.getMapProfile().getIconNames()[map.getIcon()]), new Point(map.getMapX(), map.getMapY()));
-        
+        mapPositionDialog.setMapIcon(iconMap.get(Settings.getMapProfile().getIconNames()[level.icon_id]), new Point(level.icon_x, level.icon_y));
+    }
+
+    @Override
+    public void setSector(PK2LevelSector sector){
+        this.sector = sector;
+
+        tfTileset.setText(sector.tilesetName);
+        tfBackground.setText(sector.backgroundName);
+        tfMusic.setText(sector.musicName);
+
+        cbWeather.setSelectedIndex(sector.weather);
+        cbScrollingType.setSelectedIndex(sector.background_scrolling);
+
         canFireChanges = true;
     }
     
@@ -456,10 +468,11 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         @Override
         public void stateChanged(ChangeEvent e) {
             if (canFireChanges) {
-                map.setMapX((int) spMapPosX.getValue());
-                map.setMapY((int) spMapPosY.getValue());
+
+                level.icon_x = (int) spMapPosX.getValue();
+                level.icon_y = (int) spMapPosY.getValue();
                 
-                mapPositionDialog.updatePosition(new Point(map.getMapX(), map.getMapY()));
+                mapPositionDialog.updatePosition(new Point(level.icon_x, level.icon_y));
             }
         }
     }

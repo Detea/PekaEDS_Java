@@ -78,7 +78,7 @@ public final class CutTool extends Tool {
         if (SwingUtilities.isLeftMouseButton(e)) {
             moveSelectionTo(e.getPoint(), clickXOffset, clickYOffset);
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            if (selecting) selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, e.getPoint());
+            if (selecting) selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, e.getPoint(), map);
         }
     }
 
@@ -207,6 +207,7 @@ public final class CutTool extends Tool {
                 case CUT_TOOL_PLACE_FOREGROUND -> foregroundLayer = action.getNewTiles();
                 case CUT_TOOL_PLACE_BACKGROUND -> backgroundLayer = action.getNewTiles();
                 case CUT_TOOL_PLACE_SPRITES -> spritesLayer = action.getNewTiles();
+                default -> throw new IllegalArgumentException("Unexpected value: " + action.getType());
             }
     
             selectionRect.setRect(action.getX() / 32, action.getY() / 32, action.getNewTiles()[0].length, action.getNewTiles().length);
@@ -241,7 +242,7 @@ public final class CutTool extends Tool {
         for (int x = 0; x < selection.width; x++) {
             for (int y = 0; y < selection.height; y++) {
                 if (spritesLayer[y][x] != 255) {
-                    var spr = map.getSprite(spritesLayer[y][x]);
+                    var spr = level.getSprite(spritesLayer[y][x]);
 
                     if (spr != null) {
                         getMapPanelPainter().drawSprite(g, spr,(selection.x + x) * 32, (selection.y + y) * 32);

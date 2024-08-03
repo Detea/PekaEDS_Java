@@ -287,10 +287,6 @@ public class Settings {
     public static void setDefaultBackground(String background) {
         defaultBackground = background;
     }
-
-    public static String getGFXPath() {
-        return basePath + File.separatorChar + "gfx" + File.separatorChar;
-    }
     
     public static void setHighlightSprites(boolean hSprites) {
         highlightSprites = hSprites;

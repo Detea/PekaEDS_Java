@@ -41,6 +41,18 @@ public class PK2LevelSector {
         this.spriteTiles = new PK2TileArray(width, height);
     }
 
+    public PK2TileArray getFGLayer(){
+        return this.fgTiles;
+    }
+
+    public PK2TileArray getBGLayer(){
+        return this.bgTiles;
+    }
+
+    public PK2TileArray getSpritesLayer(){
+        return this.spriteTiles;
+    }
+
 
     public int getWidth(){
         return this.mWidth;
@@ -91,5 +103,17 @@ public class PK2LevelSector {
 
     public String getBackgroundName(){
         return this.backgroundName;
+    }
+    
+    public BufferedImage getTilesetImage(){
+        return this.tilesetImage;
+    }
+
+    public BufferedImage getBackgroundTilesetImage(){
+        return this.tilesetBgImage;
+    }
+
+    public BufferedImage getBackgroundImage(){
+        return this.backgroundImage;
     }
 }

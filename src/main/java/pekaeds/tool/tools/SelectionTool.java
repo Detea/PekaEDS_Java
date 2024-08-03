@@ -2,7 +2,6 @@ package pekaeds.tool.tools;
 
 import javax.swing.*;
 
-import pekaeds.pk2.map.PK2Map13;
 import pekaeds.settings.Settings;
 import pekaeds.tool.Tool;
 import pekaeds.util.TileUtils;
@@ -22,7 +21,7 @@ public class SelectionTool extends Tool {
             selection.setStart(e.getPoint());
             selection.setEnd(e.getPoint());
 
-            selectionRect = TileUtils.calculateSelectionRectangle(e.getPoint(), e.getPoint());
+            selectionRect = TileUtils.calculateSelectionRectangle(e.getPoint(), e.getPoint(), map);
             
             if (getMode() == Tool.MODE_TILE) selectingTiles = true;
         }
@@ -56,15 +55,15 @@ public class SelectionTool extends Tool {
             if (selection.getEnd().x < 0) selection.getEnd().x = 0;
             if (selection.getEnd().y < 0) selection.getEnd().y = 0;
             
-            if (selection.getEnd().x >= PK2Map13.WIDTH * 32) selection.getEnd().x = (PK2Map13.WIDTH * 32) - 32;
-            if (selection.getEnd().y >= PK2Map13.HEIGHT * 32) selection.getEnd().y = (PK2Map13.HEIGHT * 32) - 32;
+            if (selection.getEnd().x >= map.getWidth() * 32) selection.getEnd().x = (map.getWidth() * 32) - 32;
+            if (selection.getEnd().y >= map.getHeight() * 32) selection.getEnd().y = (map.getHeight() * 32) - 32;
             
-            selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd());
+            selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), map);
         }
     }
     
     private void doTileSelection() {
-        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd());
+        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), map);
 
         selection.setTileSelection(layerHandler.getTilesFromRect(selectionRect, selectedLayer));
 
@@ -77,7 +76,7 @@ public class SelectionTool extends Tool {
     }
     
     private void doSpriteSelection() {
-        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd());
+        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), map);
 
         selection.setSelectionSprites(new int[][]{{ layerHandler.getSpriteAt(selection.getStart().x, selection.getStart().y) }}); // TODO Fix multiselection of sprites
     }

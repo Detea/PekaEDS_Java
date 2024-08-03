@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import org.tinylog.Logger;
 
-import pekaeds.settings.Settings;
+import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.util.episodemanager.EpisodeManager;
 
 public class MapPositionDialog extends JDialog {
@@ -22,9 +22,10 @@ public class MapPositionDialog extends JDialog {
     
     public MapPositionDialog(EpisodeManager episodeManager) {
         try {
-            backgroundImage = ImageIO.read(new File(Settings.getGFXPath() + File.separatorChar + "map.bmp"));
+            File mapFile = PK2FileSystem.findAsset("map.bmp", PK2FileSystem.GFX_DIR);
+            backgroundImage = ImageIO.read(mapFile);
         } catch (IOException e) {
-            Logger.warn(e, "Unable to load Map.bmp. Expecting to find it in this folder: {}", Settings.getGFXPath());
+            Logger.error(e);
         }
         
         this.manager = episodeManager;

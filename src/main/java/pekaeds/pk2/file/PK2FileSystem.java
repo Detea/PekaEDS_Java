@@ -51,6 +51,7 @@ public static final String PK2_STUFF_NAME = "pk2stuff.bmp";
 public static final String SPRITES_DIR = "sprites";
 public static final String EPISODES_DIR = "episodes";
 
+public static final String GFX_DIR = "gfx";
 public static final String TILESET_DIR = "gfx"+File.separator+"tiles";
 public static final String SCENERY_DIR = "gfx"+File.separator+"scenery";
 

@@ -5,13 +5,13 @@ import org.tinylog.Logger;
 import net.miginfocom.swing.MigLayout;
 import pekaeds.filechooser.SpriteFileChooser;
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.level.PK2Level;
 import pekaeds.pk2.sprite.ISpritePrototype;
 import pekaeds.pk2.sprite.io.SpriteIO;
 import pekaeds.tool.Tool;
 import pekaeds.tool.Tools;
 import pekaeds.tool.tools.BrushTool;
-import pekaeds.ui.listeners.PK2MapConsumer;
+import pekaeds.ui.listeners.PK2LevelConsumer;
 import pekaeds.ui.listeners.SpritePlacementListener;
 import pekaeds.ui.main.PekaEDSGUI;
 
@@ -20,13 +20,13 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 
-import org.w3c.dom.events.MouseEvent;
-
 import java.awt.*;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
 import java.io.File;
 
-public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacementListener {
+public class SpritesPanel extends JPanel implements PK2LevelConsumer, SpritePlacementListener {
     //private final Settings settings = new Settings();
     
     private ChangeListener changeListener;
@@ -42,7 +42,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     private JList<ISpritePrototype> spriteList;
     private DefaultListModel<ISpritePrototype> listModel = new DefaultListModel<>();
     
-    private PK2Map map;
+    private PK2Level level;
     
     public SpritesPanel(PekaEDSGUI ui) {
         this.gui = ui;
@@ -109,7 +109,9 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
                     // TODO Prevent sprite to be added multiple times
                     
                     listModel.addElement(spr);
-                    map.addSprite(spr);
+
+
+                    level.addSprite(spr);
                     
                     spriteList.ensureIndexIsVisible(listModel.indexOf(spr));
                     spriteList.setSelectedValue(spr, true);
@@ -133,10 +135,10 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     
         btnSetPlayer.addActionListener(e -> {
             if (spriteList.getSelectedValue().getType() == ISpritePrototype.TYPE_CHARACTER) {
-                var currentPlayerSprite = map.getSprite(map.getPlayerSpriteId());
+                var currentPlayerSprite = level.getSprite(level.player_sprite_index);
                 if (currentPlayerSprite != null) currentPlayerSprite.setPlayerSprite(false);
 
-                map.setPlayerSpriteId(spriteList.getSelectedIndex());
+                level.player_sprite_index = spriteList.getSelectedIndex();
                
                 spriteList.getSelectedValue().setPlayerSprite(true);
                 spriteList.repaint();
@@ -146,7 +148,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
         });
         
         btnRemove.addActionListener(e -> {
-            map.removeSprite(spriteList.getSelectedValue().getFilename());
+            /*map.removeSprite(spriteList.getSelectedValue().getFilename());
             listModel.removeElement(spriteList.getSelectedValue());
             
             if (spriteList.getSelectedIndex() - 1 > 0) {
@@ -157,7 +159,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
             
             gui.repaintView();
     
-            changeListener.stateChanged(changeEvent);
+            changeListener.stateChanged(changeEvent);*/
         });
         
         spriteList.addListSelectionListener(l -> {
@@ -167,6 +169,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
         });
 
         spriteList.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 Tool.setMode(Tool.MODE_SPRITE);
             }
@@ -180,14 +183,14 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     }
     
     @Override
-    public void setMap(PK2Map map) {
-        this.map = map;
+    public void setMap(PK2Level map) {
+        this.level = map;
         
         listModel.clear();
         listModel.addAll(map.getSpriteList());
 
-        if (map.getPlayerSpriteId() >= 0 && map.getPlayerSpriteId() < listModel.size()) {
-            listModel.get(map.getPlayerSpriteId()).setPlayerSprite(true);
+        if (map.player_sprite_index >= 0 && map.player_sprite_index < listModel.size()) {
+            listModel.get(map.player_sprite_index).setPlayerSprite(true);
         }
     }
     

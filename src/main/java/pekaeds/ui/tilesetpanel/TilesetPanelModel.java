@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.level.PK2LevelSector;
 
 // TODO This can probably be deleted
 public class TilesetPanelModel {
@@ -12,7 +12,7 @@ public class TilesetPanelModel {
     
     private BufferedImage tilesetImage;
     
-    private PK2Map map;
+    private PK2LevelSector map;
     
     private int[][] selection;
     
@@ -22,11 +22,11 @@ public class TilesetPanelModel {
         this.selection = sel;
     }
     
-    public void setMap(PK2Map m) {
+    public void setMap(PK2LevelSector m) {
         this.map = m;
     }
     
-    public PK2Map getMap() {
+    public PK2LevelSector getMap() {
         return map;
     }
     

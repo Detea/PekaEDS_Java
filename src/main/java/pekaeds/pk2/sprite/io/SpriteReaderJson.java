@@ -20,6 +20,8 @@ public class SpriteReaderJson implements ISpriteReader {
         String fileContents = Files.readString(file.toPath());
         
         PK2Sprite sprite = new PK2Sprite();
+
+        sprite.setFilename(file.getName());
         
         JSONObject json = new JSONObject(fileContents);
             

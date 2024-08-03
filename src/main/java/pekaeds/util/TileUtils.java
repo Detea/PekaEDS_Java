@@ -2,6 +2,7 @@ package pekaeds.util;
 
 import java.awt.*;
 
+import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.pk2.map.PK2Map13;
 
 public final class TileUtils {
@@ -15,7 +16,7 @@ public final class TileUtils {
      * @param selectionEnd
      * @return
      */
-    public static Rectangle calculateSelectionRectangle(Point selectionStart, Point selectionEnd) {
+    public static Rectangle calculateSelectionRectangle(Point selectionStart, Point selectionEnd, PK2LevelSector sector) {
         int startX = selectionStart.x;
         int startY = selectionStart.y;
     
@@ -43,8 +44,8 @@ public final class TileUtils {
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
 
-        if (endX >= PK2Map13.WIDTH) endX = PK2Map13.WIDTH - 1;
-        if (endY >= PK2Map13.HEIGHT) endY = PK2Map13.HEIGHT - 1;
+        if (endX >= sector.getWidth()) endX = sector.getWidth() - 1;
+        if (endY >= sector.getHeight()) endY = sector.getHeight() - 1;
 
         int selectionWidth = endX - startX;
         int selectionHeight = endY - startY;
@@ -58,8 +59,8 @@ public final class TileUtils {
      * @param selectionEnd
      * @return
      */
-    public static Rectangle calculateSelectionRectangleInScene(Point selectionStart, Point selectionEnd) {
-        var r = calculateSelectionRectangle(selectionStart, selectionEnd);
+    public static Rectangle calculateSelectionRectangleInScene(Point selectionStart, Point selectionEnd, PK2LevelSector sector) {
+        var r = calculateSelectionRectangle(selectionStart, selectionEnd, sector);
         
         r.x *= 32;
         r.y *= 32;

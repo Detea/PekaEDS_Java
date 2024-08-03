@@ -3,17 +3,14 @@ package pekaeds.tool;
 import java.awt.*;
 
 import pekaeds.data.Layer;
-import pekaeds.pk2.map.PK2Map;
-import pekaeds.pk2.map.PK2Map13;
-import pekaeds.pk2.sprite.ISpritePrototype;
-import pekaeds.settings.Settings;
+import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.ui.listeners.SpritePlacementListener;
 import pekaeds.ui.listeners.TileChangeListener;
 import pekaeds.util.TileUtils;
 
 public final class LayerHandler {
     private final ToolSelection selection;
-    private PK2Map map;
+    private PK2LevelSector map;
 
     private int gridX = 32, gridY = 32;
     //private int currentLayer;
@@ -23,6 +20,31 @@ public final class LayerHandler {
 
     public LayerHandler(ToolSelection toolSelection) {
         this.selection = toolSelection;
+    }
+
+    public void setTileAt(int layer, int x, int y, int tileID){
+
+        switch (layer) {
+            case Layer.BACKGROUND:
+                this.map.setBGTile(x, y, tileID);
+                break;
+            
+            case Layer.FOREGROUND:
+                this.map.setFGTile(x, y, tileID);
+                break;
+            
+            case Layer.SPRITES:
+                this.map.setSpriteTile(x, y, tileID);
+                break;
+
+            case Layer.BOTH:
+                this.map.setBGTile(x, y, tileID);
+                this.map.setFGTile(x, y, tileID);
+                break;
+                
+            default:
+                break;
+        }
     }
     
     /**
@@ -43,8 +65,8 @@ public final class LayerHandler {
     public void placeTile(int x, int y, int tileId, int layer) {
         if (layer == Layer.BOTH) layer = Layer.FOREGROUND; // TODO I think this can go, but needs testing.
 
-        if (x >= 0 && y >= 0 && x < PK2Map13.WIDTH && y < PK2Map13.HEIGHT) {
-            map.setTileAt(layer, x, y, tileId);
+        if (x >= 0 && y >= 0 && x < map.getWidth() && y < map.getHeight()) {
+            this.setTileAt(layer, x, y, tileId);
 
             tileChangeListener.tileChanged(x, y, tileId);
         }
@@ -74,8 +96,32 @@ public final class LayerHandler {
         if (layer == Layer.BOTH) layer = Layer.FOREGROUND;
 
         if (map != null) {
-            if (x >= 0 && y >= 0 && x < PK2Map13.WIDTH && y < PK2Map13.HEIGHT) {
-                tile = map.getLayers().get(layer)[y][x];
+            if (x >= 0 && y >= 0 && x < map.getWidth() && y < map.getHeight()) {
+
+                switch (layer) {
+                    case Layer.BACKGROUND:
+                        tile = map.getBGTile(x, y);                        
+                        break;
+                    
+                    case Layer.BOTH:
+                        tile = map.getFGTile(x, y);
+                        if(tile==255){
+                            tile = map.getBGTile(x, y);
+                        }
+                        break;
+                    case Layer.FOREGROUND:
+                        tile = map.getFGTile(x, y);
+                        break;
+
+                    case Layer.SPRITES:
+                        tile = map.getSpriteTile(x, y);
+                        break;
+
+                    default:
+                        break;
+                }
+
+                //tile = map.getLayers().get(layer)[y][x];
             }
         }
 
@@ -126,7 +172,8 @@ public final class LayerHandler {
     public void removeTilesArea(Rectangle area, int layer) {
         for (int sx = 0; sx < area.width; sx++) {
             for (int sy = 0; sy < area.height; sy++) {
-                map.getLayers().get(layer)[area.y + sy][area.x + sx] = 255;
+               // map.getLayers().get(layer)[area.y + sy][area.x + sx] = 255;
+               setTileAt(layer, area.x + sx, area.y + sy, 255);
             }
         }
 
@@ -141,7 +188,7 @@ public final class LayerHandler {
         int spr = selection.getSelectionSprites()[0][0];
 
         if (map != null) {
-            spr = map.getSpriteIdAt(x / 32, y / 32);
+            spr = map.getSpriteTile(x / 32, y / 32);
         }
 
         return spr;
@@ -162,8 +209,11 @@ public final class LayerHandler {
     public void placeSprite(Point position, int newSprite) {
         TileUtils.convertToMapCoordinates(position);
 
-        if (position.x >= 0 && position.x <= Settings.getMapProfile().getMapWidth() && position.y >= 0 && position.y <= Settings.getMapProfile().getMapHeight()) {
-            int oldSprite = map.getSpriteIdAt(position.x, position.y);
+        if (position.x >= 0 && position.x <= map.getWidth() && position.y >= 0 && position.y <= map.getHeight()) {
+
+            //TODO fix it
+            
+            /*int oldSprite = map.getSpriteTile(position.x, position.y);
             
             ISpritePrototype spriteOld = map.getSpriteAt(position.x, position.y);
             ISpritePrototype spriteNew = map.getSprite(newSprite);
@@ -178,10 +228,10 @@ public final class LayerHandler {
                 }
             } else {
                 if (spriteNew != null) spriteNew.increasePlacedAmount();
-            }
+            }*/
 
             spritePlacementListener.placed(newSprite);
-            map.setSpriteAt(position.x, position.y, newSprite);
+            map.setSpriteTile(position.x, position.y, newSprite);
         }
     }
     
@@ -205,7 +255,7 @@ public final class LayerHandler {
                 int xAdjusted = x + sx;
                 int yAdjusted = y + sy;
                 
-                map.setSpriteAt(xAdjusted, yAdjusted, spritesLayer[sy][sx]);
+                map.setSpriteTile(xAdjusted, yAdjusted, spritesLayer[sy][sx]);
             }
         }
     }
@@ -218,7 +268,7 @@ public final class LayerHandler {
         
         for (int yy = 0; yy < height; yy++) {
             for (int xx = 0; xx < width; xx++) {
-                sprites[yy][xx] = map.getSpriteIdAt(x + xx, y + yy);
+                sprites[yy][xx] = map.getSpriteTile(x + xx, y + yy);
             }
         }
         
@@ -228,20 +278,21 @@ public final class LayerHandler {
     public void removeSpritesArea(Rectangle area) {
         for (int sx = 0; sx < area.width; sx++) {
             for (int sy = 0; sy < area.height; sy++) {
-                int xAdjusted = area.x + sx;
+                
+                /*int xAdjusted = area.x + sx;
                 int yAdjusted = area.y + sy;
                 
                 var sprOld = map.getSpriteAt(xAdjusted, yAdjusted);
-                if (sprOld != null) sprOld.decreasePlacedAmount();
+                if (sprOld != null) sprOld.decreasePlacedAmount();*/
                 
-                map.setSpriteAt(area.x + sx, area.y + sy, 255); // TODO Handle undo
+                map.setSpriteTile(area.x + sx, area.y + sy, 255); // TODO Handle undo
             }
         }
 
         // TODO Handle UndoManager
     }
     
-    public void setMap(PK2Map m) {
+    public void setMap(PK2LevelSector m) {
         this.map = m;
     }
 

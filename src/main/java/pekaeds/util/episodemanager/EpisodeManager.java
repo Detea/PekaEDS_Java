@@ -4,8 +4,8 @@ import org.tinylog.Logger;
 
 import pekaeds.data.EditorConstants;
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.pk2.map.MapIO;
-import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.level.PK2Level;
+import pekaeds.pk2.level.PK2LevelIO;
 import pekaeds.ui.episodepanel.EpisodeChangeListener;
 import pekaeds.ui.mapposition.MapIcon;
 import pekaeds.util.GFXUtils;
@@ -99,23 +99,22 @@ public final class EpisodeManager {
     }
     
     private void addIconToList(File file) {
-        var mapReader = MapIO.getReader(file);
-        PK2Map map = mapReader.loadIconDataOnly(file);
-    
-        if (map != null) {
+
+        try{
+            PK2Level level = PK2LevelIO.loadLevel(file);
             BufferedImage iconSheet = null;
-            try {
-                iconSheet = ImageIO.read( PK2FileSystem.getPK2StuffFile());
+
+            iconSheet = ImageIO.read( PK2FileSystem.getPK2StuffFile());
     
-                iconSheet = GFXUtils.makeTransparent(iconSheet);
-                var iconImage = iconSheet.getSubimage(1 + (map.getIcon() * 28), 452, 27, 27);
-                
-                mapIcons.add(new MapIcon(iconImage, new Point(map.getMapX(), map.getMapY())));
-            } catch (IOException e) {
-                Logger.info(e, "Unable to load PK2Stuff file.");
-            }
-        } else {
-            Logger.info("Unable to icon for file: {} in episode: {}", file.getAbsolutePath(), episode.getEpisodeName());
+            iconSheet = GFXUtils.makeTransparent(iconSheet);
+            var iconImage = iconSheet.getSubimage(1 + (level.icon_id * 28), 452, 27, 27);
+            
+            mapIcons.add(new MapIcon(iconImage, new Point(level.icon_x, level.icon_y)));
+            
+
+        }
+        catch(Exception e){
+            Logger.error(e);
         }
     }
     

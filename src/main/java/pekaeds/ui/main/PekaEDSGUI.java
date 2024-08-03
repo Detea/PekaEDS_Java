@@ -1,23 +1,25 @@
 package pekaeds.ui.main;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.io.*;
 
 import java.time.LocalTime;
+
 import org.tinylog.Logger;
 
 import pekaeds.data.EditorConstants;
 import pekaeds.data.Layer;
 import pekaeds.data.PekaEDSVersion;
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.pk2.map.*;
+import pekaeds.pk2.level.PK2Level;
+import pekaeds.pk2.level.PK2LevelIO;
+import pekaeds.pk2.level.PK2LevelSector;
+import pekaeds.pk2.level.PK2LevelUtils;
 import pekaeds.settings.Settings;
 import pekaeds.settings.Shortcuts;
 import pekaeds.settings.StartupBehavior;
@@ -178,10 +180,15 @@ public class PekaEDSGUI implements ChangeListener {
     
     private void registerMapConsumers() {
         model.addMapConsumer(spritesPanel);
-        model.addMapConsumer(miniMapPanel);
-        model.addMapConsumer(mapPanel);
-        model.addMapConsumer(tilesetPanel);
         model.addMapConsumer(mapMetadataPanel);
+        model.addMapConsumer(mapPanel);
+
+
+        model.addSectorConsumer(mapMetadataPanel);
+        model.addSectorConsumer(miniMapPanel);
+        model.addSectorConsumer(mapPanel);        
+        model.addSectorConsumer(tilesetPanel);
+        
     }
     
     private void registerRepaintListeners() {
@@ -219,11 +226,13 @@ public class PekaEDSGUI implements ChangeListener {
     /*
         * Map related methods
      */
-    public void loadMap(PK2Map map, File mapFile) {
+    public void loadMap(PK2Level level, File levelFile) {
 
-        if(mapFile!=null){
+        model.setCurrentMapFile(levelFile);
 
-            File episodeDir = mapFile.getParentFile();
+        if(levelFile!=null){
+
+            File episodeDir = levelFile.getParentFile();
             if(episodeDir.exists()){
                 PK2FileSystem.setEpisodeName(episodeDir.getName());
             }
@@ -233,82 +242,31 @@ public class PekaEDSGUI implements ChangeListener {
         }
         else{
             PK2FileSystem.setEpisodeName(null);
-        }       
-    
-        BufferedImage tilesetImage = null;
-
-        try {
-            File tilesetFile = PK2FileSystem.findAsset(map.getTileset(), PK2FileSystem.TILESET_DIR);
-            tilesetImage = ImageIO.read(tilesetFile);
-        } catch (IOException e) {
-            Logger.error(e);
-            JOptionPane.showMessageDialog(null, "Unable to load tileset image file. File: '" + map.getTileset() + "'", "Unable to find tileset", JOptionPane.ERROR_MESSAGE);
-            return;
         }
-    
-        BufferedImage backgroundImage = null;
-        try {
-            File backgroundFile = PK2FileSystem.findAsset(map.getBackground(), PK2FileSystem.SCENERY_DIR);
-            backgroundImage = ImageIO.read(backgroundFile);
-        } catch (IOException e) {
-            Logger.error(e);
-            JOptionPane.showMessageDialog(null, "Unable to load background image file. File: '" + map.getBackground() + "'", "Unable to find background", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-  
-        tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);    
+        
+        PK2LevelUtils.loadLevelAssets(level);   
     
         Tool.reset();
         setSelectedTool(Tools.getTool(BrushTool.class));
-        
-        map.setBackgroundImage(backgroundImage);
-        map.setTilesetImage(tilesetImage);
-    
-        map.setChangeListener(this);
-    
-        model.setCurrentMap(map);
 
-        miniMapPanel.setMap(map);
-
-        spritesPanel.setMap(map);
-
-        Tool.setMap(map);
+        //level.setChangeListener(this);
     
+        model.setCurrentLevel(level);
+
         updateMapHolders();
+        updateSectorHolders(level.sectors.get(0));
     }
     
     public void loadMap(File file) {
-        var r = (PK2MapReader13) MapIO.getReader(file);
-        
-        PK2Map13 map = null;
-        try {
-            Logger.info("Trying to load map file: {}", file.getAbsolutePath());
-            
-            map = r.load(file);
-            
-            if (map != null) {
-                loadMap(map, file);
 
-                Logger.info("Map loaded successfully.");
+        try{
+            Logger.info("Trying to load level file: {}", file.getAbsolutePath());
+            PK2Level level = PK2LevelIO.loadLevel(file);
+            this.loadMap(level, file);
+        }
+        catch(Exception e){
+            Logger.error(e);
 
-                if (map.getBackgroundImage() != null) {
-                    map.setSpriteList(r.loadSpriteList(map.getSpriteFilenames(), map.getBackgroundImage(), map.getPlayerSpriteId(), file));
-                    SpriteUtils.calculatePlacementAmountForSprites(map.getSpritesLayer(), map.getSpriteList());
-
-                    spritesPanel.setMap(map);
-                }
-                
-                model.setCurrentMapFile(file);
-                autosaveManager.setFile(model.getCurrentMapFile());
-                
-                unsavedChanges = false;
-    
-                updateFrameTitle();
-            } else {
-                JOptionPane.showMessageDialog(null, "'" + file.getName() + "' doesn't seem to be a 1.3 Pekka Kana 2 map file.", "Unable to recognize file", JOptionPane.ERROR_MESSAGE);
-            }
-        } catch (IOException e) {
-            Logger.warn(e, "Unable to load map file {}.", file.getAbsolutePath());
         }
     }
     
@@ -341,18 +299,17 @@ public class PekaEDSGUI implements ChangeListener {
                 }
             }
             mapMetadataPanel.commitSpinnerValues();
-            
-            try {
+
+            try{
                 if (!file.getName().endsWith(".map")) file = new File(file.getPath() + ".map");
-                
-                var writer = MapIO.getWriter();
-                writer.write(model.getCurrentMap(), file);
-    
-                model.setCurrentMapFile(file);
-                
+
+                PK2LevelIO.saveLevel(model.getCurrentLevel(), file);
+
                 unsavedChanges = false;
-            } catch (IOException e) {
-                Logger.warn(e, "Unable to save map file {}.", model.getCurrentMapFile().getAbsolutePath());
+
+            }
+            catch(Exception e){
+                Logger.error(e);
             }
     
             statusbar.setLastChangedTime(LocalTime.now());
@@ -363,11 +320,9 @@ public class PekaEDSGUI implements ChangeListener {
     public void newMap() {
         Tool.reset();
         setSelectedTool(Tools.getTool(BrushTool.class));
-        
-        var map = new PK2Map13();
-        map.reset();
-    
-        loadMap(map, null);
+
+        PK2Level level = PK2LevelUtils.createDefaultLevel();
+        loadMap(level, null);
         
         model.setCurrentMapFile(null);
         autosaveManager.setFile(null);
@@ -483,8 +438,16 @@ public class PekaEDSGUI implements ChangeListener {
     }
     
     private void updateMapHolders() {
+        Tool.setLevel(model.getCurrentLevel());
         for (var m : model.getMapConsumers()) {
-            m.setMap(model.getCurrentMap());
+            m.setMap(model.getCurrentLevel());
+        }
+    }
+
+    private void updateSectorHolders(PK2LevelSector sector){
+        Tool.setSector(sector);
+        for(var m: model.getSectorConsumers()){
+            m.setSector(sector);
         }
     }
     

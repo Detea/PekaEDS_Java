@@ -96,7 +96,7 @@ public class LineTool extends Tool {
     
                 drawSelectionRect(g, x * 32, y * 32, 32, 32);
             } else {
-                getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+                getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], layerHandler.getTileAt(selectedLayer, x, y), selectedLayer);
                 
                 layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
             }
@@ -130,7 +130,7 @@ public class LineTool extends Tool {
     
                 drawSelectionRect(g, x * 32, y * 32, 32, 32);
             } else {
-                getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+                getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], layerHandler.getTileAt(selectedLayer, x, y), selectedLayer);
                 
                 layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection(selectedLayer)[0][0], selectedLayer);
             }

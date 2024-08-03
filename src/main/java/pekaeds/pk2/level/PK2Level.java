@@ -31,4 +31,13 @@ public class PK2Level {
     public List<ISpritePrototype> getSpriteList(){
         return this.sprites;
     }
+
+    public ISpritePrototype getSprite(int index){
+        return this.sprites.get(index);
+    }
+
+    public void addSprite(ISpritePrototype sprite){
+        this.sprites.add(sprite);
+        this.spriteNames.add(sprite.getFilename());
+    }
 }

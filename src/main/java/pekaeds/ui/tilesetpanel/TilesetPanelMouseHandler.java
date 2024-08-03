@@ -44,7 +44,7 @@ public final class TilesetPanelMouseHandler extends MouseAdapter {
             
             keepSelectionInBounds();
             
-            tilesetPanel.setSelectionRect(TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd));
+            tilesetPanel.setSelectionRect(TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd, tilesetPanel.getSector()));
     
             tilesetPanel.repaint();
         }
@@ -53,7 +53,7 @@ public final class TilesetPanelMouseHandler extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            var rect = TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd);
+            var rect = TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd, tilesetPanel.getSector());
             
             int[][] selection = new int[0][];
             

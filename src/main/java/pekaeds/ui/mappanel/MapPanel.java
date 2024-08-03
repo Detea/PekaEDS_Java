@@ -2,17 +2,18 @@ package pekaeds.ui.mappanel;
 
 import javax.swing.*;
 
-import pekaeds.pk2.map.PK2Map;
-import pekaeds.pk2.map.PK2Map13;
+import pekaeds.pk2.level.PK2Level;
+import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.settings.Settings;
 import pekaeds.tool.Tool;
-import pekaeds.ui.listeners.PK2MapConsumer;
+import pekaeds.ui.listeners.PK2LevelConsumer;
+import pekaeds.ui.listeners.PK2SectorConsumer;
 import pekaeds.ui.listeners.RepaintListener;
 
 import java.awt.*;
 import java.awt.event.*;
 
-public class MapPanel extends JPanel implements ComponentListener, PK2MapConsumer, RepaintListener {
+public class MapPanel extends JPanel implements ComponentListener, PK2LevelConsumer, PK2SectorConsumer, RepaintListener {
     private MapPanelModel model;
     private MapPanelPainter painter;
     
@@ -23,7 +24,7 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
     private JViewport viewport;
     private JScrollPane scrollPane;
     
-    private Dimension panelSize = new Dimension(PK2Map13.WIDTH * 32, PK2Map13.HEIGHT * 32);
+    private Dimension panelSize = new Dimension(PK2LevelSector.CLASSIC_WIDTH * 32, PK2LevelSector.CLASSIC_HEIGHT * 32);
     
     JScrollPane getScrollPane() {
         return scrollPane;
@@ -49,7 +50,7 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
     
         // This both needs to be done for the JLayeredPane
         setOpaque(false);
-        setBounds(0, 0, panelSize.width, panelSize.height);
+        
     }
     
     public void setView(JScrollPane view) {
@@ -164,11 +165,14 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
     }
     
     @Override
-    public void setMap(PK2Map map) {
-        model.setMap(map);
+    public void setSector(PK2LevelSector sector) {
+        model.setSector(sector);
         
-        model.setTilesetImage(map.getTilesetImage());
-        model.setBackgroundImage(map.getBackgroundImage());
+        model.setTilesetImage(sector.tilesetImage);
+        model.setBackgroundImage(sector.backgroundImage);
+
+        this.panelSize = new Dimension(sector.getWidth() * 32, sector.getHeight() * 32);
+        setBounds(0, 0, panelSize.width, panelSize.height);
         
         repaint();
     }
@@ -176,5 +180,10 @@ public class MapPanel extends JPanel implements ComponentListener, PK2MapConsume
     @Override
     public void doRepaint() {
         repaint();
+    }
+
+    @Override
+    public void setMap(PK2Level level) {
+        model.setLevel(level);
     }
 }

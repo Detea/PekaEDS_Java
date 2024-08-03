@@ -1,6 +1,7 @@
 package pekaeds.pk2.level;
 
 import pekaeds.settings.Settings;
+import pekaeds.util.GFXUtils;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -75,7 +76,7 @@ public class PK2LevelUtils {
 
         try {
             File tilesetFile = PK2FileSystem.findAsset(sector.tilesetName, PK2FileSystem.TILESET_DIR);
-            sector.tilesetImage = ImageIO.read(tilesetFile);
+            sector.tilesetImage = GFXUtils.makeTransparent(ImageIO.read(tilesetFile));
         } catch (IOException e) {
             Logger.error(e);
             JOptionPane.showMessageDialog(null, "Unable to load: \"" + sector.tilesetName + "\"", "Unable to find tileset", JOptionPane.ERROR_MESSAGE);
@@ -83,7 +84,7 @@ public class PK2LevelUtils {
             //fallback to default
             try{
                 File tilesetFile = PK2FileSystem.findAsset(Settings.getDefaultTileset(), PK2FileSystem.TILESET_DIR);
-                sector.tilesetImage = ImageIO.read(tilesetFile);
+                sector.tilesetImage = GFXUtils.makeTransparent(ImageIO.read(tilesetFile));
             }
             catch(IOException e2){
                 Logger.error(e2);
@@ -97,7 +98,7 @@ public class PK2LevelUtils {
 
         try{
             File tilesetBgFile = PK2FileSystem.findAsset(sector.tilesetBgName, PK2FileSystem.TILESET_DIR);
-            sector.tilesetImage = ImageIO.read(tilesetBgFile);
+            sector.tilesetImage = GFXUtils.makeTransparent(ImageIO.read(tilesetBgFile));
 
         } catch (IOException e){
             Logger.error(e);
@@ -107,7 +108,7 @@ public class PK2LevelUtils {
 
     private static void loadBackground(PK2LevelSector sector){       
         try {
-            File backgroundFile = PK2FileSystem.findAsset(sector.tilesetName, PK2FileSystem.TILESET_DIR);
+            File backgroundFile = PK2FileSystem.findAsset(sector.backgroundName, PK2FileSystem.SCENERY_DIR);
             sector.backgroundImage = ImageIO.read(backgroundFile);
 
         } catch (IOException e) {
@@ -144,7 +145,8 @@ public class PK2LevelUtils {
                 level.sprites.add(new SpriteMissing());
             }
             catch(Exception e){
-                Logger.error(e);
+                //Logger.error(e);
+                Logger.warn("Sprite not found: \""+spriteName+"\"");
                 level.sprites.add(new SpriteMissing());
             }
         }

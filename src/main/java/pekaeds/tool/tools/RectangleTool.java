@@ -67,19 +67,19 @@ public class RectangleTool extends Tool {
     }
     
     private void placeRectangle() {
-        rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd);
+        rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd, map);
         
         for (int x = rect.x; x < rect.x + rect.width; x++) {
             for (int y = rect.y; y < rect.y + rect.height; y++) {
                 // TODO support a tile selection greater than one
                 if (fill) {
-                    getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+                    getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], layerHandler.getTileAt(selectedLayer, x, y), selectedLayer);
                     
                     layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
                 } else {
                     if (x == rect.x || x == rect.x + (rect.width - 1) ||
                             y == rect.y || y == rect.y + (rect.height - 1)) {
-                        getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], map.getTileAt(selectedLayer, x, y), selectedLayer);
+                        getUndoManager().pushTilePlaced(this, x * 32, y * 32, selection.getTileSelection()[0][0], layerHandler.getTileAt(selectedLayer, x, y), selectedLayer);
 
                         layerHandler.placeTileScreen(x * 32, y * 32, selection.getTileSelection()[0][0], selectedLayer);
                     }
@@ -92,7 +92,7 @@ public class RectangleTool extends Tool {
     public void draw(Graphics2D g) {
         if (getMode() == MODE_TILE) {
             if (selectionStart.x != -1 && selectionStart.y != -1) {
-                rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd);
+                rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd, map);
         
                 for (int x = rect.x; x < rect.x + rect.width; x++) {
                     for (int y = rect.y; y < rect.y + rect.height; y++) {

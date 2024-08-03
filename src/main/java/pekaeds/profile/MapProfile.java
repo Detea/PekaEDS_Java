@@ -100,10 +100,12 @@ public class MapProfile {
         return spriteLimit;
     }
     
+    @Deprecated
     public int getMapWidth() {
         return mapWidth;
     }
     
+    @Deprecated
     public int getMapHeight() {
         return mapHeight;
     }
