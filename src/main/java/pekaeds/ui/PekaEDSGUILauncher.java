@@ -34,7 +34,7 @@ public final class PekaEDSGUILauncher {
             /**
              * If there's something wrong, not PK2 directory and so on, it throws an exception
              */
-            PK2FileSystem.INSTANCE.setAssetsPath(file);
+            PK2FileSystem.setAssetsPath(file);
 
             SwingUtilities.invokeLater(PekaEDSGUI::new);
             
@@ -55,7 +55,7 @@ public final class PekaEDSGUILauncher {
         File selectedFile = pathDialog.showDialog();
 
         try{
-            PK2FileSystem.INSTANCE.setAssetsPath(selectedFile);
+            PK2FileSystem.setAssetsPath(selectedFile);
 
             Settings.reset();
             Settings.setBasePath(selectedFile.getPath());

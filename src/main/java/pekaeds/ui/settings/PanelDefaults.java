@@ -78,12 +78,12 @@ public class PanelDefaults extends JPanel {
     
     // TODO There is a big performance problem with BrowseResourceFileAction or ImagePreviewFileChooser
     private void setActionListeners() {
-        btnTilesetBrowse.addActionListener(new BrowseResourceFilesAction(tfTileset, new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.TILESET_DIR),
+        btnTilesetBrowse.addActionListener(new BrowseResourceFilesAction(tfTileset, new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.TILESET_DIR),
             ImagePreviewFileChooser.PREVIEW_TILESET)));
         
-        btnBackgroundBrowse.addActionListener(new BrowseResourceFilesAction(tfBackground, new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SCENERY_DIR), 
+        btnBackgroundBrowse.addActionListener(new BrowseResourceFilesAction(tfBackground, new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.SCENERY_DIR), 
             ImagePreviewFileChooser.PREVIEW_BACKGROUND)));
-        btnMusicBrowse.addActionListener(new BrowseResourceFilesAction(tfMusic, new MusicFilter(), PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.MUSIC_DIR)));
+        btnMusicBrowse.addActionListener(new BrowseResourceFilesAction(tfMusic, new MusicFilter(), PK2FileSystem.getAssetsPath(PK2FileSystem.MUSIC_DIR)));
     }
     
     void resetValues() {

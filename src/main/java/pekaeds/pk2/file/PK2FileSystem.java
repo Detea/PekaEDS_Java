@@ -8,8 +8,6 @@ import java.nio.file.Paths;
 
 public class PK2FileSystem {
 
-public static final PK2FileSystem INSTANCE = new PK2FileSystem();
-
 /**
  * 
  * @param 
@@ -19,16 +17,16 @@ public static void main(String[] args){
     System.out.println("Hello world");
 
     try{
-        INSTANCE.setAssetsPath("/Users/saturninufolud/c++/pk2_greta");
+        setAssetsPath("/Users/saturninufolud/c++/pk2_greta");
         
-        System.out.println(INSTANCE.getAssetsPath().toString());
+        System.out.println(getAssetsPath().toString());
                 
-        INSTANCE.SetEpisodeName("Debug Island");
+        setEpisodeName("Debug Island");
 
 
         System.out.println("--------\nTEST: findAsset:");
 
-        File f = INSTANCE.findAsset("tiles01.bmp", TILESET_DIR);
+        File f = findAsset("tiles01.bmp", TILESET_DIR);
         System.out.println(f);
 
         /**
@@ -37,10 +35,10 @@ public static void main(String[] args){
 
         System.out.println("--------\nTEST: findSprite:");
 
-        f = INSTANCE.findSprite("mune.spr2");
+        f = findSprite("mune.spr2");
         System.out.println(f);
 
-        f = INSTANCE.findSprite("PiG.sPr");
+        f = findSprite("PiG.sPr");
         System.out.println(f);
         
     }
@@ -59,14 +57,14 @@ public static final String SCENERY_DIR = "gfx"+File.separator+"scenery";
 public static final String MUSIC_DIR = "music";
 public static final String LUA_DIR = "lua";
 
-private File mAssetsPath;
-private String mEpisodeName;
+private static File mAssetsPath;
+private static String mEpisodeName;
 
-public void setAssetsPath(String assetsPath) throws FileNotFoundException{
-    this.setAssetsPath(new File(assetsPath));
+public static void setAssetsPath(String assetsPath) throws FileNotFoundException{
+    setAssetsPath(new File(assetsPath));
 }
 
-public void setAssetsPath(File assetsPath) throws FileNotFoundException{   
+public static void setAssetsPath(File assetsPath) throws FileNotFoundException{   
     if(!assetsPath.exists() || !assetsPath.isDirectory()){
         throw new FileNotFoundException("Not a directory: "+assetsPath.toString());
     }
@@ -74,13 +72,13 @@ public void setAssetsPath(File assetsPath) throws FileNotFoundException{
     File pk2stuff = Paths.get(assetsPath.getPath(), "gfx", PK2_STUFF_NAME).toFile();
     if(pk2stuff.exists() && !pk2stuff.isDirectory()){
 
-        this.mAssetsPath = assetsPath;
+        mAssetsPath = assetsPath;
     }
     else{
         pk2stuff = Paths.get(assetsPath.getPath(),"res", "gfx", PK2_STUFF_NAME).toFile();
 
         if(pk2stuff.exists() && !pk2stuff.isDirectory()){
-            this.mAssetsPath = Paths.get(assetsPath.getPath(), "res").toFile();
+            mAssetsPath = Paths.get(assetsPath.getPath(), "res").toFile();
         }
         else{
             throw new FileNotFoundException("Not a PK2 directory!");
@@ -88,32 +86,32 @@ public void setAssetsPath(File assetsPath) throws FileNotFoundException{
     }
 }
 
-public File getAssetsPath(){
-    return this.mAssetsPath;
+public static File getAssetsPath(){
+    return mAssetsPath;
 }
 
-public File getAssetsPath(String subfolder){
-    return Paths.get(this.mAssetsPath.getPath(), subfolder).toFile();
+public static File getAssetsPath(String subfolder){
+    return Paths.get(mAssetsPath.getPath(), subfolder).toFile();
 }
 
-public File getPK2StuffFile(){
-    return Paths.get(this.mAssetsPath.getPath(), "gfx", PK2_STUFF_NAME).toFile();
+public static File getPK2StuffFile(){
+    return Paths.get(mAssetsPath.getPath(), "gfx", PK2_STUFF_NAME).toFile();
 }
 
-public void SetEpisodeName(String name){
-    this.mEpisodeName = name;
+public static void setEpisodeName(String name){
+    mEpisodeName = name;
 }
 
-public String GetEpisodeName(){
-    return this.mEpisodeName;
+public static String GetEpisodeName(){
+    return mEpisodeName;
 }
 
-public boolean isEpisodeSet(){
-    return this.mEpisodeName!=null && this.mEpisodeName!="";
+public static boolean isEpisodeSet(){
+    return mEpisodeName!=null && mEpisodeName!="";
 }
 
 
-private File findFile(File dir, String lowercase){
+private static File findFile(File dir, String lowercase){
 
     if(!dir.exists())return null;
            
@@ -123,7 +121,7 @@ private File findFile(File dir, String lowercase){
     return (res ==null || res.length==0) ? null : res[0];
 }
 
-public File findAsset(String assetName, String defaultDir){
+public static File findAsset(String assetName, String defaultDir) throws FileNotFoundException {
 
     File f = new File(assetName);
     /**
@@ -133,37 +131,49 @@ public File findAsset(String assetName, String defaultDir){
 
     String lowercase = f.getName().toLowerCase();
 
-    if(this.isEpisodeSet()){
+    if(isEpisodeSet()){
         f = findFile(
-            Paths.get(mAssetsPath.getPath(), EPISODES_DIR, this.mEpisodeName).toFile(),lowercase);
+            Paths.get(mAssetsPath.getPath(), EPISODES_DIR, mEpisodeName).toFile(),lowercase);
         
         if(f!=null)return f;
 
         f = findFile(
-            Paths.get(mAssetsPath.getPath(), EPISODES_DIR,this.mEpisodeName, defaultDir).toFile(),lowercase);
+            Paths.get(mAssetsPath.getPath(), EPISODES_DIR, mEpisodeName, defaultDir).toFile(),lowercase);
 
         if(f!=null)return f;
     }
 
     f = findFile(Paths.get(mAssetsPath.getPath(), defaultDir).toFile(),lowercase);
 
+    if(f==null){
+        throw new FileNotFoundException("PK2 file \""+assetName+"\" not found!");
+    }
+
     return f;
 }
 
-public File findSprite(String spriteName){
+public static File findSprite(String spriteName) throws FileNotFoundException{
     if(spriteName.toLowerCase().endsWith(".spr")){
 
         //.spr2 first
-        File f = findAsset(spriteName + "2", SPRITES_DIR);
-        if(f!=null)return f;
-
-        //.spr
-        return findAsset(spriteName, SPRITES_DIR);
+        try{
+            return findAsset(spriteName + "2", SPRITES_DIR);
+        }
+        catch(FileNotFoundException e){
+            return findAsset(spriteName, SPRITES_DIR);
+        }        
     }
     else{
         return findAsset(spriteName, SPRITES_DIR);
     }
 }
 
+public static File findTileset(String name) throws FileNotFoundException{
+    return findAsset(name, TILESET_DIR);
+}
+
+public static File findBackground(String name) throws FileNotFoundException{
+    return findAsset(name, SCENERY_DIR);
+}
 
 }

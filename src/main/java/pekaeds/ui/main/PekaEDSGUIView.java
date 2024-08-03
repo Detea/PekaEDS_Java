@@ -240,7 +240,7 @@ public class PekaEDSGUIView {
         mFileExit.addActionListener(e -> System.exit(0));
         
         mEpisodeNew.addActionListener(e -> {
-            var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR));
+            var fc = new JFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.EPISODES_DIR));
             fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
             fc.setDialogTitle("Select an episode folder to add...");
             
@@ -274,17 +274,17 @@ public class PekaEDSGUIView {
             }
         });
 
-        mfBase.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath()));
+        mfBase.addActionListener(new OpenFolderAction(PK2FileSystem.getAssetsPath()));
 
-        mfEpisodes.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR)));
+        mfEpisodes.addActionListener(new OpenFolderAction(PK2FileSystem.getAssetsPath(PK2FileSystem.EPISODES_DIR)));
 
-        mfTilesets.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.TILESET_DIR)));
+        mfTilesets.addActionListener(new OpenFolderAction(PK2FileSystem.getAssetsPath(PK2FileSystem.TILESET_DIR)));
 
-        mfBackgrounds.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SCENERY_DIR)));
+        mfBackgrounds.addActionListener(new OpenFolderAction(PK2FileSystem.getAssetsPath(PK2FileSystem.SCENERY_DIR)));
 
-        mfSprites.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SPRITES_DIR)));
+        mfSprites.addActionListener(new OpenFolderAction(PK2FileSystem.getAssetsPath(PK2FileSystem.SPRITES_DIR)));
 
-        mfMusic.addActionListener(new OpenFolderAction(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.MUSIC_DIR)));
+        mfMusic.addActionListener(new OpenFolderAction(PK2FileSystem.getAssetsPath(PK2FileSystem.MUSIC_DIR)));
     }
     
     void setFrameTitle(String title) {

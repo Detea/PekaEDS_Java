@@ -18,7 +18,7 @@ public class OpenMapAction extends AbstractAction {
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR));
+        var fc = new JFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.EPISODES_DIR));
     
         fc.setFileFilter(FileFilters.PK2_MAP_FILTER);
         

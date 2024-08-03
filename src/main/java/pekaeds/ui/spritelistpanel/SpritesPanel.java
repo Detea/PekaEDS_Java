@@ -80,7 +80,7 @@ public class SpritesPanel extends JPanel implements PK2MapConsumer, SpritePlacem
     private void addListeners() {
         btnAdd.addActionListener(e -> {
 
-            var fc = new SpriteFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SPRITES_DIR));
+            var fc = new SpriteFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.SPRITES_DIR));
 
 
             fc.setFileFilter(new FileFilter() {

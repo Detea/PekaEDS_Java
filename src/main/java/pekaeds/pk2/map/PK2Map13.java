@@ -36,8 +36,8 @@ public class PK2Map13 extends PK2Map {
         
         // TODO Not necessary to do this?
         try {
-            setBackgroundImage(ImageIO.read(PK2FileSystem.INSTANCE.findAsset(this.getBackground(), PK2FileSystem.SCENERY_DIR)));
-            setTilesetImage(ImageIO.read(PK2FileSystem.INSTANCE.findAsset(this.getTileset(), PK2FileSystem.TILESET_DIR)));
+            setBackgroundImage(ImageIO.read(PK2FileSystem.findAsset(this.getBackground(), PK2FileSystem.SCENERY_DIR)));
+            setTilesetImage(ImageIO.read(PK2FileSystem.findAsset(this.getTileset(), PK2FileSystem.TILESET_DIR)));
         } catch (IOException e) {
             Logger.error("Unable to load default background and/or tileset image(s).");
     
@@ -63,7 +63,7 @@ public class PK2Map13 extends PK2Map {
         getSpriteList().clear();
 
         try{
-            File roosterFile = PK2FileSystem.INSTANCE.findSprite("rooster.spr");
+            File roosterFile = PK2FileSystem.findSprite("rooster.spr");
             ISpritePrototype roosterSprite = SpriteIO.loadSprite(roosterFile, getBackgroundImage());
             getSpriteList().add(roosterSprite);
 

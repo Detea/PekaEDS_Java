@@ -75,7 +75,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
     // TODO Optimization: Put this in a SwingWorker?
     private void loadIcons() {
         try {
-            var iconSheet = ImageIO.read( PK2FileSystem.INSTANCE.getPK2StuffFile());
+            var iconSheet = ImageIO.read( PK2FileSystem.getPK2StuffFile());
             iconSheet = GFXUtils.makeTransparent(iconSheet);
             
             for (int i = 0; i < Settings.getMapProfile().getIconNames().length; i++) {
@@ -84,7 +84,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
                 iconMap.put(Settings.getMapProfile().getIconNames()[i], img);
             }
         } catch (IOException e) {
-            Logger.warn(e, "Unable to load icon image file: {}", PK2FileSystem.INSTANCE.getPK2StuffFile());
+            Logger.warn(e, "Unable to load icon image file: {}", PK2FileSystem.getPK2StuffFile());
         }
     }
     
@@ -252,7 +252,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         });
     
         btnBrowseTileset.addActionListener(e -> {
-            var fc = new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.TILESET_DIR),
+            var fc = new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.TILESET_DIR),
             ImagePreviewFileChooser.PREVIEW_TILESET);
 
             
@@ -293,7 +293,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         });
         
         btnBrowseBackground.addActionListener(e -> {
-            var fc = new ImagePreviewFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.SCENERY_DIR),
+            var fc = new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.SCENERY_DIR),
             ImagePreviewFileChooser.PREVIEW_BACKGROUND); // TODO Set to background directory or last choosen directory
 
             fc.setDialogTitle("Select a background image...");
@@ -326,7 +326,7 @@ public class MapMetadataPanel extends JPanel implements PK2MapConsumer {
         });
         
         btnBrowseMusic.addActionListener(e -> {
-            var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.MUSIC_DIR));
+            var fc = new JFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.MUSIC_DIR));
             fc.setDialogTitle("Select a music file...");
             fc.setFileFilter(new MusicFilter());
             

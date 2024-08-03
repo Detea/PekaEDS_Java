@@ -48,6 +48,7 @@ public final class MapData {
         pcs.firePropertyChange("tilesetImage", null, tilesetImage);
     }
     
+    @Deprecated
     public int[][] getLayer(int layer) {
         return map.getLayers().get(layer);
     }

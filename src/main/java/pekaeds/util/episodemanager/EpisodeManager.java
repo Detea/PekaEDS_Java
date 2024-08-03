@@ -105,7 +105,7 @@ public final class EpisodeManager {
         if (map != null) {
             BufferedImage iconSheet = null;
             try {
-                iconSheet = ImageIO.read( PK2FileSystem.INSTANCE.getPK2StuffFile());
+                iconSheet = ImageIO.read( PK2FileSystem.getPK2StuffFile());
     
                 iconSheet = GFXUtils.makeTransparent(iconSheet);
                 var iconImage = iconSheet.getSubimage(1 + (map.getIcon() * 28), 452, 27, 27);

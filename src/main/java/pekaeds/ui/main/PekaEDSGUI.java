@@ -225,70 +225,38 @@ public class PekaEDSGUI implements ChangeListener {
 
             File episodeDir = mapFile.getParentFile();
             if(episodeDir.exists()){
-                PK2FileSystem.INSTANCE.SetEpisodeName(episodeDir.getName());
+                PK2FileSystem.setEpisodeName(episodeDir.getName());
             }
             else{
-                PK2FileSystem.INSTANCE.SetEpisodeName(null);
+                PK2FileSystem.setEpisodeName(null);
             }
         }
         else{
-            PK2FileSystem.INSTANCE.SetEpisodeName(null);
-        }
-
-        File tilesetFile = PK2FileSystem.INSTANCE.findAsset(map.getTileset(), PK2FileSystem.TILESET_DIR);
-        File backgroundFile = PK2FileSystem.INSTANCE.findAsset(map.getBackground(), PK2FileSystem.SCENERY_DIR);
-
+            PK2FileSystem.setEpisodeName(null);
+        }       
+    
         BufferedImage tilesetImage = null;
 
-        if(tilesetFile!=null){
-            try {
-                tilesetImage = ImageIO.read(tilesetFile);
-            } catch (IOException e) {
-                System.out.println(tilesetFile);
-                Logger.error(e, "Unable to load tileset image.");
-            }
-        }
-
-        if(tilesetImage==null){             
+        try {
+            File tilesetFile = PK2FileSystem.findAsset(map.getTileset(), PK2FileSystem.TILESET_DIR);
+            tilesetImage = ImageIO.read(tilesetFile);
+        } catch (IOException e) {
+            Logger.error(e);
             JOptionPane.showMessageDialog(null, "Unable to load tileset image file. File: '" + map.getTileset() + "'", "Unable to find tileset", JOptionPane.ERROR_MESSAGE);
             return;
         }
     
         BufferedImage backgroundImage = null;
-        if(backgroundFile!=null){
-            try {
-                backgroundImage = ImageIO.read(backgroundFile);
-            } catch (IOException e) {
-                System.out.println(backgroundFile);
-                Logger.error(e, "Unable to load background image.");
-            }
-        }
-
-        if(backgroundImage==null){
+        try {
+            File backgroundFile = PK2FileSystem.findAsset(map.getBackground(), PK2FileSystem.SCENERY_DIR);
+            backgroundImage = ImageIO.read(backgroundFile);
+        } catch (IOException e) {
+            Logger.error(e);
             JOptionPane.showMessageDialog(null, "Unable to load background image file. File: '" + map.getBackground() + "'", "Unable to find background", JOptionPane.ERROR_MESSAGE);
             return;
         }
   
         tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, backgroundImage);    
-        // if (Settings.useBGTileset() && backgroundImage != null) {
-        //     // Check if the tileset has a _bg version, if it does load and set it to the background tileset.
-        //     BufferedImage bgTilesetImage = null;
-        //     var bgTilesetFileStr = PathUtils.getTilesetAsBackgroundTileset(Settings.getTilesetPath() + map.getTileset());
-        
-        //     if (Files.exists(Path.of(bgTilesetFileStr))) {
-        //         try {
-        //             bgTilesetImage = ImageIO.read(new File(bgTilesetFileStr));
-                    
-        //             bgTilesetImage = GFXUtils.setPaletteToBackgrounds(bgTilesetImage, backgroundImage); // TODO Does the game do this?
-    
-        //             map.setBackgroundTilesetImage(bgTilesetImage);
-        //         } catch (IOException e) {
-        //             Logger.warn("Unable to load background tileset image.");
-                    
-        //             JOptionPane.showMessageDialog(null, "Unable to load background tileset image.");
-        //         }
-        //     }
-        // }
     
         Tool.reset();
         setSelectedTool(Tools.getTool(BrushTool.class));
@@ -347,7 +315,7 @@ public class PekaEDSGUI implements ChangeListener {
     public void saveMap() {
         // If the file has not been saved yet, ask the user to give it a name and location
         if (model.getCurrentMapFile() == null) {
-            var fc = new JFileChooser(PK2FileSystem.INSTANCE.getAssetsPath(PK2FileSystem.EPISODES_DIR));
+            var fc = new JFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.EPISODES_DIR));
             fc.setDialogTitle("Save map...");
         
             if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
@@ -369,7 +337,7 @@ public class PekaEDSGUI implements ChangeListener {
             {
                 File episodeDir = file.getParentFile();
                 if(episodeDir.exists()){
-                    PK2FileSystem.INSTANCE.SetEpisodeName(episodeDir.getName());
+                    PK2FileSystem.setEpisodeName(episodeDir.getName());
                 }
             }
             mapMetadataPanel.commitSpinnerValues();

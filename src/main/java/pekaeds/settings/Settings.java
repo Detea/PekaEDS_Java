@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,14 +29,6 @@ public class Settings {
     }
     
     private static String basePath;
-    private static String dllPath = null;
-
-
-    // private static String tilesetPath;
-    // private static String backgroundsPath;
-    // private static String spritesPath;
-    // private static String episodesPath;
-    // private static String musicPath;
     
     private static String defaultTileset = "tiles01.bmp";
     private static String defaultBackground = "castle.bmp";
@@ -236,50 +227,13 @@ public class Settings {
 
     public static final String DLL_NAME_WINDOWS = "pk2_greta.dll"; //Windows
     public static final String DLL_NAME_LINUX = "pk2_greta.so"; //Linux and Mac OS
-
-
-    private static String mFindDll(String basePath){
-        String osname = System.getProperty("os.name").toLowerCase();
-
-        //Windows
-        if(osname.contains("win")){
-
-            File file = Paths.get(basePath, DLL_NAME_WINDOWS).toFile();
-
-            if(file.exists() && file.isFile()){
-                return file.getAbsolutePath();
-            }
-
-            file = new File(basePath);
-
-            File file2 = Paths.get(file.getParentFile().toString(), DLL_NAME_WINDOWS).toFile();
-            return file2.getAbsolutePath();
-        }
-        //Linux and Mac OS
-        else{
-            File file = new File(basePath);
-
-            File file2 = Paths.get(file.getParentFile().toString(), "bin", DLL_NAME_LINUX).toFile();
-            return file2.getAbsolutePath();
-        }
-    }
-    
+   
     /*
         Getters & Setters
      */
     
     public static void setBasePath(String path) {
         basePath = path;
-        dllPath = mFindDll(path);
-
-        // tilesetPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "tiles" + File.separatorChar;
-        // backgroundsPath = basePath + File.separatorChar + "gfx" + File.separatorChar + "scenery" + File.separatorChar;
-        // spritesPath = basePath + File.separatorChar + "sprites" + File.separatorChar;
-        // episodesPath = basePath + File.separatorChar + "episodes" + File.separatorChar;
-        
-        // musicPath = basePath + File.separatorChar + "music" + File.separatorChar;
-        
-        // pk2stuffFile = basePath + File.separatorChar + "gfx" + File.separatorChar + pk2Stuff;
     }
     
     public static void setKeyboardShortcutFor(String actionName, KeyStroke keyStroke) {
@@ -317,18 +271,6 @@ public class Settings {
     public static String getBasePath() {
         return basePath;
     }
-
-    public static String getDllPath(){
-        return dllPath;
-    }
-    
-    // public static String getTilesetPath() {
-    //     return tilesetPath;
-    // }
-    
-    // public static String getBackgroundsPath() {
-    //     return backgroundsPath;
-    // }
     
     public static String getDefaultTileset() {
         return defaultTileset;
@@ -337,14 +279,6 @@ public class Settings {
     public static String getDefaultBackground() {
         return defaultBackground;
     }
-
-    // public static String getSpritesPath() {
-    //     return spritesPath;
-    // }
-    
-    // public static String getEpisodesPath() {
-    //     return episodesPath;
-    // }
     
     public static void setDefaultTileset(String tileset) {
         defaultTileset = tileset;
@@ -353,18 +287,10 @@ public class Settings {
     public static void setDefaultBackground(String background) {
         defaultBackground = background;
     }
-    
-    /*public static String getPK2stuffFilePath() {
-        return pk2stuffFile;
-    }*/
-    
+
     public static String getGFXPath() {
         return basePath + File.separatorChar + "gfx" + File.separatorChar;
     }
-    
-    // public static String getMusicPath() {
-    //     return musicPath;
-    // }
     
     public static void setHighlightSprites(boolean hSprites) {
         highlightSprites = hSprites;
@@ -409,11 +335,7 @@ public class Settings {
     public static String getTestingParameter() {
         return testingParameter;
     }
-    
-    // public static String getBackgroundPath() {
-    //     return backgroundsPath;
-    // }
-    
+
     public static boolean useBGTileset() {
         return useBGTileset;
     }
@@ -430,7 +352,7 @@ public class Settings {
         return spriteProfile;
     }
     
-    public void setSpriteProfile(SpriteProfile sprProfile) {
+    public static void setSpriteProfile(SpriteProfile sprProfile) {
         spriteProfile = sprProfile;
     }
     

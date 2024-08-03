@@ -91,6 +91,5 @@ public class PK2LevelSector {
 
     public String getBackgroundName(){
         return this.backgroundName;
-    }
-    
+    }    
 }

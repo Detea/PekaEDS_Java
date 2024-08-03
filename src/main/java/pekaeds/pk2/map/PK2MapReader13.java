@@ -116,7 +116,7 @@ public class PK2MapReader13 implements PK2MapReader {
         for (String filename : spriteFilenames) {
 
             try{
-                File file = PK2FileSystem.INSTANCE.findSprite(filename);
+                File file = PK2FileSystem.findSprite(filename);
                 ISpritePrototype sprite = SpriteIO.loadSprite(file, backgroundImage);
                 spriteList.add(sprite);
             }

@@ -65,7 +65,7 @@ public class SpriteIO {
 
         BufferedImage spriteImageSheet = null;
         
-        File spriteImageFile = PK2FileSystem.INSTANCE.findAsset(spr.getTextureName(),PK2FileSystem.SPRITES_DIR);
+        File spriteImageFile = PK2FileSystem.findAsset(spr.getTextureName(),PK2FileSystem.SPRITES_DIR);
         if (spriteImageFile!=null) {
 
             try {
