@@ -4,7 +4,6 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import pekaeds.data.Layer;
-import pekaeds.data.MapData;
 import pekaeds.pk2.map.PK2Map;
 import pekaeds.pk2.sprite.ISpritePrototype;
 import pekaeds.tool.undomanager.ToolUndoManager;
@@ -169,7 +168,7 @@ public abstract class Tool implements PropertyChangeListener {
 
                 selectedLayer = (int) evt.getNewValue();
             }
-        } else if (evt.getSource() instanceof MapData) {
+        } else if (evt.getSource() instanceof PK2Map) {
             if (evt.getPropertyName().equals("map")) {
                 map = (PK2Map) evt.getNewValue();
             }

@@ -107,7 +107,7 @@ public static String GetEpisodeName(){
 }
 
 public static boolean isEpisodeSet(){
-    return mEpisodeName!=null && mEpisodeName!="";
+    return mEpisodeName!=null && !mEpisodeName.equals("");
 }
 
 
