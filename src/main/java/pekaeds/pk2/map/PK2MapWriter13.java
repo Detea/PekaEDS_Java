@@ -6,6 +6,7 @@ import pekaeds.data.Layer;
 import pekaeds.util.TileUtils;
 import pekaeds.util.file.PK2FileUtils;
 
+@Deprecated
 public class PK2MapWriter13 implements PK2MapWriter {
     @Override
     public void write(PK2Map map, File filename) throws IOException {

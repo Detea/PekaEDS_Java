@@ -14,6 +14,7 @@ import pekaeds.pk2.sprite.io.SpriteIO;
 import pekaeds.pk2.sprite.io.SpriteMissing;
 import pekaeds.util.file.PK2FileUtils;
 
+@Deprecated
 public class PK2MapReader13 implements PK2MapReader {
     //private final Settings settings = new Settings();
     

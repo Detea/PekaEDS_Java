@@ -8,6 +8,7 @@ import java.util.List;
 
 import pekaeds.pk2.sprite.ISpritePrototype;
 
+@Deprecated
 public interface PK2MapReader {
     PK2Map load(File filename) throws IOException;
     

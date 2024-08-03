@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+@Deprecated
 public class PK2Map13 extends PK2Map {
     
     public static final int WIDTH = 256;

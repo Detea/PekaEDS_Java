@@ -96,6 +96,7 @@ public final class TileUtils {
         return (pos.x / 32) + ((pos.y / 32) * 10);
     }
     
+    @Deprecated
     public static Rectangle calculateUsedLayerSpace(int[][] layer) {
         int startX = PK2Map13.WIDTH;
         int width = 0;

@@ -11,6 +11,8 @@ import java.util.*;
  * To add a new map version all you have to do is to register it with {@link VersionHandler#registerMap(List, Class)}, create a new class that extends {@link PK2Map} to hold the map data and a {@link PK2MapReader} to read it from a file.
  * Those four steps are all it takes to implement a new map format, besides any UI changes that might need to be done.
  */
+
+@Deprecated
 public final class MapIO {
     //private static final Map<Class<? extends PK2Map>, Class<? extends PK2MapReader>> readerMap = new HashMap<>();
     //private static final Map<List<Integer>, Class<? extends PK2Map>> classMap = new HashMap<>();
