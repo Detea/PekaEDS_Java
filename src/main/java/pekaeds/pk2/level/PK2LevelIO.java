@@ -6,6 +6,8 @@ import java.util.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.awt.Rectangle;
+
 import pekaeds.util.file.PK2FileUtils;
 
 public final class PK2LevelIO {
@@ -81,12 +83,35 @@ public final class PK2LevelIO {
         }
     }
 
-    private static void writeTilesArray(DataOutputStream out, PK2TileArray array) throws Exception{
+    static void writeTilesArray(DataOutputStream out, PK2TileArray array) throws Exception{
         byte[] data = new byte[array.size()];
         for(int i=0;i<data.length;++i){
             data[i] = (byte)array.getByIndex(i);
         }
         out.write(data);
+    }
+
+    static void writeTilesArrayWithOffset(DataOutputStream out, PK2TileArray array) throws Exception{
+        
+        Rectangle r = array.calculateOffsets();
+
+        int startX = r.x;
+        int startY = r.y;
+        int width = r.width;
+        int height = r.height;
+
+        out.writeInt(Integer.reverseBytes(startX));
+        out.writeInt(Integer.reverseBytes(startY));
+        out.writeInt(Integer.reverseBytes(width));
+        out.writeInt(Integer.reverseBytes(height));
+
+        for (int y = startY; y <= startY + height; y++) {
+            for (int x = startX; x <= startX + width; x++) {
+                if (x <  array.getWidth() && y < array.getHeight()) {
+                    out.writeByte(array.get(x, y));
+                }
+            }
+        }
     }
     
     private static PK2Level load15Level(DataInputStream in, boolean iconOnly) throws Exception{
@@ -299,7 +324,7 @@ public final class PK2LevelIO {
             sector_header.put("width", sector.getWidth());
             sector_header.put("height", sector.getHeight());
 
-            sector_header.put("compression", TILES_COMPRESSION_NONE);
+            sector_header.put("compression", TILES_OFFSET_NEW);
             sector_header.put("tileset", sector.tilesetName);
 
             if(sector.tilesetBgName!=null &&
@@ -320,11 +345,11 @@ public final class PK2LevelIO {
 
             PK2FileUtils.writeCBOR(out, sector_header);
 
-            writeTilesArray(out, sector.bgTiles);
+            writeTilesArrayWithOffset(out, sector.bgTiles);
 
-            writeTilesArray(out, sector.fgTiles);
+            writeTilesArrayWithOffset(out, sector.fgTiles);
 
-            writeTilesArray(out, sector.spriteTiles);
+            writeTilesArrayWithOffset(out, sector.spriteTiles);
         }
 
         //header.pu
