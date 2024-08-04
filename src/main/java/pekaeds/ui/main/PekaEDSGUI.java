@@ -185,9 +185,9 @@ public class PekaEDSGUI implements ChangeListener {
         model.addMapConsumer(spritesPanel);
         model.addMapConsumer(levelMetadataPanel);
         model.addMapConsumer(mapPanel);
+        model.addMapConsumer(sectorMetadataPanel);
 
         model.addSectorConsumer(sectorMetadataPanel);
-        model.addSectorConsumer(levelMetadataPanel);
         model.addSectorConsumer(miniMapPanel);
         model.addSectorConsumer(mapPanel);        
         model.addSectorConsumer(tilesetPanel);
@@ -205,6 +205,7 @@ public class PekaEDSGUI implements ChangeListener {
         
         spritesPanel.setChangeListener(this);
         levelMetadataPanel.setChangeListener(this);
+        sectorMetadataPanel.setChangeListener(this);
         
         Tool.setToolInformationListener(statusbar);
     }
@@ -584,10 +585,7 @@ public class PekaEDSGUI implements ChangeListener {
         autosaveManager.setFileCount(Settings.getAutosaveFileCount());
     }
     
-    public void updateMapProfileData() {
-        levelMetadataPanel.updateMapProfileData();
-    }
-    
+
     public MapPanelView getMapPanelView() {
         return mapPanelView;
     }

@@ -1,31 +1,45 @@
 package pekaeds.ui.mapmetadatapanel;
 
-
+import javax.imageio.ImageIO;
 import java.util.Map;
 import java.awt.*;
+import java.io.*;
+
 import javax.swing.*;
+
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import net.miginfocom.swing.MigLayout;
+import pekaeds.filechooser.ImagePreviewFileChooser;
+import pekaeds.pk2.file.PK2FileSystem;
+import pekaeds.pk2.level.PK2Level;
 import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.settings.Settings;
+import pekaeds.ui.filefilters.BMPImageFilter;
+import pekaeds.ui.filefilters.MusicFilter;
+import pekaeds.ui.listeners.PK2LevelConsumer;
 import pekaeds.ui.listeners.PK2SectorConsumer;
 import pekaeds.ui.listeners.TextFieldChangeListener;
 import pekaeds.ui.main.PekaEDSGUI;
+import pekaeds.util.GFXUtils;
+
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.formdev.flatlaf.util.SystemInfo;
+import org.tinylog.Logger;
 
+public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK2LevelConsumer, ChangeListener, ActionListener{
 
-public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, ChangeListener, ActionListener{
+    private ChangeListener changeListener;
+    private ChangeEvent changeEvent = new ChangeEvent(this);
 
     private PekaEDSGUI gui;
     private boolean canFireChanges = false;
 
     private PK2LevelSector sector;
+    private PK2Level level;
 
     private JTextField tfSectorName;
     private JTextField tfTileset;
@@ -59,6 +73,10 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         }
 
         return fireColorsModel;
+    }
+
+    public void setChangeListener(ChangeListener listener) {
+        this.changeListener = listener;
     }
 
     public void setupUI(){
@@ -161,7 +179,7 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         p.add(this.btnBrowseBgTileset);
 
         p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
-        
+
         p.add(lblSplashColor);
         p.add(this.cbSplashColor);
 
@@ -187,6 +205,105 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         this.cbSplashColor.addActionListener(this);
         this.cbFireColor1.addActionListener(this);
         this.cbFireColor2.addActionListener(this);
+
+        this.btnBrowseTileset.addActionListener(e->{
+            var fc = new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.TILESET_DIR),
+            ImagePreviewFileChooser.PREVIEW_TILESET);
+
+            fc.setDialogTitle("Select a tileset image...");
+            fc.setFileFilter(new BMPImageFilter());
+
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    var tilesetImage = ImageIO.read(fc.getSelectedFile());
+
+                    tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, sector.getBackgroundImage());
+                    
+                    sector.tilesetName = fc.getSelectedFile().getName();
+                    this.sector.tilesetImage = tilesetImage;
+                    tfTileset.setText(sector.tilesetName);
+
+                    gui.updateRepaintListeners();
+
+                    SectorMetadataPanel.this.fireChanges();
+                } catch (IOException ex) {
+                    Logger.warn(ex, "Unable to load tileset image.");
+                }
+            }
+        });
+
+        this.btnBrowseBgTileset.addActionListener(e->{
+            var fc = new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.TILESET_DIR),
+            ImagePreviewFileChooser.PREVIEW_TILESET);
+
+            fc.setDialogTitle("Select a bg tileset image...");
+            fc.setFileFilter(new BMPImageFilter());
+
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    var tilesetImage = ImageIO.read(fc.getSelectedFile());
+
+                    tilesetImage = GFXUtils.setPaletteToBackgrounds(tilesetImage, sector.getBackgroundImage());
+                    
+                    sector.tilesetBgName = fc.getSelectedFile().getName();
+                    sector.tilesetBgImage = tilesetImage;
+
+                    tfBgTileset.setText(sector.tilesetBgName);
+                    
+                    gui.updateRepaintListeners();
+
+                    SectorMetadataPanel.this.fireChanges();
+                } catch (IOException ex) {
+                    Logger.warn(ex, "Unable to load tileset image.");
+                }
+            }
+        });
+
+        this.btnBrowseBackground.addActionListener(e -> {
+            var fc = new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.SCENERY_DIR),
+            ImagePreviewFileChooser.PREVIEW_BACKGROUND);
+
+            fc.setDialogTitle("Select a background image...");
+            fc.setFileFilter(new BMPImageFilter());
+    
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try {
+                    var backgroundImage= ImageIO.read(fc.getSelectedFile());
+            
+                    var tilesetImage = GFXUtils.setPaletteToBackgrounds(sector.getTilesetImage(), backgroundImage);
+
+                    sector.backgroundImage = backgroundImage;
+                    sector.backgroundName = fc.getSelectedFile().getName();
+
+                    tfBackground.setText(sector.backgroundName);
+
+                    sector.tilesetImage = tilesetImage;
+                                        
+                    for (var spr : SectorMetadataPanel.this.level.getSpriteList()) {
+                        spr.setImage(GFXUtils.setPaletteToBackgrounds(spr.getImage(), sector.getBackgroundImage()));
+                    }
+
+                    gui.updateRepaintListeners();                    
+                    SectorMetadataPanel.this.fireChanges();
+                } catch (IOException ex) {
+                    Logger.warn(ex, "Unable to load background image.");
+                }
+            }
+        });
+
+        this.btnBrowseMusic.addActionListener(e -> {
+            var fc = new JFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.MUSIC_DIR));
+            fc.setDialogTitle("Select a music file...");
+            fc.setFileFilter(new MusicFilter());
+            
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                tfMusic.setText(fc.getSelectedFile().getName());
+
+                sector.musicName = tfMusic.getText();
+                
+                SectorMetadataPanel.this.fireChanges();
+            }
+        });
     }
 
     @Override
@@ -227,7 +344,7 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
             this.sector.musicName = this.tfMusic.getText();
             this.sector.tilesetBgName = this.tfBgTileset.getText();
 
-            this.gui.stateChanged(e);
+            this.fireChanges();
         }
     }
 
@@ -256,7 +373,18 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
             this.sector.fire_color_1 = getMapColor(fireColors, (String)this.cbFireColor1.getSelectedItem());
             this.sector.fire_color_2 = getMapColor(fireColors, (String)this.cbFireColor2.getSelectedItem());
 
-            this.gui.stateChanged(null);
+            this.fireChanges();
         }
+    }
+
+    private void fireChanges() {
+        if (canFireChanges) {            
+            changeListener.stateChanged(changeEvent);
+        }
+    }
+
+    @Override
+    public void setLevel(PK2Level level) {
+        this.level = level;
     }    
 }

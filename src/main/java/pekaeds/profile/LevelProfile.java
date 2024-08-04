@@ -7,10 +7,6 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class LevelProfile {
-    
-    private int mapWidth = 256;
-    private int mapHeight = 224;
-    
     private List<String> defaultScrollingTypes = new ArrayList<>();
     private List<String> defaultWeatherTypes = new ArrayList<>();
     
@@ -111,16 +107,6 @@ public class LevelProfile {
         }
         
         return sb.toString();
-    }
-        
-    @Deprecated
-    public int getMapWidth() {
-        return mapWidth;
-    }
-    
-    @Deprecated
-    public int getMapHeight() {
-        return mapHeight;
     }
     
     public List<String> getMusicFormats() {
