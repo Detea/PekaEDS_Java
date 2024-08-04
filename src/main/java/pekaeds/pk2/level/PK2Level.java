@@ -35,12 +35,31 @@ public class PK2Level {
         return this.sprites.get(index);
     }
 
-    public void addSprite(ISpritePrototype sprite){
+    public int getLastSpriteIndex(){
+        return this.sprites.size() - 1;
+    }
 
-        //TODO Prevent adding a sprite multiple times
+    /**
+     * 
+     * @param sprite
+     * @return The index of added sprite
+     */
+    public int addSprite(ISpritePrototype sprite){
+
+        int size = this.sprites.size();
+        
+        /**
+         * To prevent adding a sprite multiple times
+         */
+        for(int i=0;i<this.sprites.size();++i){
+            if(this.sprites.get(i).getFilename().equals(sprite.getFilename())){
+                return i;
+            }
+        }
 
         this.sprites.add(sprite);
         this.spriteNames.add(sprite.getFilename());
+        return size;
     }
 
     public void removeSprite(ISpritePrototype sprite){

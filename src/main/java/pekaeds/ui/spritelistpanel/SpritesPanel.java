@@ -106,13 +106,22 @@ public class SpritesPanel extends JPanel implements PK2LevelConsumer, SpritePlac
                 try{
                     ISpritePrototype spr = SpriteIO.loadSprite(fc.getSelectedFile());
 
-                    // TODO Prevent sprite to be added multiple times
-                    
-                    listModel.addElement(spr);
+                    int index = level.addSprite(spr);
 
-
-                    level.addSprite(spr);
                     
+                    if(index==level.getLastSpriteIndex()){
+                        /**
+                         * if added a new sprite
+                         */
+                        listModel.addElement(spr);
+                    }
+                    else{
+                        /**
+                         * sprite already existed in the list
+                         */
+                        spr = level.getSprite(index);
+                    }
+                                        
                     spriteList.ensureIndexIsVisible(listModel.indexOf(spr));
                     spriteList.setSelectedValue(spr, true);
                     
