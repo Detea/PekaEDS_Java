@@ -29,6 +29,7 @@ import pekaeds.ui.actions.*;
 import pekaeds.ui.listeners.MainUIWindowListener;
 import pekaeds.ui.listeners.RepaintListener;
 import pekaeds.ui.mapmetadatapanel.LevelMetadataPanel;
+import pekaeds.ui.mapmetadatapanel.SectorMetadataPanel;
 import pekaeds.ui.mappanel.MapPanel;
 import pekaeds.ui.mappanel.MapPanelView;
 import pekaeds.ui.minimappanel.MiniMapPanel;
@@ -54,6 +55,7 @@ public class PekaEDSGUI implements ChangeListener {
     
     private SpritesPanel spritesPanel;
     private LevelMetadataPanel levelMetadataPanel;
+    private SectorMetadataPanel sectorMetadataPanel;
     
     private MiniMapPanel miniMapPanel;
     
@@ -170,6 +172,7 @@ public class PekaEDSGUI implements ChangeListener {
         
         spritesPanel = new SpritesPanel(this);
         levelMetadataPanel = new LevelMetadataPanel(this);
+        sectorMetadataPanel = new SectorMetadataPanel(this);
         
         miniMapPanel = new MiniMapPanel();
         
@@ -183,7 +186,7 @@ public class PekaEDSGUI implements ChangeListener {
         model.addMapConsumer(levelMetadataPanel);
         model.addMapConsumer(mapPanel);
 
-
+        model.addSectorConsumer(sectorMetadataPanel);
         model.addSectorConsumer(levelMetadataPanel);
         model.addSectorConsumer(miniMapPanel);
         model.addSectorConsumer(mapPanel);        
@@ -558,8 +561,12 @@ public class PekaEDSGUI implements ChangeListener {
         return miniMapPanel;
     }
     
-    LevelMetadataPanel getMapMetadataPanel() {
+    LevelMetadataPanel getLevelMetadataPanel() {
         return levelMetadataPanel;
+    }
+
+    SectorMetadataPanel getSectorMetadataPanel(){
+        return this.sectorMetadataPanel;
     }
     
     Statusbar getStatusbar() { return statusbar; }

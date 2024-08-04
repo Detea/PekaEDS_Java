@@ -71,20 +71,23 @@ public class PekaEDSGUIView {
         var tilesetPanel = edsUI.getTilesetPanel();
 
         var spritesPanel = edsUI.getSpritesPanel();
-        var mapMetadataPanel = edsUI.getMapMetadataPanel();
+        var mapMetadataPanel = edsUI.getLevelMetadataPanel();
         
         var miniMapPanel = edsUI.getMiniMapPanel();
 
         var mapView = edsUI.getMapPanelView();
         miniMapPanel.setViewport(mapView.getViewport());
         
-        var spMapMetaDataPanel = new JScrollPane(mapMetadataPanel);
+        JScrollPane spLevelMetaDataPanel = new JScrollPane(mapMetadataPanel);
+        JScrollPane spSectorMetaDataPanel = new JScrollPane(edsUI.getSectorMetadataPanel());
         
-        var episodesPanel = new EpisodePanel(edsUI, edsUI.getEpisodeManager());
+        EpisodePanel episodesPanel = new EpisodePanel(edsUI, edsUI.getEpisodeManager());
         
         tabbedPane = new JTabbedPane();
-        tabbedPane.add("Level", spMapMetaDataPanel);
+        tabbedPane.add("Level", spLevelMetaDataPanel);
+        tabbedPane.add("Sector", spSectorMetaDataPanel);
         tabbedPane.add("Sprites", spritesPanel);
+
         tabbedPane.add("Episode", episodesPanel);
 
 

@@ -301,7 +301,10 @@ public final class PK2LevelIO {
 
             sector_header.put("compression", TILES_COMPRESSION_NONE);
             sector_header.put("tileset", sector.tilesetName);
-            if(sector.tilesetBgName!=null && sector.tilesetBgName!=""){
+
+            if(sector.tilesetBgName!=null &&
+            !sector.tilesetBgName.equals("") &&
+            !sector.tilesetBgName.equals(sector.tilesetName)){
                 sector_header.put("tileset_bg", sector.tilesetBgName);
             }
 

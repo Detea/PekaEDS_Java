@@ -427,7 +427,7 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, PK2S
     public void setLevel(PK2Level m) {
         this.level = m;
         
-        canFireChanges = false;
+        this.canFireChanges = false;
         
         tfMapName.setText(level.name);
         tfAuthor.setText(level.author);
@@ -442,11 +442,14 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, PK2S
         
         // TODO Check episodemanager
         mapPositionDialog.setMapIcon(iconMap.get(Settings.getMapProfile().getIconNames()[level.icon_id]), new Point(level.icon_x, level.icon_y));
+
+        this.canFireChanges = true;
     }
 
     @Override
     public void setSector(PK2LevelSector sector){
         this.sector = sector;
+        this.canFireChanges = false;
 
         tfTileset.setText(sector.tilesetName);
         tfBackground.setText(sector.backgroundName);
@@ -455,7 +458,7 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, PK2S
         cbWeather.setSelectedIndex(sector.weather);
         cbScrollingType.setSelectedIndex(sector.background_scrolling);
 
-        canFireChanges = true;
+        this.canFireChanges = true;
     }
     
     public void setChangeListener(ChangeListener listener) {

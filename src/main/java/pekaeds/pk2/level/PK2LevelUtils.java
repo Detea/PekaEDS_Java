@@ -98,7 +98,7 @@ public class PK2LevelUtils {
 
         try{
             File tilesetBgFile = PK2FileSystem.findAsset(sector.tilesetBgName, PK2FileSystem.TILESET_DIR);
-            sector.tilesetImage = GFXUtils.makeTransparent(ImageIO.read(tilesetBgFile));
+            sector.tilesetBgImage = GFXUtils.makeTransparent(ImageIO.read(tilesetBgFile));
 
         } catch (IOException e){
             Logger.error(e);
