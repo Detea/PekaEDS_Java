@@ -3,10 +3,10 @@ package pekaeds.ui.main;
 import net.miginfocom.swing.MigLayout;
 import pekaeds.data.PekaEDSVersion;
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.ui.actions.NewMapAction;
+import pekaeds.ui.actions.NewLevelAction;
 import pekaeds.ui.actions.OpenFolderAction;
-import pekaeds.ui.actions.OpenMapAction;
-import pekaeds.ui.actions.SaveMapAction;
+import pekaeds.ui.actions.OpenLevelAction;
+import pekaeds.ui.actions.SaveLevelAction;
 import pekaeds.ui.episodepanel.EpisodePanel;
 import pekaeds.ui.listeners.MainUIWindowListener;
 import pekaeds.ui.settings.SettingsDialog;
@@ -205,9 +205,9 @@ public class PekaEDSGUIView {
     }
     
     private void setActionListeners() {
-        mFileNew.addActionListener(new NewMapAction(edsUI));
-        mFileOpen.addActionListener(new OpenMapAction(edsUI));
-        mFileSave.addActionListener(new SaveMapAction(edsUI));
+        mFileNew.addActionListener(new NewLevelAction(edsUI));
+        mFileOpen.addActionListener(new OpenLevelAction(edsUI));
+        mFileSave.addActionListener(new SaveLevelAction(edsUI));
         
         mFileSaveAs.addActionListener(e -> {
             var fc = new JFileChooser("Save as...");
@@ -228,7 +228,7 @@ public class PekaEDSGUIView {
             if (fc.showSaveDialog(frame) == JFileChooser.APPROVE_OPTION) {
                 edsUI.setCurrentFile(fc.getSelectedFile());
                 
-                edsUI.saveMap();
+                edsUI.saveLevel();
             }
         });
         

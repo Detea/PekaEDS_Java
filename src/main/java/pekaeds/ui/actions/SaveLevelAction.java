@@ -6,15 +6,15 @@ import pekaeds.ui.main.PekaEDSGUI;
 
 import java.awt.event.ActionEvent;
 
-public class SaveMapAction extends AbstractAction {
+public class SaveLevelAction extends AbstractAction {
     private PekaEDSGUI gui;
     
-    public SaveMapAction(PekaEDSGUI ui) {
+    public SaveLevelAction(PekaEDSGUI ui) {
         this.gui = ui;
     }
     
     @Override
     public void actionPerformed(ActionEvent e) {
-        gui.saveMap();
+        gui.saveLevel();
     }
 }

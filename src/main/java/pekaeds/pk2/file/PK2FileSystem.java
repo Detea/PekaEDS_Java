@@ -111,7 +111,7 @@ public static void setEpisodeName(String name){
     mEpisodeName = name;
 }
 
-public static String GetEpisodeName(){
+public static String getEpisodeName(){
     return mEpisodeName;
 }
 

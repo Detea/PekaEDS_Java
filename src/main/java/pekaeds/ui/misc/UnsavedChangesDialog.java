@@ -36,7 +36,7 @@ public final class UnsavedChangesDialog {
         
         if (result != JOptionPane.CANCEL_OPTION && result != JOptionPane.CLOSED_OPTION) {
             if (result == JOptionPane.YES_OPTION) {
-                gui.saveMap();
+                gui.saveLevel();
             }
         
             if (close) {

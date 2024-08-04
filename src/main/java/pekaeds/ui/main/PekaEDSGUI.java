@@ -115,7 +115,7 @@ public class PekaEDSGUI implements ChangeListener {
                 
                 switch (Settings.getDefaultStartupBehavior()) {
                     case StartupBehavior.NEW_MAP -> {
-                        newMap();
+                        newLevel();
     
                         Logger.info("Creating new map.");
                     }
@@ -124,12 +124,12 @@ public class PekaEDSGUI implements ChangeListener {
                         if (lastSession.getLastEpisodeFile().exists()) {
                             episodeManager.loadEpisode(lastSession.getLastEpisodeFile());
             
-                            loadMap(lastSession.getLastLevelFile());
+                            loadLevel(lastSession.getLastLevelFile());
                             mapPanelView.getViewport().setViewPosition(new Point(lastSession.getLastViewportX(), lastSession.getLastViewportY()));
                             
                             Logger.info("Loaded last episode: {} file: {}", episodeManager.getEpisode().getEpisodeName(), lastSession.getLastLevelFile().getAbsolutePath());
                         } else {
-                            newMap();
+                            newLevel();
                             
                             Logger.info("Unable to load last episode: {}. Creating new map instead.", lastSession.getLastEpisodeFile().getAbsolutePath());
                         }
@@ -137,13 +137,13 @@ public class PekaEDSGUI implements ChangeListener {
                     
                     case StartupBehavior.LOAD_LAST_MAP -> {
                         if (lastSession.getLastLevelFile().exists()) {
-                            loadMap(lastSession.getLastLevelFile());
+                            loadLevel(lastSession.getLastLevelFile());
                             
                             mapPanelView.getViewport().setViewPosition(new Point(lastSession.getLastViewportX(), lastSession.getLastViewportY()));
                             
                             Logger.info("Loaded last level: {}", lastSession.getLastLevelFile().getAbsolutePath());
                         } else {
-                            newMap();
+                            newLevel();
                             
                             Logger.info("Unable to load last level: {}. Creating new map instead.", lastSession.getLastLevelFile().getAbsolutePath());
                         }
@@ -152,12 +152,12 @@ public class PekaEDSGUI implements ChangeListener {
             } catch (IOException e) {
                 Logger.info(e, "Unable to load last session file. Creating new map.");
                 
-                newMap();
+                newLevel();
             }
         } else {
             Logger.info("No last session found. Creating new map.");
             
-            newMap();
+            newLevel();
         }
     }
     
@@ -226,7 +226,7 @@ public class PekaEDSGUI implements ChangeListener {
     /*
         * Map related methods
      */
-    public void loadMap(PK2Level level, File levelFile) {
+    public void loadLevel(PK2Level level, File levelFile) {
 
         model.setCurrentMapFile(levelFile);
 
@@ -257,12 +257,12 @@ public class PekaEDSGUI implements ChangeListener {
         updateSectorHolders(level.sectors.get(0));
     }
     
-    public void loadMap(File file) {
+    public void loadLevel(File file) {
 
         try{
             Logger.info("Trying to load level file: {}", file.getAbsolutePath());
             PK2Level level = PK2LevelIO.loadLevel(file);
-            this.loadMap(level, file);
+            this.loadLevel(level, file);
         }
         catch(Exception e){
             Logger.error(e);
@@ -270,7 +270,7 @@ public class PekaEDSGUI implements ChangeListener {
         }
     }
     
-    public void saveMap() {
+    public void saveLevel() {
         // If the file has not been saved yet, ask the user to give it a name and location
         if (model.getCurrentMapFile() == null) {
             var fc = new JFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.EPISODES_DIR));
@@ -286,10 +286,10 @@ public class PekaEDSGUI implements ChangeListener {
             }
         }
         
-        saveMap(model.getCurrentMapFile());
+        saveLevel(model.getCurrentMapFile());
     }
     
-    public void saveMap(File file) {
+    public void saveLevel(File file) {
         if (file != null) {
 
             {
@@ -317,12 +317,12 @@ public class PekaEDSGUI implements ChangeListener {
         }
     }
     
-    public void newMap() {
+    public void newLevel() {
         Tool.reset();
         setSelectedTool(Tools.getTool(BrushTool.class));
 
         PK2Level level = PK2LevelUtils.createDefaultLevel();
-        loadMap(level, null);
+        loadLevel(level, null);
         
         model.setCurrentMapFile(null);
         autosaveManager.setFile(null);
@@ -363,7 +363,7 @@ public class PekaEDSGUI implements ChangeListener {
                     
                     model.setCurrentMapFile(selectedFile);
                     
-                    saveMap(selectedFile);
+                    saveLevel(selectedFile);
                 } else {
                     JOptionPane.showMessageDialog(null, "File has not been added to episode.", "Not added to episode", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -418,9 +418,9 @@ public class PekaEDSGUI implements ChangeListener {
             }
         });
         
-        ShortcutUtils.install(mapPanel, Shortcuts.SAVE_FILE_ACTION, new SaveMapAction(this));
-        ShortcutUtils.install(mapPanel, Shortcuts.OPEN_FILE_ACTION, new OpenMapAction(this));
-        ShortcutUtils.install(mapPanel, Shortcuts.TEST_MAP_ACTION, new PlayMapAction(this));
+        ShortcutUtils.install(mapPanel, Shortcuts.SAVE_FILE_ACTION, new SaveLevelAction(this));
+        ShortcutUtils.install(mapPanel, Shortcuts.OPEN_FILE_ACTION, new OpenLevelAction(this));
+        ShortcutUtils.install(mapPanel, Shortcuts.TEST_MAP_ACTION, new PlayLevelAction(this));
         
         ShortcutUtils.install(mapPanel, Shortcuts.SELECT_BOTH_LAYER_ACTION, new SwitchLayerAction(this, Layer.BOTH));
         ShortcutUtils.install(mapPanel, Shortcuts.SELECT_FOREGROUND_LAYER_ACTION, new SwitchLayerAction(this, Layer.FOREGROUND));

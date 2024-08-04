@@ -142,7 +142,7 @@ public final class AutoSaveManager {
                         Logger.warn("Unable to save autosave file: " + fileRotation.get(currentFile).getName());
                     }
         
-                    edsGUI.saveMap(originalFile);
+                    edsGUI.saveLevel(originalFile);
         
                     currentFile++;
                     if (currentFile >= fileCount) {

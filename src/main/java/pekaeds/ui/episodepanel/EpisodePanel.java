@@ -106,14 +106,14 @@ public final class EpisodePanel extends JPanel implements EpisodeChangeListener 
                                         fc.setFileFilter(FileFilters.PK2_MAP_FILTER);
                 
                                         if (fc.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-                                            eds.saveMap(fc.getSelectedFile());
+                                            eds.saveLevel(fc.getSelectedFile());
                                         }
                                     }
             
-                                    eds.loadMap(file);
+                                    eds.loadLevel(file);
                                 }
                             } else {
-                                eds.loadMap(file);
+                                eds.loadLevel(file);
                             }
                         } else {
                             var result = JOptionPane.showConfirmDialog(null, "Selected file doesn't exist. Remove it from episode?", "File not found", JOptionPane.YES_NO_OPTION);

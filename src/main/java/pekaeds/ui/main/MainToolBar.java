@@ -6,9 +6,9 @@ import pekaeds.data.Layer;
 import pekaeds.settings.Settings;
 import pekaeds.tool.Tool;
 import pekaeds.tool.ToolModeListener;
-import pekaeds.ui.actions.NewMapAction;
-import pekaeds.ui.actions.OpenMapAction;
-import pekaeds.ui.actions.PlayMapAction;
+import pekaeds.ui.actions.NewLevelAction;
+import pekaeds.ui.actions.OpenLevelAction;
+import pekaeds.ui.actions.PlayLevelAction;
 
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
@@ -57,9 +57,9 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         tbShowSprites = new JToggleButton("Show sprites");
         tbShowSprites.setSelected(Settings.showSprites());
         
-        btnNew.addActionListener(new NewMapAction(gui));
-        btnOpen.addActionListener(new OpenMapAction(gui));
-        btnPlayTest.addActionListener(new PlayMapAction(gui));
+        btnNew.addActionListener(new NewLevelAction(gui));
+        btnOpen.addActionListener(new OpenLevelAction(gui));
+        btnPlayTest.addActionListener(new PlayLevelAction(gui));
         
         tbHighlightSprites.addActionListener(e -> {
             Settings.setHighlightSprites(tbHighlightSprites.isSelected());
@@ -124,7 +124,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         });
         
         btnSave.addActionListener(e -> {
-            gui.saveMap();
+            gui.saveLevel();
         });
         
         cbToolMode.addActionListener(e -> {

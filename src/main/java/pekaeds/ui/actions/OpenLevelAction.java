@@ -9,10 +9,10 @@ import pekaeds.ui.misc.UnsavedChangesDialog;
 
 import java.awt.event.ActionEvent;
 
-public class OpenMapAction extends AbstractAction {
+public class OpenLevelAction extends AbstractAction {
     private final PekaEDSGUI gui;
     
-    public OpenMapAction(PekaEDSGUI ui) {
+    public OpenLevelAction(PekaEDSGUI ui) {
         this.gui = ui;
     }
     
@@ -35,7 +35,7 @@ public class OpenMapAction extends AbstractAction {
     
     private void showFileChooser(JFileChooser fc) {
         if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            gui.loadMap(fc.getSelectedFile());
+            gui.loadLevel(fc.getSelectedFile());
         }
     }
 }
