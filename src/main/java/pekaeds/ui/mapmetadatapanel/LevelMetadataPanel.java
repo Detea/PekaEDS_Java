@@ -424,7 +424,7 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, PK2S
     }
     
     @Override
-    public void setMap(PK2Level m) {
+    public void setLevel(PK2Level m) {
         this.level = m;
         
         canFireChanges = false;

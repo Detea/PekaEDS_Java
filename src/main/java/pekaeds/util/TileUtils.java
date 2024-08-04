@@ -3,7 +3,6 @@ package pekaeds.util;
 import java.awt.*;
 
 import pekaeds.pk2.level.PK2LevelSector;
-import pekaeds.pk2.map.PK2Map13;
 
 public final class TileUtils {
     private TileUtils() {}
@@ -97,45 +96,6 @@ public final class TileUtils {
         return (pos.x / 32) + ((pos.y / 32) * 10);
     }
     
-    @Deprecated
-    public static Rectangle calculateUsedLayerSpace(int[][] layer) {
-        int startX = PK2Map13.WIDTH;
-        int width = 0;
-        int startY = PK2Map13.HEIGHT;
-        int height = 0;
-        
-        for (int y = 0; y < PK2Map13.HEIGHT; y++) {
-            for (int x = 0; x < PK2Map13.WIDTH; x++) {
-                if (layer[y][x] != 255) {
-                    if (x < startX) {
-                        startX = x;
-                    }
-        
-                    if (y < startY) {
-                        startY = y;
-                    }
-        
-                    if (x > width) {
-                        width = x;
-                    }
-        
-                    if (y > height) {
-                        height = y;
-                    }
-                }
-            }
-        }
-    
-        if (width < startX || height < startY) {
-            startX = 0;
-            startY = 0;
-            
-            height = 1;
-            width = 1;
-        }
-        
-        return new Rectangle(startX, startY, width - startX, height - startY);
-    }
     
     /**
      * Convenience method that divides and multiplies the x and y of a Point object to align it with the tile grid.

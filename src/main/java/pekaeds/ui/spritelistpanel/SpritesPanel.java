@@ -193,7 +193,7 @@ public class SpritesPanel extends JPanel implements PK2LevelConsumer, SpritePlac
     }
     
     @Override
-    public void setMap(PK2Level map) {
+    public void setLevel(PK2Level map) {
         this.level = map;
         
         listModel.clear();

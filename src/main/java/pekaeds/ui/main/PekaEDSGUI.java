@@ -253,7 +253,7 @@ public class PekaEDSGUI implements ChangeListener {
     
         model.setCurrentLevel(level);
 
-        updateMapHolders();
+        updatelevelHolders();
         updateSectorHolders(level.sectors.get(0));
     }
     
@@ -437,10 +437,10 @@ public class PekaEDSGUI implements ChangeListener {
         ShortcutUtils.install(mapPanel, Shortcuts.TOOL_FLOOD_FILL, new SetSelectedToolAction(this, Tools.getTool(FloodFillTool.class)));
     }
     
-    private void updateMapHolders() {
+    private void updatelevelHolders() {
         Tool.setLevel(model.getCurrentLevel());
         for (var m : model.getMapConsumers()) {
-            m.setMap(model.getCurrentLevel());
+            m.setLevel(model.getCurrentLevel());
         }
     }
 

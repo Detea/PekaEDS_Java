@@ -183,7 +183,7 @@ public class MapPanel extends JPanel implements ComponentListener, PK2LevelConsu
     }
 
     @Override
-    public void setMap(PK2Level level) {
+    public void setLevel(PK2Level level) {
         model.setLevel(level);
     }
 }
