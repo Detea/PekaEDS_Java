@@ -134,7 +134,6 @@ public class PanelGeneral extends JPanel {
         rbLoadMap.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.LOAD_LAST_MAP);
         rbLoadEpisode.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.LOAD_LAST_EPISODE);
         
-        rbBGTileset.setSelected(Settings.useBGTileset());
         cbShowTileNumbers.setSelected(Settings.showTilesetNumberInTileset());
         
         cbHighlightSelection.setSelected(Settings.highlistSelection());

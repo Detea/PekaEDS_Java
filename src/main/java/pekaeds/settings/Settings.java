@@ -49,7 +49,6 @@ public class Settings {
     private static boolean highlightSprites = true;
     private static boolean showTileNumberInTileset = true;
     
-    private static boolean useBGTileset = false;
     
     //private static final File settingsFile = new File("settings.dat");
     
@@ -107,7 +106,6 @@ public class Settings {
             
             testingParameter = dis.readUTF();
             
-            useBGTileset = dis.readBoolean();
             highlightSprites = dis.readBoolean();
             showTileNumberInTileset = dis.readBoolean();
             showSprites = dis.readBoolean();
@@ -162,7 +160,6 @@ public class Settings {
             
             dos.writeUTF(testingParameter);
             
-            dos.writeBoolean(useBGTileset);
             dos.writeBoolean(highlightSprites);
             dos.writeBoolean(showTileNumberInTileset);
             dos.writeBoolean(showSprites);
@@ -211,7 +208,6 @@ public class Settings {
         defaultStartupBehavior = StartupBehavior.NEW_MAP;
         
         highlightSprites = true;
-        useBGTileset = false;
         showTileNumberInTileset = true;
         
         showSprites = true;
@@ -332,14 +328,6 @@ public class Settings {
         return testingParameter;
     }
 
-    public static boolean useBGTileset() {
-        return useBGTileset;
-    }
-    
-    public static void setUseBGTileset(boolean useBG) {
-        useBGTileset = useBG;
-    }
-    
     public void setMapProfile(LevelProfile mProfile) {
         mapProfile = mProfile;
     }

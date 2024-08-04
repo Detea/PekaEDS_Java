@@ -77,7 +77,7 @@ public class MapPanelPainter {
 
         PK2TileArray layer = mapPanel.getModel().getSector().getBGLayer();
 
-        if (Settings.useBGTileset() && mapPanel.getModel().getSector().getBackgroundTilesetImage() != null) {
+        if (mapPanel.getModel().getSector().getBackgroundTilesetImage() != null) {
             drawLayer(g, layer, mapPanel.getModel().getSector().getBackgroundTilesetImage());
         } else {
             drawLayer(g, layer, mapPanel.getModel().getSector().getTilesetImage());
@@ -203,7 +203,7 @@ public class MapPanelPainter {
     
     // Method used in the Tool subclasses, they don't care which tileset is supposed to be used.
     public void drawTile(Graphics2D g, int x, int y, int tile) {
-        if (Settings.useBGTileset() && mapPanel.getModel().getSector().getBackgroundTilesetImage() != null && mapPanel.getModel().getSelectedLayer() == Layer.BACKGROUND) {
+        if (mapPanel.getModel().getSector().getBackgroundTilesetImage() != null && mapPanel.getModel().getSelectedLayer() == Layer.BACKGROUND) {
             drawTile(g, x, y, tile, mapPanel.getModel().getSector().getBackgroundTilesetImage());
         } else {
             drawTile(g, x, y, tile, mapPanel.getModel().getSector().getTilesetImage());

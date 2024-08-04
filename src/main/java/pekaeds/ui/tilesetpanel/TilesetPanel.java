@@ -56,7 +56,7 @@ public class TilesetPanel extends JPanel implements PK2SectorConsumer, RepaintLi
             g2.setColor(Color.GRAY);
             g2.fillRect(0, 0, model.getMap().getTilesetImage().getWidth(), model.getMap().getTilesetImage().getHeight());
     
-            if (Settings.useBGTileset() && useBackgroundTileset && model.getMap().getBackgroundTilesetImage() != null) {
+            if (useBackgroundTileset && model.getMap().getBackgroundTilesetImage() != null) {
                 g2.drawImage(model.getMap().getBackgroundTilesetImage(), 0, 0, null);
             } else {
                 g2.drawImage(model.getMap().getTilesetImage(), 0, 0, null);

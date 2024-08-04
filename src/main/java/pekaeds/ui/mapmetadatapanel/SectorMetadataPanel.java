@@ -30,6 +30,7 @@ import javax.swing.event.ChangeListener;
 
 import org.tinylog.Logger;
 
+
 public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK2LevelConsumer, ChangeListener, ActionListener{
 
     private ChangeListener changeListener;
@@ -58,6 +59,8 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
     private JButton btnBrowseBgTileset;
     private JButton btnBrowseBackground;
     private JButton btnBrowseMusic;
+
+    private JButton btnRemoveBgTileset;
 
     public SectorMetadataPanel(PekaEDSGUI gui){
         this.setupUI();
@@ -126,11 +129,12 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
         this.cbFireColor1.setModel(getFireColorsModel());
         this.cbFireColor2.setModel(getFireColorsModel());
 
-        btnBrowseTileset = new JButton("...");
-        btnBrowseBgTileset = new JButton("...");
-        btnBrowseBackground = new JButton("...");
-        btnBrowseMusic = new JButton("...");
-        
+        this.btnBrowseTileset = new JButton("...");
+        this.btnBrowseBgTileset = new JButton("...");
+        this.btnBrowseBackground = new JButton("...");
+        this.btnBrowseMusic = new JButton("...");
+
+        this.btnRemoveBgTileset = new JButton("No different BG tileset");
         
         // Lay out components
         JPanel p = new JPanel();
@@ -177,6 +181,10 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
         p.add(lblTilesetBG);
         p.add(this.tfBgTileset, "width 100px");
         p.add(this.btnBrowseBgTileset);
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
+
+        p.add(this.btnRemoveBgTileset);
 
         p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
 
@@ -303,6 +311,15 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
                 
                 SectorMetadataPanel.this.fireChanges();
             }
+        });
+
+        this.btnRemoveBgTileset.addActionListener(e -> {
+            sector.tilesetBgName = null;
+            sector.tilesetBgImage = null;
+            tfBgTileset.setText("");
+
+            gui.updateRepaintListeners();                    
+            SectorMetadataPanel.this.fireChanges();
         });
     }
 

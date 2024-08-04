@@ -84,7 +84,6 @@ public class SettingsDialog extends JDialog {
         Settings.setDefaultAuthor(panelDefaults.getAuthor());
         Settings.setDefaultMapName(panelDefaults.getMapName());
         
-        Settings.setUseBGTileset(panelGeneral.useBGTileset());
         Settings.setShowTileNumberInTileset(panelGeneral.showTilesetNumber());
         
         Settings.setHighlightSelection(panelGeneral.highlightSelection());

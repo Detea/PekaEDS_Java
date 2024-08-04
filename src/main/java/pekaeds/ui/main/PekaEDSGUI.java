@@ -252,13 +252,13 @@ public class PekaEDSGUI implements ChangeListener {
     
         Tool.reset();
         setSelectedTool(Tools.getTool(BrushTool.class));
-
-        //level.setChangeListener(this);
-    
+   
         model.setCurrentLevel(level);
 
         updatelevelHolders();
         updateSectorHolders(level.sectors.get(0));
+        
+        updateFrameTitle();
     }
     
     public void loadLevel(File file) {
@@ -267,6 +267,7 @@ public class PekaEDSGUI implements ChangeListener {
             Logger.info("Trying to load level file: {}", file.getAbsolutePath());
             PK2Level level = PK2LevelIO.loadLevel(file);
             this.loadLevel(level, file);
+            unsavedChanges = false;
         }
         catch(Exception e){
             Logger.error(e);
@@ -373,8 +374,6 @@ public class PekaEDSGUI implements ChangeListener {
                 }
             }
         }
-        
-        updateFrameTitle();
     }
     
     public void setLayer(int layer) {
@@ -382,11 +381,9 @@ public class PekaEDSGUI implements ChangeListener {
         
         mainToolBar.setSelectedLayer(layer);
 
-        if (Settings.useBGTileset()) {
-            switch (layer) {
+        switch (layer) {
                 case Layer.BACKGROUND -> tilesetPanel.useBackgroundTileset(true);
                 case Layer.FOREGROUND, Layer.BOTH -> tilesetPanel.useBackgroundTileset(false);
-            }
         }
         
         tilesetPanel.repaint();

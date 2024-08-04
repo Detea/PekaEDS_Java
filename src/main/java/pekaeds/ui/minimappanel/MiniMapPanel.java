@@ -6,7 +6,6 @@ import javax.swing.event.ChangeListener;
 
 import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.pk2.level.PK2TileArray;
-import pekaeds.settings.Settings;
 import pekaeds.tool.Tool;
 import pekaeds.ui.listeners.PK2SectorConsumer;
 import pekaeds.ui.listeners.TileChangeListener;
@@ -74,7 +73,7 @@ public class MiniMapPanel extends JPanel implements PK2SectorConsumer, TileChang
                         int tileX = (tile % 10) * 32;
                         int tileY = (tile / 10) * 32;
                 
-                        if (Settings.useBGTileset() && bg && backgroundTilesetImage != null) {
+                        if (bg && backgroundTilesetImage != null) {
                             g.setColor(new Color(backgroundTilesetImage.getRGB(tileX, tileY))); // TODO Maybe don't create a new Color object every loop
                         } else {
                             g.setColor(new Color(tilesetImage.getRGB(tileX, tileY))); // TODO Maybe don't create a new Color object every loop
