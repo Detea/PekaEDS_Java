@@ -29,7 +29,7 @@ import java.util.Map;
 import org.tinylog.Logger;
 
 // TODO The ChangeListener stuff ist pretty messy. It works but it should probably be cleaned up. Some time... maybe...
-public class MapMetadataPanel extends JPanel implements PK2LevelConsumer, PK2SectorConsumer {
+public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, PK2SectorConsumer {
     private ChangeListener changeListener;
     private ChangeEvent changeEvent = new ChangeEvent(this);
     private boolean canFireChanges = false;
@@ -64,7 +64,7 @@ public class MapMetadataPanel extends JPanel implements PK2LevelConsumer, PK2Sec
 
     private PekaEDSGUI gui;
     
-    public MapMetadataPanel(PekaEDSGUI ui) {
+    public LevelMetadataPanel(PekaEDSGUI ui) {
         loadIcons();
         
         mapPositionDialog = new MapPositionDialog(ui.getEpisodeManager());

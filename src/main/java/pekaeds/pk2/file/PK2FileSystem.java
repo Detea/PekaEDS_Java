@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.nio.file.Paths;
-
+import java.util.*;
 
 public class PK2FileSystem {
 
@@ -40,6 +40,14 @@ public static void main(String[] args){
 
         f = findSprite("PiG.sPr");
         System.out.println(f);
+
+        ArrayList<Integer> a = new ArrayList<>();
+        a.add(1);
+        a.add(12);
+        a.add(13);
+
+        System.out.println(a.indexOf(12));
+        System.out.println(a.indexOf(14));
         
     }
     catch(Exception e){

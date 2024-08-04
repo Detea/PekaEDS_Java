@@ -28,7 +28,7 @@ import pekaeds.tool.tools.*;
 import pekaeds.ui.actions.*;
 import pekaeds.ui.listeners.MainUIWindowListener;
 import pekaeds.ui.listeners.RepaintListener;
-import pekaeds.ui.mapmetadatapanel.MapMetadataPanel;
+import pekaeds.ui.mapmetadatapanel.LevelMetadataPanel;
 import pekaeds.ui.mappanel.MapPanel;
 import pekaeds.ui.mappanel.MapPanelView;
 import pekaeds.ui.minimappanel.MiniMapPanel;
@@ -53,7 +53,7 @@ public class PekaEDSGUI implements ChangeListener {
     private MainToolBar mainToolBar;
     
     private SpritesPanel spritesPanel;
-    private MapMetadataPanel mapMetadataPanel;
+    private LevelMetadataPanel levelMetadataPanel;
     
     private MiniMapPanel miniMapPanel;
     
@@ -169,7 +169,7 @@ public class PekaEDSGUI implements ChangeListener {
         mainToolBar = new MainToolBar(this);
         
         spritesPanel = new SpritesPanel(this);
-        mapMetadataPanel = new MapMetadataPanel(this);
+        levelMetadataPanel = new LevelMetadataPanel(this);
         
         miniMapPanel = new MiniMapPanel();
         
@@ -180,11 +180,11 @@ public class PekaEDSGUI implements ChangeListener {
     
     private void registerMapConsumers() {
         model.addMapConsumer(spritesPanel);
-        model.addMapConsumer(mapMetadataPanel);
+        model.addMapConsumer(levelMetadataPanel);
         model.addMapConsumer(mapPanel);
 
 
-        model.addSectorConsumer(mapMetadataPanel);
+        model.addSectorConsumer(levelMetadataPanel);
         model.addSectorConsumer(miniMapPanel);
         model.addSectorConsumer(mapPanel);        
         model.addSectorConsumer(tilesetPanel);
@@ -201,7 +201,7 @@ public class PekaEDSGUI implements ChangeListener {
         view.setWindowListener(new MainUIWindowListener(this));
         
         spritesPanel.setChangeListener(this);
-        mapMetadataPanel.setChangeListener(this);
+        levelMetadataPanel.setChangeListener(this);
         
         Tool.setToolInformationListener(statusbar);
     }
@@ -298,7 +298,7 @@ public class PekaEDSGUI implements ChangeListener {
                     PK2FileSystem.setEpisodeName(episodeDir.getName());
                 }
             }
-            mapMetadataPanel.commitSpinnerValues();
+            levelMetadataPanel.commitSpinnerValues();
 
             try{
                 if (!file.getName().endsWith(".map")) file = new File(file.getPath() + ".map");
@@ -558,8 +558,8 @@ public class PekaEDSGUI implements ChangeListener {
         return miniMapPanel;
     }
     
-    MapMetadataPanel getMapMetadataPanel() {
-        return mapMetadataPanel;
+    LevelMetadataPanel getMapMetadataPanel() {
+        return levelMetadataPanel;
     }
     
     Statusbar getStatusbar() { return statusbar; }
@@ -578,7 +578,7 @@ public class PekaEDSGUI implements ChangeListener {
     }
     
     public void updateMapProfileData() {
-        mapMetadataPanel.updateMapProfileData();
+        levelMetadataPanel.updateMapProfileData();
     }
     
     public MapPanelView getMapPanelView() {

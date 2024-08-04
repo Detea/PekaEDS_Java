@@ -148,7 +148,8 @@ public class SpritesPanel extends JPanel implements PK2LevelConsumer, SpritePlac
         });
         
         btnRemove.addActionListener(e -> {
-            /*map.removeSprite(spriteList.getSelectedValue().getFilename());
+            level.removeSprite(spriteList.getSelectedValue());
+            
             listModel.removeElement(spriteList.getSelectedValue());
             
             if (spriteList.getSelectedIndex() - 1 > 0) {
@@ -159,7 +160,7 @@ public class SpritesPanel extends JPanel implements PK2LevelConsumer, SpritePlac
             
             gui.repaintView();
     
-            changeListener.stateChanged(changeEvent);*/
+            changeListener.stateChanged(changeEvent);
         });
         
         spriteList.addListSelectionListener(l -> {
