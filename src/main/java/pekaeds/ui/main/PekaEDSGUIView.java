@@ -84,13 +84,10 @@ public class PekaEDSGUIView {
         EpisodePanel episodesPanel = new EpisodePanel(edsUI, edsUI.getEpisodeManager());
         
         tabbedPane = new JTabbedPane();
-        tabbedPane.add("Level", spLevelMetaDataPanel);
         tabbedPane.add("Sector", spSectorMetaDataPanel);
+        tabbedPane.add("Level", spLevelMetaDataPanel);
         tabbedPane.add("Sprites", spritesPanel);
-
         tabbedPane.add("Episode", episodesPanel);
-
-
 
         
         frame.add(mainToolBar, BorderLayout.PAGE_START);

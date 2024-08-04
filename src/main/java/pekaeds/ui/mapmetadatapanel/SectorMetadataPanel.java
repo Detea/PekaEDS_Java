@@ -1,5 +1,7 @@
 package pekaeds.ui.mapmetadatapanel;
 
+
+import java.util.Map;
 import java.awt.*;
 import javax.swing.*;
 
@@ -14,6 +16,8 @@ import pekaeds.ui.listeners.TextFieldChangeListener;
 import pekaeds.ui.main.PekaEDSGUI;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import com.formdev.flatlaf.util.SystemInfo;
 
 
 public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, ChangeListener, ActionListener{
@@ -32,6 +36,10 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
     private JComboBox<String> cbWeather;
     private JComboBox<String> cbScrollingType;
 
+    private JComboBox<String> cbSplashColor;
+    private JComboBox<String> cbFireColor1;
+    private JComboBox<String> cbFireColor2;
+
     private JButton btnBrowseTileset;
     private JButton btnBrowseBgTileset;
     private JButton btnBrowseBackground;
@@ -42,6 +50,15 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         this.addChangeListeners();
 
         this.gui = gui;
+    }
+
+    public static DefaultComboBoxModel<String> getFireColorsModel(){
+        DefaultComboBoxModel<String> fireColorsModel = new DefaultComboBoxModel<String>();
+        for (var col : Settings.getMapProfile().getFireColors().entrySet()) {
+            fireColorsModel.addElement(col.getValue());
+        }
+
+        return fireColorsModel;
     }
 
     public void setupUI(){
@@ -65,14 +82,32 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         this.cbWeather = new JComboBox<>();
     
         JLabel lblScrolling = new JLabel("Scrolling:");
-        this.cbScrollingType = new JComboBox<>();   
+        this.cbScrollingType = new JComboBox<>();
+
+        JLabel lblSplashColor = new JLabel("Splash color:");
+        this.cbSplashColor = new JComboBox<>();
+
+        JLabel lblFireColor1 = new JLabel("Fire color 1:");
+        this.cbFireColor1 = new JComboBox<>();
+
+        JLabel lblFireColor2 = new JLabel("Fire color 2:");
+        this.cbFireColor2 = new JComboBox<>();
         
         DefaultComboBoxModel<String> scrollingModel = (DefaultComboBoxModel<String>) cbScrollingType.getModel();
         scrollingModel.addAll(Settings.getMapProfile().getScrollingTypes());
     
         DefaultComboBoxModel<String> weatherModel = (DefaultComboBoxModel<String>) cbWeather.getModel();
         weatherModel.addAll(Settings.getMapProfile().getWeatherTypes());
-               
+
+        DefaultComboBoxModel<String> splashColorsModel = new DefaultComboBoxModel<String>();
+        for (var col : Settings.getMapProfile().getSplashColors().entrySet()) {
+            splashColorsModel.addElement(col.getValue());
+        }
+
+        this.cbSplashColor.setModel(splashColorsModel);
+        this.cbFireColor1.setModel(getFireColorsModel());
+        this.cbFireColor2.setModel(getFireColorsModel());
+
         btnBrowseTileset = new JButton("...");
         btnBrowseBgTileset = new JButton("...");
         btnBrowseBackground = new JButton("...");
@@ -108,14 +143,35 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
 
         p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
 
+        p.add(lblFireColor1);
+        p.add(this.cbFireColor1);
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
+
+        p.add(lblFireColor2);
+        p.add(this.cbFireColor2);
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
+        p.add(new JLabel("Optional:"));
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
+
         p.add(lblTilesetBG);
         p.add(this.tfBgTileset, "width 100px");
         p.add(this.btnBrowseBgTileset);
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
+        
+        p.add(lblSplashColor);
+        p.add(this.cbSplashColor);
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
         
         
         add(p, BorderLayout.CENTER);
     }
 
+    //TODO Redesign
     public void addChangeListeners(){
         var tfl = new TextFieldChangeListener(this);
         this.tfSectorName.getDocument().addDocumentListener(tfl);
@@ -128,6 +184,9 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         this.cbWeather.addActionListener(this);
         this.cbScrollingType.addActionListener(this);
 
+        this.cbSplashColor.addActionListener(this);
+        this.cbFireColor1.addActionListener(this);
+        this.cbFireColor2.addActionListener(this);
     }
 
     @Override
@@ -145,8 +204,18 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         this.cbWeather.setSelectedIndex(sector.weather);
         this.cbScrollingType.setSelectedIndex(sector.background_scrolling);
 
+        Map<Integer, String> splashColors = Settings.getMapProfile().getSplashColors();
+        this.cbSplashColor.setSelectedItem(splashColors.get(sector.splash_color));
+
+        Map<Integer, String> fireColors = Settings.getMapProfile().getFireColors();
+        
+        this.cbFireColor1.setSelectedItem(fireColors.get(sector.fire_color_1));
+        this.cbFireColor2.setSelectedItem(fireColors.get(sector.fire_color_2));
+
         this.canFireChanges = true;
     }
+
+    //TODO Redesign it
 
     @Override
     public void stateChanged(ChangeEvent e) {
@@ -162,11 +231,30 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, Ch
         }
     }
 
+    private static int getMapColor(Map<Integer, String> colors, String value){
+        for(var entry: colors.entrySet()){
+            if(entry.getValue().equals(value)){
+                return entry.getKey();
+            }
+        }
+
+        return 0;
+    }
+
+    //TODO Redesign it
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if(this.canFireChanges){
             this.sector.weather = this.cbWeather.getSelectedIndex();
             this.sector.background_scrolling = this.cbScrollingType.getSelectedIndex();
+
+            Map<Integer, String> splashColors = Settings.getMapProfile().getSplashColors();
+            Map<Integer, String> fireColors = Settings.getMapProfile().getFireColors();
+
+            this.sector.splash_color = getMapColor(splashColors, (String)this.cbSplashColor.getSelectedItem());
+            this.sector.fire_color_1 = getMapColor(fireColors, (String)this.cbFireColor1.getSelectedItem());
+            this.sector.fire_color_2 = getMapColor(fireColors, (String)this.cbFireColor2.getSelectedItem());
 
             this.gui.stateChanged(null);
         }

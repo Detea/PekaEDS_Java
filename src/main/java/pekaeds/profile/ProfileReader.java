@@ -5,7 +5,7 @@ package pekaeds.profile;
 public final class ProfileReader {
     //private static final Logger logger = Logger.getLogger(ProfileReader.class.getName());
     
-    public static MapProfile readMapProfile(String filename) {
+    public static LevelProfile readMapProfile(String filename) {
         /*var mapper = new YAMLMapper(new YAMLFactory());
         MapProfile profile = null; // TODO Hard code a default profile?
         
@@ -17,7 +17,7 @@ public final class ProfileReader {
             logger.warning("Couldn't load map profile file.\n" + e.getMessage());
         }*/
         
-        return new MapProfile();
+        return new LevelProfile();
     }
     
     public static SpriteProfile readSpriteProfile(String filename) {

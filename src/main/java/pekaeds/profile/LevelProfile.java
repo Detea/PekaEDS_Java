@@ -3,13 +3,10 @@ package pekaeds.profile;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
-public class MapProfile {
-    private int spriteLimit;
-    private int stringLengthTileset = 13;
-    private int stringLengthBackground = 13;
-    private int stringLengthMusic = 13;
-    private int stringLengthMapName;
+public class LevelProfile {
     
     private int mapWidth = 256;
     private int mapHeight = 224;
@@ -22,6 +19,31 @@ public class MapProfile {
     private List<String> scrollingTypes = new ArrayList<>();
     private List<String> weatherTypes = new ArrayList<>();
     private List<String> mapIconNames = new ArrayList<>();
+
+    private Map<Integer, String> fireColors;
+    private Map<Integer, String> splashColors;
+
+    public LevelProfile(){
+        fireColors = new HashMap<>();
+        fireColors.put(0, "Gray");
+        fireColors.put(32, "Blue");
+        fireColors.put(64,"Red");
+        fireColors.put(96, "Green");
+        fireColors.put(128,"Orange");
+        fireColors.put(160,"Violet");
+        fireColors.put(192,"Turquoise");
+
+        splashColors = new HashMap<>();
+        splashColors.put(-1, "Default");
+        splashColors.putAll(fireColors);
+    }
+
+    public Map<Integer, String> getFireColors(){
+        return this.fireColors;
+    }
+    public Map<Integer, String> getSplashColors(){
+        return this.splashColors;
+    }
     
     private String[] iconNames = new String[] {
             "Question mark",
@@ -71,11 +93,6 @@ public class MapProfile {
     @Override
     public String toString() {
         var sb = new StringBuilder();
-        sb.append("SpriteLimit: " + spriteLimit);
-        sb.append("\ntileset: " + stringLengthTileset);
-        sb.append("\nbg: " + stringLengthBackground);
-        sb.append("\nmusic: " + stringLengthMusic);
-        sb.append("\nmapname: " + stringLengthMapName);
         
         for (var s : musicFormats) {
             sb.append("\n" + s);
@@ -95,11 +112,7 @@ public class MapProfile {
         
         return sb.toString();
     }
-    
-    public int getSpriteLimit() {
-        return spriteLimit;
-    }
-    
+        
     @Deprecated
     public int getMapWidth() {
         return mapWidth;
@@ -128,23 +141,7 @@ public class MapProfile {
     public List<String> getMapIconNames() {
         return mapIconNames;
     }
-    
-    public int getStringLengthTileset() {
-        return stringLengthTileset;
-    }
-    
-    public int getStringLengthBackground() {
-        return stringLengthBackground;
-    }
-    
-    public int getStringLengthMusic() {
-        return stringLengthMusic;
-    }
-    
-    public int getStringLengthMapName() {
-        return stringLengthMapName;
-    }
-    
+        
     public String[] getIconNames() {
         return iconNames;
     }

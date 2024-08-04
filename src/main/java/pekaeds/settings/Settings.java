@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import org.tinylog.Logger;
 
-import pekaeds.profile.MapProfile;
+import pekaeds.profile.LevelProfile;
 import pekaeds.profile.SpriteProfile;
 
 /**
@@ -40,7 +40,7 @@ public class Settings {
     
     private static String testingParameter = "pk2.exe dev test %level%";
     
-    private static MapProfile mapProfile = new MapProfile();
+    private static LevelProfile mapProfile = new LevelProfile();
     private static SpriteProfile spriteProfile = new SpriteProfile();
     
     //private static String pk2stuffFile;
@@ -300,7 +300,7 @@ public class Settings {
         testingParameter = parameter;
     }
     
-    public static MapProfile getMapProfile() {
+    public static LevelProfile getMapProfile() {
         return mapProfile;
     }
     
@@ -340,7 +340,7 @@ public class Settings {
         useBGTileset = useBG;
     }
     
-    public void setMapProfile(MapProfile mProfile) {
+    public void setMapProfile(LevelProfile mProfile) {
         mapProfile = mProfile;
     }
     
