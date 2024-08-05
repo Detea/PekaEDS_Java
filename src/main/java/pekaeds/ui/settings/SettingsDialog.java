@@ -1,40 +1,36 @@
 package pekaeds.ui.settings;
 
+import java.util.List;
+import java.util.ArrayList;
 import net.miginfocom.swing.MigLayout;
 import pekaeds.settings.Settings;
 import pekaeds.ui.main.PekaEDSGUI;
-
-import org.tinylog.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 
 public class SettingsDialog extends JDialog {
     private JTabbedPane tabbedPane;
-    private PanelGeneral panelGeneral;
-    private PanelDefaults panelDefaults;
-    private PanelShortcuts panelShortcuts;
-    
-    private PekaEDSGUI eds;
-    
-    public SettingsDialog(PekaEDSGUI pkeds) {
-        this.eds = pkeds;
+
+    private List<ISettingsPanel> settingPanels = new ArrayList<>();
         
-        setup();
-    }
-    
-    // TODO Reset values after user clicks on "Cancel"
-    private void setup() {
+    public SettingsDialog(PekaEDSGUI pkeds) {
         tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 
-        panelGeneral = new PanelGeneral();
-        panelDefaults = new PanelDefaults();
-        panelShortcuts = new PanelShortcuts();
+        PanelGeneral panelGeneral = new PanelGeneral();
+        PanelDefaults panelDefaults = new PanelDefaults();
+        PanelShortcuts panelShortcuts = new PanelShortcuts(pkeds);
+        PanelTesting panelTesting = new PanelTesting();
 
         tabbedPane.add("General", new JScrollPane(panelGeneral));
         tabbedPane.add("Defaults", panelDefaults);
         tabbedPane.add("Shortcuts", new JScrollPane(panelShortcuts));
-        //tabbedPane.add("Map profile", panelMapProfile);
+        tabbedPane.add("Testing", new JScrollPane(panelTesting));
+
+        settingPanels.add(panelGeneral);
+        settingPanels.add(panelDefaults);
+        settingPanels.add(panelShortcuts);
+        settingPanels.add(panelTesting);
         
         JPanel panelButtons = new JPanel();
         var btnOk = new JButton("OK");
@@ -62,64 +58,19 @@ public class SettingsDialog extends JDialog {
         setTitle("Settings");
     }
     
-    /*
-        It would probably be better/easier to have an instance of the Settings class, set its values in the panels, and then copy all the values in the main settings instance.
-        However, I made all the Settings methods and values static, because I thought that that's a good way to do it. It isn't bad, but now it has to be done like this.
-        
-        A rewrite is not worth it, in my opinion.
-     */
     private void saveSettings() {
-        // Save general data
-        Settings.setBasePath(panelGeneral.getGamePath());
-        Settings.setTestingParameter(panelGeneral.getTestingParameters());
-        Settings.setDefaultStartupBehavior(panelGeneral.getStartupBehavior());
-        
-        // Save default values
-        Settings.setDefaultTileset(panelDefaults.getTileset());
-        Settings.setDefaultBackground(panelDefaults.getDefaultBackground());
-        Settings.setDefaultMusic(panelDefaults.getMusic());
-    
-        Settings.setDefaultAuthor(panelDefaults.getAuthor());
-        Settings.setDefaultMapName(panelDefaults.getMapName());
-        
-        Settings.setShowTileNumberInTileset(panelGeneral.showTilesetNumber());
-        
-        Settings.setHighlightSelection(panelGeneral.highlightSelection());
-        
-        Settings.setAutosaveInterval((panelGeneral.getAutosaveInterval() * 60) * 1000);
-        Settings.setAutosaveFileCount(panelGeneral.getAutosaveFileCount());
-        
-        for (var entry : panelShortcuts.getShortcutMap().entrySet()) {
-            Settings.setKeyboardShortcutFor(entry.getKey(), entry.getValue());
-    
-            Logger.info("Settings shortcut for action {} to keys {}", entry.getKey(), entry.getValue());
-        }
-        
-        /*
-        Settings.getMapProfile().getScrollingTypes().clear();
-        for (int i = 0; i < panelMapProfile.getScrollingTypes().size(); i++) {
-            Settings.getMapProfile().getScrollingTypes().add(panelMapProfile.getScrollingTypes().get(i));
-        }
-    
-        Settings.getMapProfile().getWeatherTypes().clear();
-        for (int i = 0; i < panelMapProfile.getWeatherTypes().size(); i++) {
-            Settings.getMapProfile().getWeatherTypes().add(panelMapProfile.getWeatherTypes().get(i));
-        }*/
-        
-        eds.installKeyboardShortcuts();
-        eds.updateAutosaveManager();
-        
-        //eds.updateMapProfileData();
-        
+        for(ISettingsPanel panel:this.settingPanels){
+            panel.saveSettings();
+        }        
         Settings.save();
     }
     
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        
-        panelDefaults.resetValues();
-        panelGeneral.resetValues();
-        panelShortcuts.resetValues();
+
+        for(ISettingsPanel panel:this.settingPanels){
+            panel.setupValues();
+        }
     }
 }

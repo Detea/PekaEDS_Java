@@ -9,7 +9,7 @@ import pekaeds.ui.filefilters.MusicFilter;
 
 import javax.swing.*;
 
-public class PanelDefaults extends JPanel {
+public class PanelDefaults extends JPanel implements ISettingsPanel {
     private JLabel lblTileset;
     private JTextField tfTileset;
     private JButton btnTilesetBrowse;
@@ -29,10 +29,6 @@ public class PanelDefaults extends JPanel {
     private JButton btnMusicBrowse;
     
     public PanelDefaults() {
-        setup();
-    }
-    
-    private void setup() {
         lblTileset = new JLabel("Tileset:");
         tfTileset = new JTextField(Settings.getDefaultTileset());
         btnTilesetBrowse = new JButton("Browse");
@@ -76,7 +72,6 @@ public class PanelDefaults extends JPanel {
         add(tfAuthor, "cell 1 4, width 150px");
     }
     
-    // TODO There is a big performance problem with BrowseResourceFileAction or ImagePreviewFileChooser
     private void setActionListeners() {
         btnTilesetBrowse.addActionListener(new BrowseResourceFilesAction(tfTileset, new ImagePreviewFileChooser(PK2FileSystem.getAssetsPath(PK2FileSystem.TILESET_DIR),
             ImagePreviewFileChooser.PREVIEW_TILESET)));
@@ -85,32 +80,21 @@ public class PanelDefaults extends JPanel {
             ImagePreviewFileChooser.PREVIEW_BACKGROUND)));
         btnMusicBrowse.addActionListener(new BrowseResourceFilesAction(tfMusic, new MusicFilter(), PK2FileSystem.getAssetsPath(PK2FileSystem.MUSIC_DIR)));
     }
-    
-    void resetValues() {
+
+    public void setupValues(){
         tfTileset.setText(Settings.getDefaultTileset());
         tfBackground.setText(Settings.getDefaultBackground());
         tfMusic.setText(Settings.getDefaultMusic());
         tfMapName.setText(Settings.getDefaultMapName());
         tfAuthor.setText(Settings.getDefaultAuthor());
     }
-    
-    public String getTileset() {
-        return tfTileset.getText();
+
+    public void saveSettings(){
+        Settings.setDefaultTileset(tfTileset.getText());
+        Settings.setDefaultBackground(tfBackground.getText());
+        Settings.setDefaultMusic(tfMusic.getText());
+        Settings.setDefaultAuthor(tfAuthor.getText());
+        Settings.setDefaultMapName(tfMapName.getText());
     }
     
-    public String getDefaultBackground() {
-        return tfBackground.getText();
-    }
-    
-    public String getMusic() {
-        return tfMusic.getText();
-    }
-    
-    public String getAuthor() {
-        return tfAuthor.getText();
-    }
-    
-    public String getMapName() {
-        return tfMapName.getText();
-    }
 }

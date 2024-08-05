@@ -1,5 +1,7 @@
 package pekaeds.ui.actions;
 
+import java.util.ArrayList;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -8,6 +10,8 @@ import javax.swing.*;
 import org.tinylog.Logger;
 
 import pekaeds.pk2.file.PK2FileSystem;
+import pekaeds.settings.LevelTestingSettings;
+import pekaeds.settings.Settings;
 import pekaeds.ui.main.PekaEDSGUI;
 import pekaeds.ui.misc.UnsavedChangesDialog;
 
@@ -70,10 +74,32 @@ public class PlayLevelAction extends AbstractAction {
         }
         
         try {
+            LevelTestingSettings lts = Settings.levelTestingSettings;
 
             ProcessBuilder builder = new ProcessBuilder();
-            builder.directory(this.executableDirectory);
-            builder.command(this.executable, "--test", PK2FileSystem.getEpisodeName() + "/" + gui.getCurrentFile().getName());
+            if(lts.customWorkingDirectory){
+                builder.directory(new File(lts.workingDirectory));
+            }
+            else{
+                builder.directory(this.executableDirectory);
+            }           
+
+            ArrayList<String> commands = new ArrayList<>();
+            if(lts.customExecutable){
+                commands.add(lts.executable);
+            }
+            else{
+                commands.add(this.executable);
+            }
+
+            if(lts.devMode){
+                commands.add("--dev");
+            }
+
+            commands.add("--test");
+            commands.add(PK2FileSystem.getEpisodeName() + "/" + gui.getCurrentFile().getName());
+
+            builder.command(commands);
             process = builder.start();
 
         } catch (IOException e) {

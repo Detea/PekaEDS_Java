@@ -37,20 +37,14 @@ public class Settings {
     private static String defaultMapName = "Unnamed";
     
     private static String defaultMusic = "song01.xm";
-    
-    private static String testingParameter = "./bin/pekka-kana-2 --test %level%";
+
+    public static LevelTestingSettings levelTestingSettings = new LevelTestingSettings();
     
     private static LevelProfile mapProfile = LevelProfile.getDefaultProfile();
     private static SpriteProfile spriteProfile = new SpriteProfile();
-    
-    //private static String pk2stuffFile;
-    //private static final String pk2Stuff = "pk2stuff.bmp";
-    
+        
     private static boolean highlightSprites = true;
     private static boolean showTileNumberInTileset = true;
-    
-    
-    //private static final File settingsFile = new File("settings.dat");
     
     private static final Map<String, KeyStroke> keyboardShortcuts = new HashMap<>();
     
@@ -103,8 +97,8 @@ public class Settings {
             defaultAuthor = dis.readUTF();
             defaultMapName = dis.readUTF();
             defaultMusic = dis.readUTF();
-            
-            testingParameter = dis.readUTF();
+
+            levelTestingSettings.load(dis);
             
             highlightSprites = dis.readBoolean();
             showTileNumberInTileset = dis.readBoolean();
@@ -141,7 +135,7 @@ public class Settings {
             dos.writeUTF(Settings.getDefaultMapName());
             dos.writeUTF(Settings.getDefaultMusic());
             
-            dos.writeUTF(testingParameter);
+            levelTestingSettings.save(dos);
             
             dos.writeBoolean(highlightSprites);
             dos.writeBoolean(showTileNumberInTileset);
@@ -152,17 +146,7 @@ public class Settings {
             
             dos.writeInt(autosaveInterval);
             dos.writeInt(autosaveFileCount);
-            
-            /*dos.writeInt(mapProfile.getScrollingTypes().size());
-            for (var str : mapProfile.getScrollingTypes()) {
-                dos.writeUTF(str);
-            }
-    
-            dos.writeInt(mapProfile.getWeatherTypes().size());
-            for (var str : mapProfile.getWeatherTypes()) {
-                dos.writeUTF(str);
-            }*/
-            
+                        
             dos.writeInt(keyboardShortcuts.size());
             for (var e : keyboardShortcuts.entrySet()) {
                 dos.writeUTF(e.getKey());
@@ -185,8 +169,8 @@ public class Settings {
         defaultMapName = "Unnamed";
     
         defaultMusic = "song01.xm";
-    
-        testingParameter = "pk2.exe dev test %level%";
+
+        levelTestingSettings = new LevelTestingSettings();
         
         defaultStartupBehavior = StartupBehavior.NEW_MAP;
         
@@ -273,10 +257,6 @@ public class Settings {
         return highlightSprites;
     }
     
-    public static void setTestingParameter(String parameter) {
-        testingParameter = parameter;
-    }
-    
     public static LevelProfile getMapProfile() {
         return mapProfile;
     }
@@ -305,10 +285,6 @@ public class Settings {
         Settings.defaultMusic = defaultMusic;
     }
     
-    public static String getTestingParameter() {
-        return testingParameter;
-    }
-
     public void setMapProfile(LevelProfile mProfile) {
         mapProfile = mProfile;
     }

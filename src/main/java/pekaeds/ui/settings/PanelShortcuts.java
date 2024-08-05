@@ -3,22 +3,25 @@ package pekaeds.ui.settings;
 import net.miginfocom.swing.MigLayout;
 import pekaeds.settings.Settings;
 import pekaeds.settings.Shortcuts;
+import pekaeds.ui.main.PekaEDSGUI;
 
 import javax.swing.*;
+
+import org.tinylog.Logger;
+
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PanelShortcuts extends JPanel {
+public class PanelShortcuts extends JPanel implements ISettingsPanel {
+
+    private PekaEDSGUI eds;
     private final Map<String, KeyStroke> shortcutMap = new HashMap<>();
     
     private final Map<String, JToggleButton> buttonMap = new HashMap<>(); // This map is needed so that the buttons text can be reset, when the user decides not to apply the changes.
     
-    public PanelShortcuts() {
-        setup();
-    }
-    
-    private void setup() {
+    public PanelShortcuts(PekaEDSGUI eds) {
+        this.eds = eds;
         setBorder(BorderFactory.createTitledBorder("Set keyboard shortcuts"));
         
         setLayout(new MigLayout("wrap 3, fillx", "[fill][fill][fill]"));
@@ -86,7 +89,7 @@ public class PanelShortcuts extends JPanel {
     }
     
     // The shortcuts stored in the Settings class are only update when the user hits the "OK" button. If they click on "Cancel" the values stay the same, so we can do the following to reset the buttons.
-    void resetValues() {
+    public void setupValues() {
         for (var e : buttonMap.entrySet()) {
             var keysAsString = keyStrokeToString(Settings.getKeyboardShortcutFor(e.getKey()));
             
@@ -143,5 +146,17 @@ public class PanelShortcuts extends JPanel {
                 button.setSelected(false);
             }
         }
+    }
+
+    @Override
+    public void saveSettings() {
+        for (var entry : this.getShortcutMap().entrySet()) {
+            Settings.setKeyboardShortcutFor(entry.getKey(), entry.getValue());
+    
+            Logger.info("Settings shortcut for action {} to keys {}", entry.getKey(), entry.getValue());
+        }
+        
+        eds.installKeyboardShortcuts();
+        eds.updateAutosaveManager();
     }
 }

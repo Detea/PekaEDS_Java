@@ -6,21 +6,20 @@ import pekaeds.settings.StartupBehavior;
 
 import javax.swing.*;
 
-public class PanelGeneral extends JPanel {
+public class PanelGeneral extends JPanel implements ISettingsPanel {
     private JLabel lblGamePath;
     private JButton btnSetPath;
     private JTextField tfGamePath;
     
-    private JLabel lblTestingParameters;
-    private JTextField tfTestingParameters;
+    //private JLabel lblTestingParameters;
+
+    //private JTextField tfTestingParameters;
     
     private ButtonGroup buttonGroup;
     private JRadioButton rbLoadEpisode;
     private JRadioButton rbLoadMap;
     private JRadioButton rbNewMap;
-    
-    private JCheckBox rbBGTileset;
-    
+      
     private JCheckBox cbShowTileNumbers;
     private JCheckBox cbHighlightSelection;
     
@@ -28,12 +27,7 @@ public class PanelGeneral extends JPanel {
     private JSpinner spAutosaveFileCount;
     
     public PanelGeneral() {
-        setup();
-    }
-    
-    private void setup() {
         setupGamePath();
-        setTestingParameters();
         setupButtonGroup();
         setupAutosave();
         
@@ -51,12 +45,9 @@ public class PanelGeneral extends JPanel {
         add(rbLoadMap, "cell 0 5");
         add(rbNewMap, "cell 0 6");
     
-        add(lblTestingParameters, "cell 0 8");
-        add(tfTestingParameters, "cell 0 9, width 250px");
-        
-        rbBGTileset = new JCheckBox("Use background tileset, if available?");
-        add(rbBGTileset, "cell 0 10");
-    
+        //add(lblTestingParameters, "cell 0 8");
+        //add(tfTestingParameters, "cell 0 9, width 250px");
+            
         cbShowTileNumbers = new JCheckBox("Show tileset number in tileset?");
         add(cbShowTileNumbers, "cell 0 11");
         
@@ -97,12 +88,7 @@ public class PanelGeneral extends JPanel {
             }
         });
     }
-    
-    private void setTestingParameters() {
-        lblTestingParameters = new JLabel("Testing parameters:");
-        tfTestingParameters = new JTextField(Settings.getTestingParameter());
-    }
-    
+        
     private void setupButtonGroup() {
         buttonGroup = new ButtonGroup();
         
@@ -126,10 +112,19 @@ public class PanelGeneral extends JPanel {
         spAutosaveInterval.setValue((Settings.getAutosaveInterval() / 1000) / 60);
         spAutosaveFileCount.setValue(Settings.getAutosaveFileCount());
     }
+
+    public void saveSettings(){
+        Settings.setBasePath(this.tfGamePath.getText());
+        Settings.setDefaultStartupBehavior(this.getStartupBehavior());
+        Settings.setShowTileNumberInTileset(this.cbShowTileNumbers.isSelected());
+
+        Settings.setHighlightSelection(cbHighlightSelection.isSelected());
+
+        Settings.setAutosaveInterval((this.getAutosaveInterval() * 60) * 1000);
+        Settings.setAutosaveFileCount(this.getAutosaveFileCount());
+    }
     
-    void resetValues() {
-        tfTestingParameters.setText(Settings.getTestingParameter());
-        
+    public void setupValues() {       
         rbNewMap.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.NEW_MAP);
         rbLoadMap.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.LOAD_LAST_MAP);
         rbLoadEpisode.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.LOAD_LAST_EPISODE);
@@ -142,7 +137,7 @@ public class PanelGeneral extends JPanel {
         spAutosaveFileCount.setValue(Settings.getAutosaveFileCount());
     }
     
-    int getStartupBehavior() {
+    private int getStartupBehavior() {
         int behavior = -1;
         
         if (rbNewMap.isSelected()) behavior = StartupBehavior.NEW_MAP;
@@ -150,31 +145,14 @@ public class PanelGeneral extends JPanel {
         if (rbLoadEpisode.isSelected()) behavior = StartupBehavior.LOAD_LAST_EPISODE;
         
         return behavior;
-    }
-    
-    public boolean useBGTileset() {
-        return rbBGTileset.isSelected();
-    }
-    
-    public boolean showTilesetNumber() { return cbShowTileNumbers.isSelected(); }
-    
-    public String getGamePath() {
-        return tfGamePath.getText();
-    }
-    
-    public String getTestingParameters() {
-        return tfTestingParameters.getText();
-    }
-    
-    public int getAutosaveInterval() {
+    }    
+
+    private int getAutosaveInterval() {
         return (int) spAutosaveInterval.getValue();
     }
     
-    public int getAutosaveFileCount() {
+    private int getAutosaveFileCount() {
         return (int) spAutosaveFileCount.getValue();
     }
     
-    public boolean highlightSelection() {
-        return cbHighlightSelection.isSelected();
-    }
 }
