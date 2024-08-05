@@ -200,12 +200,13 @@ public class PekaEDSGUI implements ChangeListener {
     }
     
     private void registerChangeListeners() {
-        // TODO Move this into the correct method
         view.setWindowListener(new MainUIWindowListener(this));
         
         spritesPanel.setChangeListener(this);
         levelMetadataPanel.setChangeListener(this);
         sectorMetadataPanel.setChangeListener(this);
+
+        Tool.setChangeListener(this);
         
         Tool.setToolInformationListener(statusbar);
     }
@@ -303,7 +304,8 @@ public class PekaEDSGUI implements ChangeListener {
                     PK2FileSystem.setEpisodeName(episodeDir.getName());
                 }
             }
-            levelMetadataPanel.commitSpinnerValues();
+            levelMetadataPanel.commitValues();
+            sectorMetadataPanel.commitValues();
 
             try{
                 if (!file.getName().endsWith(".map")) file = new File(file.getPath() + ".map");

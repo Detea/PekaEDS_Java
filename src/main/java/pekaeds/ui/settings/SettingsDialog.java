@@ -14,7 +14,6 @@ public class SettingsDialog extends JDialog {
     private PanelGeneral panelGeneral;
     private PanelDefaults panelDefaults;
     private PanelShortcuts panelShortcuts;
-    private PanelMapProfile panelMapProfile;
     
     private PekaEDSGUI eds;
     
@@ -27,13 +26,12 @@ public class SettingsDialog extends JDialog {
     // TODO Reset values after user clicks on "Cancel"
     private void setup() {
         tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-        
+
         panelGeneral = new PanelGeneral();
         panelDefaults = new PanelDefaults();
         panelShortcuts = new PanelShortcuts();
-        panelMapProfile = new PanelMapProfile();
-        
-        tabbedPane.add("General", panelGeneral);
+
+        tabbedPane.add("General", new JScrollPane(panelGeneral));
         tabbedPane.add("Defaults", panelDefaults);
         tabbedPane.add("Shortcuts", new JScrollPane(panelShortcuts));
         //tabbedPane.add("Map profile", panelMapProfile);
@@ -123,6 +121,5 @@ public class SettingsDialog extends JDialog {
         panelDefaults.resetValues();
         panelGeneral.resetValues();
         panelShortcuts.resetValues();
-        panelMapProfile.resetValues();
     }
 }

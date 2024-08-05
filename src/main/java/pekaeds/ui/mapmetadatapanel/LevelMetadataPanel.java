@@ -15,6 +15,7 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.text.ParseException;
@@ -23,14 +24,15 @@ import java.util.Map;
 
 import org.tinylog.Logger;
 
-// TODO The ChangeListener stuff ist pretty messy. It works but it should probably be cleaned up. Some time... maybe...
-public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer {
+public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, ActionListener, ChangeListener {
+
+    private boolean canFireChanges = false;
     private ChangeListener changeListener;
     private ChangeEvent changeEvent = new ChangeEvent(this);
-    private boolean canFireChanges = false;
     
     private JTextField tfMapName;
     private JTextField tfAuthor;
+    private JTextField tfLua;
 
     private JSpinner spLevelNumber;
     private JSpinner spTime;
@@ -94,6 +96,9 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer {
     
         var lblMapY = new JLabel("Map Y:");
         spMapPosY = new JSpinner();
+
+        JLabel lblLua = new JLabel("Lua🌜 script:");
+        this.tfLua = new JTextField();
         
         for (var s : Settings.getMapProfile().getIconNames()) {
             cbIcons.addItem(s);
@@ -125,6 +130,11 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer {
                 
         p.add(lblIcon);
         p.add(cbIcons, "span 2, width 100px");
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
+
+        p.add(lblLua);
+        p.add(this.tfLua, "span 2, width 100px");
     
         p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
 
@@ -135,11 +145,36 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer {
         p.add(spMapPosY, "span 2");
         
         p.add(btnPositionMap);
+
+
         
         add(p, BorderLayout.CENTER);
     }
+
+    @Override
+    public void setLevel(PK2Level m) {
+        this.level = m;
+        
+        this.canFireChanges = false;
+        
+        tfMapName.setText(level.name);
+        tfAuthor.setText(level.author);
+        tfLua.setText(level.lua_script);
+
+        spLevelNumber.setValue(level.level_number);
+        spTime.setValue(level.time);
+                
+        spMapPosX.setValue(level.icon_x);
+        spMapPosY.setValue(level.icon_y);
+
+        cbIcons.setSelectedIndex(level.icon_id);
+        
+        mapPositionDialog.setMapIcon(iconMap.get(Settings.getMapProfile().getIconNames()[level.icon_id]), new Point(level.icon_x, level.icon_y));
+
+        this.canFireChanges = true;
+    }
     
-    public void commitSpinnerValues() {
+    public void commitValues() {
         try {
             spLevelNumber.commitEdit();
             spTime.commitEdit();
@@ -148,26 +183,25 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer {
             
             level.level_number = (int) spLevelNumber.getValue();
             level.time = (int) spTime.getValue();
+
+            level.icon_id = cbIcons.getSelectedIndex();
             level.icon_x = (int) spMapPosX.getValue();
             level.icon_y = (int) spMapPosY.getValue();
-            
-            changeListener.stateChanged(changeEvent);
+
+            level.name = tfMapName.getText();
+            level.author = tfAuthor.getText();
+            level.lua_script = tfLua.getText();
+
+            level.level_number = (int) spLevelNumber.getValue();
+            level.time = (int) spTime.getValue();
+
         } catch (ParseException e) {
             Logger.error(e);
         }
     }
     
     private void setListeners() {
-        cbIcons.addActionListener(e -> {
-            mapPositionDialog.updateIconImage(iconMap.get(Settings.getMapProfile().getIconNames()[cbIcons.getSelectedIndex()]));
-
-            level.icon_id = cbIcons.getSelectedIndex();
-            
-            fireChanges();
-        });
-        
-        spMapPosX.addChangeListener(new MapPositionChangeListener());
-        spMapPosY.addChangeListener(new MapPositionChangeListener());
+        cbIcons.addActionListener(this);
         
         mapPositionDialog.setPositionSpinners(spMapPosX, spMapPosY); // Not the best way to this, but it's easy and it works for now.
         
@@ -191,87 +225,53 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer {
             fireChanges();
         });
     }
-
     
-    // This seems pretty hacky, but this is a workaround for when the TextField values get set for the first time. This would cause the changeListener to fire, even though it isn't supposed to.
-    private class ChangeListenerWrapper implements ChangeListener {
-        @Override
-        public void stateChanged(ChangeEvent e) {
-            if (canFireChanges) {
-                level.name = tfMapName.getText();
-                level.author = tfAuthor.getText();
-
-                level.level_number = (int) spLevelNumber.getValue();
-
-                level.time = (int) spTime.getValue();
-                
-                changeListener.stateChanged(changeEvent);
-            }
-        }
-    }
     
     private void setChangeListeners() {
-        var tfl = new TextFieldChangeListener(new ChangeListenerWrapper());
+        var tfl = new TextFieldChangeListener(this);
         tfMapName.getDocument().addDocumentListener(tfl);
         tfAuthor.getDocument().addDocumentListener(tfl);
-   
-        spLevelNumber.addChangeListener(new ChangeListenerWrapper());
-        spTime.addChangeListener(new ChangeListenerWrapper());
+        tfLua.getDocument().addDocumentListener(tfl);
+  
+        spLevelNumber.addChangeListener(this);
+        spTime.addChangeListener(this);
+
     
         spMapPosX.addChangeListener(new MapPositionChangeListener());
         spMapPosY.addChangeListener(new MapPositionChangeListener());
     }
-    
-    // Prevent changes being fired when loading a new map. Changes should only be fired once actual changes to the map have been made.
-    private void fireChanges() {
-        if (canFireChanges) {
-            // Even more hacky shit, yo
-            level.author = tfAuthor.getText();
-            level.name = tfMapName.getText();
-            
-            changeListener.stateChanged(changeEvent);
-        }
-    }
-    
-    @Override
-    public void setLevel(PK2Level m) {
-        this.level = m;
-        
-        this.canFireChanges = false;
-        
-        tfMapName.setText(level.name);
-        tfAuthor.setText(level.author);
 
-        spLevelNumber.setValue(level.level_number);
-        spTime.setValue(level.time);
-                
-        spMapPosX.setValue(level.icon_x);
-        spMapPosY.setValue(level.icon_y);
-
-        cbIcons.setSelectedIndex(level.icon_id);
-        
-        // TODO Check episodemanager
-        mapPositionDialog.setMapIcon(iconMap.get(Settings.getMapProfile().getIconNames()[level.icon_id]), new Point(level.icon_x, level.icon_y));
-
-        this.canFireChanges = true;
-    }
-    
     public void setChangeListener(ChangeListener listener) {
         this.changeListener = listener;
-        
         setChangeListeners();
     }
     
+    private void fireChanges() {
+        if (canFireChanges) {
+            changeListener.stateChanged(changeEvent);
+        }
+    }
+
     private class MapPositionChangeListener implements ChangeListener {
         @Override
         public void stateChanged(ChangeEvent e) {
             if (canFireChanges) {
-
                 level.icon_x = (int) spMapPosX.getValue();
                 level.icon_y = (int) spMapPosY.getValue();
                 
                 mapPositionDialog.updatePosition(new Point(level.icon_x, level.icon_y));
+                fireChanges();
             }
         }
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        this.fireChanges();
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        this.fireChanges();
     }
 }

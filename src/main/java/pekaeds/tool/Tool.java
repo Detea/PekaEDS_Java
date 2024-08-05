@@ -17,6 +17,7 @@ import pekaeds.util.TileUtils;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+
 /**
  * Parent class for all Tools.
  *
@@ -236,6 +237,10 @@ public abstract class Tool {
 
     public static void setTileChangeListener(TileChangeListener listener) {
         layerHandler.setTileChangeListener(listener);
+    }
+
+    public static void setChangeListener(ChangeListener listener){
+        layerHandler.setChangeListener(listener);
     }
 
     public static void setSpritePlacementListener(SpritePlacementListener listener) {

@@ -83,7 +83,7 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
     }
 
     public void setupUI(){
-        JLabel lblMapName = new JLabel("Name:");
+        JLabel lblMapName = new JLabel("Sector name:");
         this.tfSectorName = new JTextField();
     
         JLabel lblTileset = new JLabel("Tileset:");
@@ -349,22 +349,6 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
         this.canFireChanges = true;
     }
 
-    //TODO Redesign it
-
-    @Override
-    public void stateChanged(ChangeEvent e) {
-        if(this.canFireChanges){
-            this.sector.name = this.tfSectorName.getText();
-            
-            this.sector.tilesetName = this.tfTileset.getText();
-            this.sector.backgroundName = this.tfBackground.getText();
-            this.sector.musicName = this.tfMusic.getText();
-            this.sector.tilesetBgName = this.tfBgTileset.getText();
-
-            this.fireChanges();
-        }
-    }
-
     private static int getMapColor(Map<Integer, String> colors, String value){
         for(var entry: colors.entrySet()){
             if(entry.getValue().equals(value)){
@@ -375,21 +359,16 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
         return 0;
     }
 
-    //TODO Redesign it
+    @Override
+    public void stateChanged(ChangeEvent e) {
+        if(this.canFireChanges){
+            this.fireChanges();
+        }
+    }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if(this.canFireChanges){
-            this.sector.weather = this.cbWeather.getSelectedIndex();
-            this.sector.background_scrolling = this.cbScrollingType.getSelectedIndex();
-
-            Map<Integer, String> splashColors = Settings.getMapProfile().getSplashColors();
-            Map<Integer, String> fireColors = Settings.getMapProfile().getFireColors();
-
-            this.sector.splash_color = getMapColor(splashColors, (String)this.cbSplashColor.getSelectedItem());
-            this.sector.fire_color_1 = getMapColor(fireColors, (String)this.cbFireColor1.getSelectedItem());
-            this.sector.fire_color_2 = getMapColor(fireColors, (String)this.cbFireColor2.getSelectedItem());
-
             this.fireChanges();
         }
     }
@@ -399,6 +378,25 @@ public class SectorMetadataPanel extends JPanel implements PK2SectorConsumer, PK
             changeListener.stateChanged(changeEvent);
         }
     }
+
+    public void commitValues(){
+        this.sector.name = this.tfSectorName.getText();
+        this.sector.tilesetName = this.tfTileset.getText();
+        this.sector.backgroundName = this.tfBackground.getText();
+        this.sector.musicName = this.tfMusic.getText();
+        this.sector.tilesetBgName = this.tfBgTileset.getText();
+
+        this.sector.weather = this.cbWeather.getSelectedIndex();
+        this.sector.background_scrolling = this.cbScrollingType.getSelectedIndex();
+
+        Map<Integer, String> splashColors = Settings.getMapProfile().getSplashColors();
+        Map<Integer, String> fireColors = Settings.getMapProfile().getFireColors();
+
+        this.sector.splash_color = getMapColor(splashColors, (String)this.cbSplashColor.getSelectedItem());
+        this.sector.fire_color_1 = getMapColor(fireColors, (String)this.cbFireColor1.getSelectedItem());
+        this.sector.fire_color_2 = getMapColor(fireColors, (String)this.cbFireColor2.getSelectedItem());
+    }
+
 
     @Override
     public void setLevel(PK2Level level) {

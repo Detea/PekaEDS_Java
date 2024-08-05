@@ -7,41 +7,39 @@ import java.util.Map;
 import java.util.HashMap;
 
 public class LevelProfile {
-    private List<String> defaultScrollingTypes = new ArrayList<>();
-    private List<String> defaultWeatherTypes = new ArrayList<>();
-    
-    private List<String> musicFormats = Arrays.asList("xm", "mod", "it", "s3m", "ogg", "mp3");
-    
-    private List<String> scrollingTypes = new ArrayList<>();
-    private List<String> weatherTypes = new ArrayList<>();
-    private List<String> mapIconNames = new ArrayList<>();
 
-    private Map<Integer, String> fireColors;
-    private Map<Integer, String> splashColors;
+    public static LevelProfile getDefaultProfile(){
+        LevelProfile profile = new LevelProfile();
 
-    public LevelProfile(){
-        fireColors = new HashMap<>();
-        fireColors.put(0, "Gray");
-        fireColors.put(32, "Blue");
-        fireColors.put(64,"Red");
-        fireColors.put(96, "Green");
-        fireColors.put(128,"Orange");
-        fireColors.put(160,"Violet");
-        fireColors.put(192,"Turquoise");
+        profile.fireColors = new HashMap<>();
+        profile.fireColors.put(0, "Gray");
+        profile.fireColors.put(32, "Blue");
+        profile.fireColors.put(64,"Red");
+        profile.fireColors.put(96, "Green");
+        profile.fireColors.put(128,"Orange");
+        profile.fireColors.put(160,"Violet");
+        profile.fireColors.put(192,"Turquoise");
 
-        splashColors = new HashMap<>();
-        splashColors.put(-1, "Default");
-        splashColors.putAll(fireColors);
-    }
+        profile.splashColors = new HashMap<>();
+        profile.splashColors.put(-1, "Default");
+        profile.splashColors.putAll(profile.fireColors);
 
-    public Map<Integer, String> getFireColors(){
-        return this.fireColors;
-    }
-    public Map<Integer, String> getSplashColors(){
-        return this.splashColors;
-    }
-    
-    private String[] iconNames = new String[] {
+        profile.scrollingTypes.add("None");
+        profile.scrollingTypes.add("Vertical");
+        profile.scrollingTypes.add("Horizontal");
+        profile.scrollingTypes.add("Horizontal & Vertical");
+        
+        profile.weatherTypes.add("None");
+        profile.weatherTypes.add("Rain");
+        profile.weatherTypes.add("Leaves");
+        profile.weatherTypes.add("Rain & Leaves");
+        profile.weatherTypes.add("Snow");
+        profile.weatherTypes.add("Dandelions");
+
+        profile.gameModes.add("classic");
+        profile.gameModes.add("kill all enemies");
+
+        profile.iconNames = new String[] {
             "Question mark",
             "Forest Hill",
             "Forest Hill at night",
@@ -64,28 +62,24 @@ public class LevelProfile {
             "Custom Icon #20",
             "Custom Icon #21",
             "Custom Icon #22"
-    };
-    
-    public void reset() {
-        defaultScrollingTypes.add("None");
-        defaultScrollingTypes.add("Vertical");
-        defaultScrollingTypes.add("Horizontal");
-        defaultScrollingTypes.add("Horizontal & Vertical");
-        
-        defaultWeatherTypes.add("None");
-        defaultWeatherTypes.add("Rain");
-        defaultWeatherTypes.add("Leaves");
-        defaultWeatherTypes.add("Rain & Leaves");
-        defaultWeatherTypes.add("Snow");
-        defaultWeatherTypes.add("Dandelions");
-        
-        scrollingTypes.clear();
-        scrollingTypes.addAll(defaultScrollingTypes);
-        
-        weatherTypes.clear();
-        weatherTypes.addAll(defaultWeatherTypes);
+        };
+
+        return profile;
     }
     
+    private List<String> musicFormats = Arrays.asList("xm", "mod", "it", "s3m", "ogg", "mp3");
+    
+    private List<String> scrollingTypes = new ArrayList<>();
+    private List<String> weatherTypes = new ArrayList<>();
+    private List<String> mapIconNames = new ArrayList<>();
+    private List<String> gameModes = new ArrayList<>();
+
+    private Map<Integer, String> fireColors = new HashMap<>();
+    private Map<Integer, String> splashColors = new HashMap<>();
+
+    private String [] iconNames = null;
+    protected LevelProfile(){}
+
     @Override
     public String toString() {
         var sb = new StringBuilder();
@@ -108,6 +102,13 @@ public class LevelProfile {
         
         return sb.toString();
     }
+
+    public Map<Integer, String> getFireColors(){
+        return this.fireColors;
+    }
+    public Map<Integer, String> getSplashColors(){
+        return this.splashColors;
+    }
     
     public List<String> getMusicFormats() {
         return musicFormats;
@@ -121,11 +122,12 @@ public class LevelProfile {
         return weatherTypes;
     }
     
-    public List<String> getDefaultScrollingTypes() { return defaultScrollingTypes; }
-    public List<String> getDefaultWeatherTypes() { return defaultWeatherTypes; }
-    
     public List<String> getMapIconNames() {
         return mapIconNames;
+    }
+
+    public List<String> getGameModes(){
+        return gameModes;
     }
         
     public String[] getIconNames() {

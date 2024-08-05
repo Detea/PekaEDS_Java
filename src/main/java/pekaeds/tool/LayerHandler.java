@@ -8,12 +8,18 @@ import pekaeds.ui.listeners.SpritePlacementListener;
 import pekaeds.ui.listeners.TileChangeListener;
 import pekaeds.util.TileUtils;
 
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
 public final class LayerHandler {
     private final ToolSelection selection;
     private PK2LevelSector map;
 
     private int gridX = 32, gridY = 32;
     //private int currentLayer;
+
+    private ChangeEvent changeEvent = new ChangeEvent(this);
+    private ChangeListener changeListener;
 
     private TileChangeListener tileChangeListener;
     private SpritePlacementListener spritePlacementListener;
@@ -27,6 +33,8 @@ public final class LayerHandler {
         switch (layer) {
             case Layer.BACKGROUND:
                 this.map.setBGTile(x, y, tileID);
+
+
                 break;
             
             case Layer.FOREGROUND:
@@ -45,6 +53,9 @@ public final class LayerHandler {
             default:
                 break;
         }
+
+        changeListener.stateChanged(changeEvent);
+
     }
     
     /**
@@ -232,6 +243,8 @@ public final class LayerHandler {
 
             spritePlacementListener.placed(newSprite);
             map.setSpriteTile(position.x, position.y, newSprite);
+
+            changeListener.stateChanged(changeEvent);
         }
     }
     
@@ -307,6 +320,10 @@ public final class LayerHandler {
 
     public void setTileChangeListener(TileChangeListener listener) {
         this.tileChangeListener = listener;
+    }
+
+    public void setChangeListener(ChangeListener listener){
+        this.changeListener = listener;
     }
 
     public void setSpritePlacementListener(SpritePlacementListener listener) {

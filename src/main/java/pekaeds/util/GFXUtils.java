@@ -56,7 +56,7 @@ public final class GFXUtils {
     }
     
     public static void adjustSpriteColor(BufferedImage spriteSheet, int paletteIndex) {
-        if (paletteIndex != 255 && paletteIndex != 0) {
+        if (paletteIndex != 255) {
             var data= ((DataBufferByte) spriteSheet.getRaster().getDataBuffer()).getData();
             //var palette = (IndexColorModel) spriteSheet.getColorModel();
             

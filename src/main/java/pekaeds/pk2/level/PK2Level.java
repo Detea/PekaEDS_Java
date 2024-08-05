@@ -24,7 +24,7 @@ public class PK2Level {
 	public int      icon_y = 0;                                         // icon x pos
     public int      icon_id = 0;                                        // icon id
 
-    public String lua_script = "main.lua";                        // lua script
+    public String lua_script = "";                        // lua script
     public int game_mode = 0;                                          // game mode
 
     public List<ISpritePrototype> getSpriteList(){
