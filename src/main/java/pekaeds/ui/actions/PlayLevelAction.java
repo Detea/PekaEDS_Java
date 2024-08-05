@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.io.File;
 import java.io.IOException;
 
+import java.nio.file.Paths;
+
 import javax.swing.*;
 
 import org.tinylog.Logger;
@@ -76,21 +78,33 @@ public class PlayLevelAction extends AbstractAction {
         try {
             LevelTestingSettings lts = Settings.levelTestingSettings;
 
-            ProcessBuilder builder = new ProcessBuilder();
-            if(lts.customWorkingDirectory){
-                builder.directory(new File(lts.workingDirectory));
+            String exec;
+            File dir;
+
+            if(lts.customExecutable){
+                exec = lts.executable;
             }
             else{
-                builder.directory(this.executableDirectory);
-            }           
+                exec = this.executable;
+            }
+
+
+            if(lts.customWorkingDirectory){
+                dir = new File(lts.workingDirectory);
+            }
+            else{
+                dir = this.executableDirectory;
+            }
+
+            /**
+             * Windows for some reason requires a full path to .exe
+             */
+            if(isWindows()){
+                exec = Paths.get(dir.getPath(), exec).toString();
+            }
 
             ArrayList<String> commands = new ArrayList<>();
-            if(lts.customExecutable){
-                commands.add(lts.executable);
-            }
-            else{
-                commands.add(this.executable);
-            }
+            commands.add(exec);
 
             if(lts.devMode){
                 commands.add("--dev");
@@ -98,6 +112,9 @@ public class PlayLevelAction extends AbstractAction {
 
             commands.add("--test");
             commands.add(PK2FileSystem.getEpisodeName() + "/" + gui.getCurrentFile().getName());
+
+            ProcessBuilder builder = new ProcessBuilder();
+            builder.directory(dir);
 
             builder.command(commands);
             process = builder.start();
