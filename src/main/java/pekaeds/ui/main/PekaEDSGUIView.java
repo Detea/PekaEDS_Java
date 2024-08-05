@@ -1,5 +1,7 @@
 package pekaeds.ui.main;
 
+import java.util.List;
+
 import net.miginfocom.swing.MigLayout;
 import pekaeds.data.PekaEDSVersion;
 import pekaeds.pk2.file.PK2FileSystem;
@@ -27,6 +29,7 @@ public class PekaEDSGUIView {
     private JMenu mFile;
     private JMenuItem mFileNew;
     private JMenuItem mFileOpen;
+
     private JMenuItem mFileSave;
     private JMenuItem mFileSaveAs;
     private JMenuItem mFileExit;
@@ -48,6 +51,10 @@ public class PekaEDSGUIView {
     private JMenu mOther;
     private JMenuItem mOtherSettings;
     private JMenuItem mOtherAbout;
+
+
+    private JMenu mOpenRecent;
+    private JMenuItem mClearRecentlyOpened;
 
     private JTabbedPane tabbedPane;
     
@@ -113,12 +120,28 @@ public class PekaEDSGUIView {
         mFile = new JMenu("File");
         mFileNew = new JMenuItem("New");
         mFileOpen = new JMenuItem("Open");
+
+
+        mOpenRecent = new JMenu("Open Recent");
+        mClearRecentlyOpened = new JMenuItem("Clear Recently Opened...");
+
+        mClearRecentlyOpened.addActionListener(l->{
+            mOpenRecent.removeAll();
+            mOpenRecent.add(mClearRecentlyOpened);
+            mClearRecentlyOpened.setEnabled(false);
+        });
+        
+        mOpenRecent.add(mClearRecentlyOpened);
+        mClearRecentlyOpened.setEnabled(false);
+
+
         mFileSave = new JMenuItem("Save");
         mFileSaveAs = new JMenuItem("Save as...");
         mFileExit = new JMenuItem("Exit");
         
         mFile.add(mFileNew);
         mFile.add(mFileOpen);
+        mFile.add(mOpenRecent);
         mFile.addSeparator();
         mFile.add(mFileSave);
         mFile.add(mFileSaveAs);
@@ -188,6 +211,38 @@ public class PekaEDSGUIView {
         frame.setVisible(true);
         
         setFrameIcon();
+    }
+
+    public void setupOpenRecentMenu(List<File> files){
+        this.mOpenRecent.removeAll();
+
+        boolean flag = false;
+        for(File f:files){
+            if(f!=null && f.exists() && !f.isDirectory()){
+
+                flag = true;
+                String name = f.getPath();
+
+                String assetsPath = PK2FileSystem.getAssetsPath(PK2FileSystem.EPISODES_DIR).getPath();
+                
+                if(name.startsWith(assetsPath)){
+                    
+                    String episodeName = f.getParentFile().getName();
+                    name = episodeName + "/"+f.getName();
+                }
+
+                JMenuItem item = new JMenuItem(name);
+                item.addActionListener(e->{
+                    edsUI.loadLevelSafe(f);
+                });
+
+                this.mOpenRecent.add(item);
+            }
+        }
+
+        this.mOpenRecent.addSeparator();
+        this.mOpenRecent.add(mClearRecentlyOpened);
+        this.mClearRecentlyOpened.setEnabled(flag);
     }
     
     private void setFrameIcon() {

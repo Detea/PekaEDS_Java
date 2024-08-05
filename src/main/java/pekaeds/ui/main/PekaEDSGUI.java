@@ -8,6 +8,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.io.*;
 
+import java.util.List;
+
 import java.time.LocalTime;
 
 import org.tinylog.Logger;
@@ -33,13 +35,14 @@ import pekaeds.ui.mapmetadatapanel.SectorMetadataPanel;
 import pekaeds.ui.mappanel.MapPanel;
 import pekaeds.ui.mappanel.MapPanelView;
 import pekaeds.ui.minimappanel.MiniMapPanel;
+import pekaeds.ui.misc.UnsavedChangesDialog;
 import pekaeds.ui.spritelistpanel.SpritesPanel;
 import pekaeds.ui.tilesetpanel.TilesetPanel;
 import pekaeds.ui.toolpropertiespanel.ToolPropertiesPanel;
 import pekaeds.util.*;
 import pekaeds.util.episodemanager.EpisodeManager;
 import pekaeds.util.file.AutoSaveManager;
-import pekaeds.util.file.LastSessionManager;
+import pekaeds.util.file.Session;
 
 public class PekaEDSGUI implements ChangeListener {
     //private ChangeEvent changeEvent = new ChangeEvent(this);
@@ -68,7 +71,7 @@ public class PekaEDSGUI implements ChangeListener {
     private final AutoSaveManager autosaveManager;
     private final EpisodeManager episodeManager;
     
-    private final LastSessionManager sessionManager = new LastSessionManager();
+    private final Session session = new Session();
     
     public PekaEDSGUI() {
         // This has to be done before PekaEDSGUIView gets initialized, because it relies on the toolsList in the Tools class.
@@ -113,7 +116,8 @@ public class PekaEDSGUI implements ChangeListener {
         if (fLastSession.exists()) {
             try {
                 Logger.info("Trying to load last.session...");
-                var lastSession = sessionManager.loadLastSession(fLastSession);
+                this.session.load(fLastSession);
+                this.setupOpenRecentMenu(this.session.getRecentLevelFiles());
                 
                 switch (Settings.getDefaultStartupBehavior()) {
                     case StartupBehavior.NEW_MAP -> {
@@ -122,7 +126,7 @@ public class PekaEDSGUI implements ChangeListener {
                         Logger.info("Creating new map.");
                     }
     
-                    case StartupBehavior.LOAD_LAST_EPISODE -> {
+                    /*case StartupBehavior.LOAD_LAST_EPISODE -> {
                         if (lastSession.getLastEpisodeFile().exists()) {
                             episodeManager.loadEpisode(lastSession.getLastEpisodeFile());
             
@@ -135,19 +139,19 @@ public class PekaEDSGUI implements ChangeListener {
                             
                             Logger.info("Unable to load last episode: {}. Creating new map instead.", lastSession.getLastEpisodeFile().getAbsolutePath());
                         }
-                    }
+                    }*/
                     
                     case StartupBehavior.LOAD_LAST_MAP -> {
-                        if (lastSession.getLastLevelFile().exists()) {
-                            loadLevel(lastSession.getLastLevelFile());
+                        if (this.session.getLastLevelFile().exists()) {
+                            loadLevel(session.getLastLevelFile());
                             
-                            mapPanelView.getViewport().setViewPosition(new Point(lastSession.getLastViewportX(), lastSession.getLastViewportY()));
+                            //mapPanelView.getViewport().setViewPosition(new Point(lastSession.getLastViewportX(), lastSession.getLastViewportY()));
                             
-                            Logger.info("Loaded last level: {}", lastSession.getLastLevelFile().getAbsolutePath());
+                            Logger.info("Loaded last level: {}", session.getLastLevelFile().getAbsolutePath());
                         } else {
                             newLevel();
                             
-                            Logger.info("Unable to load last level: {}. Creating new map instead.", lastSession.getLastLevelFile().getAbsolutePath());
+                            Logger.info("Unable to load last level: {}. Creating new map instead.", session.getLastLevelFile().getAbsolutePath());
                         }
                     }
                 }
@@ -237,6 +241,9 @@ public class PekaEDSGUI implements ChangeListener {
 
         if(levelFile!=null){
 
+            session.putLevelFile(levelFile);
+            this.setupOpenRecentMenu(session.getRecentLevelFiles());
+
             File episodeDir = levelFile.getParentFile();
             if(episodeDir.exists()){
                 PK2FileSystem.setEpisodeName(episodeDir.getName());
@@ -275,6 +282,18 @@ public class PekaEDSGUI implements ChangeListener {
 
         }
     }
+
+    public void loadLevelSafe(File file){
+        if (this.unsavedChangesPresent()) {
+            int result = UnsavedChangesDialog.show(this);
+    
+            if (result != JOptionPane.CANCEL_OPTION && result != JOptionPane.CLOSED_OPTION) {
+                this.loadLevel(file);
+            }
+        } else {
+            this.loadLevel(file);
+        }
+    }
     
     public void saveLevel() {
         // If the file has not been saved yet, ask the user to give it a name and location
@@ -299,6 +318,8 @@ public class PekaEDSGUI implements ChangeListener {
         if (file != null) {
 
             {
+                session.putLevelFile(file);
+                this.setupOpenRecentMenu(session.getRecentLevelFiles());
                 File episodeDir = file.getParentFile();
                 if(episodeDir.exists()){
                     PK2FileSystem.setEpisodeName(episodeDir.getName());
@@ -466,7 +487,7 @@ public class PekaEDSGUI implements ChangeListener {
      * This method gets called when the whole application shuts down.
      */
     public void close() {
-        sessionManager.saveSession(new File(EditorConstants.LAST_SESSION_FILE), episodeManager.getEpisodeFile(), model.getCurrentMapFile(), mapPanelView.getViewport().getViewPosition().x, mapPanelView.getViewport().getViewPosition().y);
+        this.session.save(new File(EditorConstants.LAST_SESSION_FILE));
         
         System.exit(0);
     }
@@ -587,5 +608,9 @@ public class PekaEDSGUI implements ChangeListener {
 
     public MapPanelView getMapPanelView() {
         return mapPanelView;
+    }
+
+    public void setupOpenRecentMenu(List<File> files){
+        this.view.setupOpenRecentMenu(files);
     }
 }
