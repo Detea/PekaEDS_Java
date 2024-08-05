@@ -89,7 +89,7 @@ public final class PK2FileUtils {
     }
 
     public static JSONObject readCBOR(DataInputStream in) throws IOException{
-        long bufferSize = Long.reverseBytes(in.readLong());
+        int bufferSize = Integer.reverseBytes(in.readInt());
        
         byte[] buffer  = new byte[(int)bufferSize];
         in.read(buffer);
@@ -113,9 +113,9 @@ public final class PK2FileUtils {
 
         byte[] buffer = outputStream.toByteArray();
 
-        long size = Long.reverseBytes((long)buffer.length);
+        int size = Integer.reverseBytes((int)buffer.length);
         
-        out.writeLong(size);
+        out.writeInt(size);
         out.write(buffer);
     }
 }

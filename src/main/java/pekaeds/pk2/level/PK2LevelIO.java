@@ -118,22 +118,26 @@ public final class PK2LevelIO {
 
         PK2Level level = new PK2Level();
 
+        int compression = TILES_OFFSET_NEW;
+
         int sectors_number;
         {
             JSONObject header =  PK2FileUtils.readCBOR(in);
             level.name = header.getString("name");
             level.author = header.getString("author");
-            level.level_number = header.getInt("level_number");
+            level.level_number = header.getInt("number");
 
             level.icon_x = header.getInt("icon_x");
             level.icon_y = header.getInt("icon_y");
             level.icon_id = header.getInt("icon_id");
 
+            compression = header.getInt("compression");
+
             if(iconOnly){
                 return level;
             }
 
-            sectors_number = header.getInt("regions");
+            sectors_number = header.getInt("sectors");
             JSONArray spritesArray = header.getJSONArray("sprite_prototypes");
             for(int i=0;i<spritesArray.length();++i){
                 level.spriteNames.add(spritesArray.getString(i));
@@ -141,12 +145,10 @@ public final class PK2LevelIO {
 
 
             level.player_sprite_index = header.getInt("player_index");
-            level.time = header.getInt("map_time");
+            level.time = header.getInt("time");
             level.lua_script = header.getString("lua_script");
 
-            if(header.has("game_mode")){
-                level.game_mode = header.getInt("game_mode");
-            }
+            level.game_mode = header.getInt("game_mode");
         }
 
         for(int i=0;i<sectors_number;++i){
@@ -155,7 +157,6 @@ public final class PK2LevelIO {
             int width = sector_header.getInt("width");
             int height = sector_header.getInt("height");
 
-            int compression = sector_header.getInt("compression");
 
             PK2LevelSector sector = new PK2LevelSector(width, height);
 
@@ -299,7 +300,7 @@ public final class PK2LevelIO {
             JSONObject header = new JSONObject();
             header.put("name", level.name);
             header.put("author", level.author);
-            header.put("level_number", level.level_number);
+            header.put("number", level.level_number);
             header.put("icon_id", level.icon_id);
             header.put("icon_x", level.icon_x);
             header.put("icon_y", level.icon_y);
@@ -308,10 +309,13 @@ public final class PK2LevelIO {
             
             
             header.put("player_index", level.player_sprite_index);
-            header.put("regions", sectors_number);
-            header.put("map_time", level.time);
+            header.put("sectors", sectors_number);
+
+
+            header.put("time", level.time);
             header.put("lua_script", level.lua_script);
             header.put("game_mode", level.game_mode);
+            header.put("compression", TILES_OFFSET_NEW);
 
             PK2FileUtils.writeCBOR(out, header);
         }
@@ -324,7 +328,6 @@ public final class PK2LevelIO {
             sector_header.put("width", sector.getWidth());
             sector_header.put("height", sector.getHeight());
 
-            sector_header.put("compression", TILES_OFFSET_NEW);
             sector_header.put("tileset", sector.tilesetName);
 
             if(sector.tilesetBgName!=null &&
