@@ -38,6 +38,7 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, Acti
     private JSpinner spTime;
     
     private JComboBox<String> cbIcons;
+    private JComboBox<String> cbGameMode;
 
     private JSpinner spMapPosX;
     private JSpinner spMapPosY;
@@ -99,6 +100,13 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, Acti
 
         JLabel lblLua = new JLabel("Lua🌜 script:");
         this.tfLua = new JTextField();
+
+        JLabel lblGameMode = new JLabel("Game mode:");
+        this.cbGameMode = new JComboBox<>();
+
+        for(String s: Settings.getMapProfile().getGameModes()){
+            cbGameMode.addItem(s);
+        }
         
         for (var s : Settings.getMapProfile().getIconNames()) {
             cbIcons.addItem(s);
@@ -138,6 +146,11 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, Acti
     
         p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
 
+        p.add(lblGameMode);
+        p.add(this.cbGameMode, "span 2, width 100px");
+
+        p.add(new JSeparator(JSeparator.HORIZONTAL), "span 3");
+
         p.add(lblMapX);
         p.add(spMapPosX, "span 2");
     
@@ -168,6 +181,7 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, Acti
         spMapPosY.setValue(level.icon_y);
 
         cbIcons.setSelectedIndex(level.icon_id);
+        cbGameMode.setSelectedIndex(level.game_mode);
         
         mapPositionDialog.setMapIcon(iconMap.get(Settings.getMapProfile().getIconNames()[level.icon_id]), new Point(level.icon_x, level.icon_y));
 
@@ -191,6 +205,8 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, Acti
             level.name = tfMapName.getText();
             level.author = tfAuthor.getText();
             level.lua_script = tfLua.getText();
+
+            level.game_mode = cbGameMode.getSelectedIndex();
 
             level.level_number = (int) spLevelNumber.getValue();
             level.time = (int) spTime.getValue();
@@ -236,6 +252,8 @@ public class LevelMetadataPanel extends JPanel implements PK2LevelConsumer, Acti
         spLevelNumber.addChangeListener(this);
         spTime.addChangeListener(this);
 
+        cbIcons.addActionListener(this);
+        cbGameMode.addActionListener(this);
     
         spMapPosX.addChangeListener(new MapPositionChangeListener());
         spMapPosY.addChangeListener(new MapPositionChangeListener());
