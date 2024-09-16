@@ -65,8 +65,10 @@ public class PK2Level {
     public void removeSprite(ISpritePrototype sprite){
         int index = this.sprites.indexOf(sprite);
         if(index!=-1){
-            
-            if(index==this.player_sprite_index){
+            if(index < this.player_sprite_index){
+                --this.player_sprite_index;
+            }
+            else if(index==this.player_sprite_index){
                 this.sprites.get(index).setPlayerSprite(false);   
             }
 
@@ -84,5 +86,13 @@ public class PK2Level {
                 }
             }            
         }
+    }
+
+    public int countSprites(int id){
+        int result = 0;
+        for(PK2LevelSector sector:this.sectors){
+            result += sector.spriteTiles.countTiles(id);
+        }
+        return result;
     }
 }

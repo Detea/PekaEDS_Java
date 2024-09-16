@@ -100,4 +100,14 @@ public class PK2TileArray {
         return new Rectangle(startX, startY, width - startX, height - startY);
     }
 
+    public int countTiles(int id){
+        int result = 0;
+        for(int i=0;i<this.mArray.length;++i){
+            if(this.mArray[i]==id){
+                ++result;
+            }
+        }
+        return result;
+    }
+
 }

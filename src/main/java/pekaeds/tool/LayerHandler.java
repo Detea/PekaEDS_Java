@@ -3,6 +3,7 @@ package pekaeds.tool;
 import java.awt.*;
 
 import pekaeds.data.Layer;
+import pekaeds.pk2.level.PK2Level;
 import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.ui.listeners.SpritePlacementListener;
 import pekaeds.ui.listeners.TileChangeListener;
@@ -11,9 +12,13 @@ import pekaeds.util.TileUtils;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+
+
+
 public final class LayerHandler {
     private final ToolSelection selection;
-    private PK2LevelSector map;
+    private PK2LevelSector sector;
+    private PK2Level level;
 
     private int gridX = 32, gridY = 32;
     //private int currentLayer;
@@ -32,22 +37,22 @@ public final class LayerHandler {
 
         switch (layer) {
             case Layer.BACKGROUND:
-                this.map.setBGTile(x, y, tileID);
+                this.sector.setBGTile(x, y, tileID);
 
 
                 break;
             
             case Layer.FOREGROUND:
-                this.map.setFGTile(x, y, tileID);
+                this.sector.setFGTile(x, y, tileID);
                 break;
             
             case Layer.SPRITES:
-                this.map.setSpriteTile(x, y, tileID);
+                this.sector.setSpriteTile(x, y, tileID);
                 break;
 
             case Layer.BOTH:
-                this.map.setBGTile(x, y, tileID);
-                this.map.setFGTile(x, y, tileID);
+                this.sector.setBGTile(x, y, tileID);
+                this.sector.setFGTile(x, y, tileID);
                 break;
                 
             default:
@@ -76,7 +81,7 @@ public final class LayerHandler {
     public void placeTile(int x, int y, int tileId, int layer) {
         if (layer == Layer.BOTH) layer = Layer.FOREGROUND; // TODO I think this can go, but needs testing.
 
-        if (x >= 0 && y >= 0 && x < map.getWidth() && y < map.getHeight()) {
+        if (x >= 0 && y >= 0 && x < sector.getWidth() && y < sector.getHeight()) {
             this.setTileAt(layer, x, y, tileId);
 
             tileChangeListener.tileChanged(x, y, tileId);
@@ -106,33 +111,33 @@ public final class LayerHandler {
 
         if (layer == Layer.BOTH) layer = Layer.FOREGROUND;
 
-        if (map != null) {
-            if (x >= 0 && y >= 0 && x < map.getWidth() && y < map.getHeight()) {
+        if (sector != null) {
+            if (x >= 0 && y >= 0 && x < sector.getWidth() && y < sector.getHeight()) {
 
                 switch (layer) {
                     case Layer.BACKGROUND:
-                        tile = map.getBGTile(x, y);                        
+                        tile = sector.getBGTile(x, y);                        
                         break;
                     
                     case Layer.BOTH:
-                        tile = map.getFGTile(x, y);
+                        tile = sector.getFGTile(x, y);
                         if(tile==255){
-                            tile = map.getBGTile(x, y);
+                            tile = sector.getBGTile(x, y);
                         }
                         break;
                     case Layer.FOREGROUND:
-                        tile = map.getFGTile(x, y);
+                        tile = sector.getFGTile(x, y);
                         break;
 
                     case Layer.SPRITES:
-                        tile = map.getSpriteTile(x, y);
+                        tile = sector.getSpriteTile(x, y);
                         break;
 
                     default:
                         break;
                 }
 
-                //tile = map.getLayers().get(layer)[y][x];
+                //tile = sector.getLayers().get(layer)[y][x];
             }
         }
 
@@ -142,7 +147,7 @@ public final class LayerHandler {
     /**
      * Gets tile from an area, should be used with ToolSelection.
      *
-     * selectionRect's values should be in map coordinates. Meaning they should be x >= 0; x < MAP_WIDTH, y >= 0; y < MAP_HEIGHT
+     * selectionRect's values should be in sector coordinates. Meaning they should be x >= 0; x < MAP_WIDTH, y >= 0; y < MAP_HEIGHT
      */
     public int[][] getTilesFromRect(Rectangle selectionRect, int layer) {
         var tempSelection = new int[selectionRect.height][selectionRect.width];
@@ -183,7 +188,7 @@ public final class LayerHandler {
     public void removeTilesArea(Rectangle area, int layer) {
         for (int sx = 0; sx < area.width; sx++) {
             for (int sy = 0; sy < area.height; sy++) {
-               // map.getLayers().get(layer)[area.y + sy][area.x + sx] = 255;
+               // sector.getLayers().get(layer)[area.y + sy][area.x + sx] = 255;
                setTileAt(layer, area.x + sx, area.y + sy, 255);
             }
         }
@@ -198,8 +203,8 @@ public final class LayerHandler {
     public int getSpriteAt(int x, int y) {
         int spr = selection.getSelectionSprites()[0][0];
 
-        if (map != null) {
-            spr = map.getSpriteTile(x / 32, y / 32);
+        if (sector != null) {
+            spr = sector.getSpriteTile(x / 32, y / 32);
         }
 
         return spr;
@@ -217,32 +222,23 @@ public final class LayerHandler {
         return tempSelection;
     }
 
-    public void placeSprite(Point position, int newSprite) {
+    public void placeSprite(Point position, int newSpriteID) {
         TileUtils.convertToMapCoordinates(position);
 
-        if (position.x >= 0 && position.x <= map.getWidth() && position.y >= 0 && position.y <= map.getHeight()) {
+        if (position.x >= 0 && position.x <= sector.getWidth() && position.y >= 0 && position.y <= sector.getHeight()) {
 
-            //TODO fix it
+            int oldSpriteID = sector.getSpriteTile(position.x, position.y);
             
-            /*int oldSprite = map.getSpriteTile(position.x, position.y);
-            
-            ISpritePrototype spriteOld = map.getSpriteAt(position.x, position.y);
-            ISpritePrototype spriteNew = map.getSprite(newSprite);
+            if(newSpriteID!=255){
+                level.getSprite(newSpriteID).increasePlacedAmount();                
+            }
 
-            if (oldSprite != 255) {
-                if (newSprite != oldSprite) {
-                    if (spriteOld != null) {
-                        spriteOld.decreasePlacedAmount();
-                    }
+            if(oldSpriteID!=255){
+                level.getSprite(oldSpriteID).decreasePlacedAmount();
+            }
 
-                    if (spriteNew != null) spriteNew.increasePlacedAmount();
-                }
-            } else {
-                if (spriteNew != null) spriteNew.increasePlacedAmount();
-            }*/
-
-            spritePlacementListener.placed(newSprite);
-            map.setSpriteTile(position.x, position.y, newSprite);
+            spritePlacementListener.placed(newSpriteID);
+            sector.setSpriteTile(position.x, position.y, newSpriteID);
 
             changeListener.stateChanged(changeEvent);
         }
@@ -257,7 +253,7 @@ public final class LayerHandler {
     }
     
     /**
-     * Places sprites on the map, coordinates are within map bounds x: >=0, < 256, y: >=0, < 224
+     * Places sprites on the sector, coordinates are within sector bounds x: >=0, < 256, y: >=0, < 224
      * @param x
      * @param y
      * @param spritesLayer
@@ -268,7 +264,7 @@ public final class LayerHandler {
                 int xAdjusted = x + sx;
                 int yAdjusted = y + sy;
                 
-                map.setSpriteTile(xAdjusted, yAdjusted, spritesLayer[sy][sx]);
+                sector.setSpriteTile(xAdjusted, yAdjusted, spritesLayer[sy][sx]);
             }
         }
     }
@@ -281,7 +277,7 @@ public final class LayerHandler {
         
         for (int yy = 0; yy < height; yy++) {
             for (int xx = 0; xx < width; xx++) {
-                sprites[yy][xx] = map.getSpriteTile(x + xx, y + yy);
+                sprites[yy][xx] = sector.getSpriteTile(x + xx, y + yy);
             }
         }
         
@@ -292,21 +288,26 @@ public final class LayerHandler {
         for (int sx = 0; sx < area.width; sx++) {
             for (int sy = 0; sy < area.height; sy++) {
                 
-                /*int xAdjusted = area.x + sx;
+                int xAdjusted = area.x + sx;
                 int yAdjusted = area.y + sy;
                 
-                var sprOld = map.getSpriteAt(xAdjusted, yAdjusted);
-                if (sprOld != null) sprOld.decreasePlacedAmount();*/
-                
-                map.setSpriteTile(area.x + sx, area.y + sy, 255); // TODO Handle undo
+                int oldSpriteID = sector.getSpriteTile(xAdjusted, yAdjusted);
+                if(oldSpriteID != 255){
+                    level.getSprite(oldSpriteID).decreasePlacedAmount();
+                }                
+                sector.setSpriteTile(area.x + sx, area.y + sy, 255); // TODO Handle undo
             }
         }
 
         // TODO Handle UndoManager
     }
     
-    public void setMap(PK2LevelSector m) {
-        this.map = m;
+    public void setSector(PK2LevelSector sector) {
+        this.sector = sector;
+    }
+
+    public void setLevel(PK2Level level){
+        this.level = level;
     }
 
     public void setGrid(int x, int y) {

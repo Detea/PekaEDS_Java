@@ -31,6 +31,8 @@ public interface ISpritePrototype {
     public void setImage(BufferedImage img);
 
     public int getPlacedAmount();
+    public void setPlacedAmount(int amount);
+
     public void increasePlacedAmount();
     public void decreasePlacedAmount();
 }

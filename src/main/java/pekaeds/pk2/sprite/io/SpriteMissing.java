@@ -17,8 +17,8 @@ public final class SpriteMissing extends SpriteOld {
         }
     }
     
-    public SpriteMissing() {
-        filename = "Missing";
+    public SpriteMissing(String filename) {
+        this.filename = filename;
         name = "Missing";
         
         frameX = 0;

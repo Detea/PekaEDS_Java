@@ -486,6 +486,10 @@ public class SpriteOld implements ISpritePrototype {
     public int getPlacedAmount() {
         return placedAmount;
     }
+
+    public void setPlacedAmount(int amount){
+        this.placedAmount = amount;
+    }
     
     public void increasePlacedAmount() {
         placedAmount++;

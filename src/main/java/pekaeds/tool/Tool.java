@@ -135,12 +135,13 @@ public abstract class Tool {
 
     public static void setLevel(PK2Level m){
         level = m;
+        layerHandler.setLevel(m);
     }
 
     public static void setSector(PK2LevelSector m) {
         map = m;
 
-        layerHandler.setMap(m);
+        layerHandler.setSector(m);
         //undoManager.setMap(m);
 
         reset();

@@ -738,6 +738,10 @@ public class PK2Sprite implements ISpritePrototype {
     public int getPlacedAmount() {
         return placedAmount;
     }
+
+    public void setPlacedAmount(int amount){
+        this.placedAmount = amount;
+    }
     
     public void increasePlacedAmount() {
         placedAmount++;

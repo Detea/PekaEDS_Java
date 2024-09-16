@@ -134,21 +134,33 @@ public class PK2LevelUtils {
          */
         level.sprites.clear();
 
+        int id = 0;
+
         for(String spriteName : level.spriteNames){
             try{
                 File spriteFile = PK2FileSystem.findSprite(spriteName);
                 ISpritePrototype sprite = SpriteIO.loadSprite(spriteFile);
                 level.sprites.add(sprite);
+
+                sprite.setPlacedAmount(level.countSprites(id));
             }
             catch(FileNotFoundException e){
                 Logger.warn("Sprite not found: \""+spriteName+"\"");
-                level.sprites.add(new SpriteMissing());
+                
+                ISpritePrototype sprite = new SpriteMissing(spriteName);
+                sprite.setPlacedAmount(level.countSprites(id));
+                level.sprites.add(sprite);
             }
             catch(Exception e){
                 //Logger.error(e);
                 Logger.warn("Sprite not found: \""+spriteName+"\"");
-                level.sprites.add(new SpriteMissing());
+                
+                ISpritePrototype sprite = new SpriteMissing(spriteName);
+                sprite.setPlacedAmount(level.countSprites(id));
+                level.sprites.add(sprite);
             }
+
+            id+=1;
         }
 
         for(PK2LevelSector sector: level.sectors){

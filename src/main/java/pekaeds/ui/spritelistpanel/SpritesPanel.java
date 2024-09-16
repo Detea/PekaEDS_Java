@@ -144,8 +144,11 @@ public class SpritesPanel extends JPanel implements PK2LevelConsumer, SpritePlac
     
         btnSetPlayer.addActionListener(e -> {
             if (spriteList.getSelectedValue().getType() == ISpritePrototype.TYPE_CHARACTER) {
-                var currentPlayerSprite = level.getSprite(level.player_sprite_index);
-                if (currentPlayerSprite != null) currentPlayerSprite.setPlayerSprite(false);
+
+                if(level.player_sprite_index < level.getSpriteList().size()){
+                    ISpritePrototype currentPlayerSprite = level.getSprite(level.player_sprite_index);
+                    currentPlayerSprite.setPlayerSprite(false);
+                }
 
                 level.player_sprite_index = spriteList.getSelectedIndex();
                
