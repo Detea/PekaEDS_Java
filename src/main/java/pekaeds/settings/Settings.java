@@ -43,7 +43,7 @@ public class Settings {
     private static LevelProfile mapProfile = LevelProfile.getDefaultProfile();
     private static SpriteProfile spriteProfile = new SpriteProfile();
         
-    private static boolean highlightSprites = true;
+    public static boolean highlightSprites = true;
     private static boolean showTileNumberInTileset = true;
     
     private static final Map<String, KeyStroke> keyboardShortcuts = new HashMap<>();
@@ -53,7 +53,8 @@ public class Settings {
     private static int autosaveInterval = 120000; // 2 minutes
     private static int autosaveFileCount = 3;
     
-    private static boolean showSprites = true;
+    public static boolean showSprites = true;
+    public static boolean showBgSprites = true;
     
     private static boolean highlightSelection = true;
     
@@ -103,6 +104,7 @@ public class Settings {
             highlightSprites = dis.readBoolean();
             showTileNumberInTileset = dis.readBoolean();
             showSprites = dis.readBoolean();
+            showBgSprites = dis.readBoolean();
             
             highlightSelection = dis.readBoolean();
             
@@ -140,6 +142,7 @@ public class Settings {
             dos.writeBoolean(highlightSprites);
             dos.writeBoolean(showTileNumberInTileset);
             dos.writeBoolean(showSprites);
+            dos.writeBoolean(showBgSprites);
             dos.writeBoolean(highlightSelection);
             
             dos.writeInt(defaultStartupBehavior);
@@ -185,10 +188,6 @@ public class Settings {
 
         resetKeyboardShortcuts();
     }
-
-    public static final String DLL_NAME_WINDOWS = "pk2_greta.dll"; //Windows
-    public static final String DLL_NAME_LINUX = "pk2_greta.so"; //Linux and Mac OS
-   
     /*
         Getters & Setters
      */
@@ -211,14 +210,6 @@ public class Settings {
     
     public static boolean showTilesetNumberInTileset() {
         return showTileNumberInTileset;
-    }
-    
-    public static void setShowSprites(boolean show) {
-        showSprites = show;
-    }
-    
-    public static boolean showSprites() {
-        return showSprites;
     }
     
     public List<String> getLayerNames() {
@@ -247,14 +238,6 @@ public class Settings {
     
     public static void setDefaultBackground(String background) {
         defaultBackground = background;
-    }
-    
-    public static void setHighlightSprites(boolean hSprites) {
-        highlightSprites = hSprites;
-    }
-    
-    public static boolean highlightSprites() {
-        return highlightSprites;
     }
     
     public static LevelProfile getMapProfile() {

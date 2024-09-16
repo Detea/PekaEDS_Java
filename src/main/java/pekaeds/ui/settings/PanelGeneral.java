@@ -113,6 +113,7 @@ public class PanelGeneral extends JPanel implements ISettingsPanel {
         spAutosaveFileCount.setValue(Settings.getAutosaveFileCount());
     }
 
+    @Override
     public void saveSettings(){
         Settings.setBasePath(this.tfGamePath.getText());
         Settings.setDefaultStartupBehavior(this.getStartupBehavior());
@@ -124,6 +125,7 @@ public class PanelGeneral extends JPanel implements ISettingsPanel {
         Settings.setAutosaveFileCount(this.getAutosaveFileCount());
     }
     
+    @Override
     public void setupValues() {       
         rbNewMap.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.NEW_MAP);
         rbLoadMap.setSelected(Settings.getDefaultStartupBehavior() == StartupBehavior.LOAD_LAST_MAP);

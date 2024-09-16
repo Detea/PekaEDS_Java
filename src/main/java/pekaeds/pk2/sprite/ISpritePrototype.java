@@ -3,8 +3,11 @@ package pekaeds.pk2.sprite;
 import java.awt.image.BufferedImage;
 
 public interface ISpritePrototype {
+    
     public static final int TYPE_BACKGROUND = 5;
+    public static final int TYPE_FOREGROUND = 6;
     public static final int TYPE_CHARACTER = 1;
+
 
     public int getType();
     public String getFilename();

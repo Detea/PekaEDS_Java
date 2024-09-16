@@ -29,6 +29,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
     
     private JToggleButton tbHighlightSprites;
     private JToggleButton tbShowSprites;
+    private JToggleButton tbShowBgSprites;
     
     private final Settings settings;
     
@@ -52,23 +53,32 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         btnPlayTest = new JButton("Test");
     
         tbHighlightSprites = new JToggleButton("Highlight sprites");
-        tbHighlightSprites.setSelected(Settings.highlightSprites());
+        tbHighlightSprites.setSelected(Settings.highlightSprites);
         
-        tbShowSprites = new JToggleButton("Show sprites");
-        tbShowSprites.setSelected(Settings.showSprites());
+        tbShowSprites = new JToggleButton("Show regular sprites");
+        tbShowSprites.setSelected(Settings.showSprites);
+
+        tbShowBgSprites = new JToggleButton("Show BG/FG sprites");
+        tbShowBgSprites.setSelected(Settings.showBgSprites);
+        
         
         btnNew.addActionListener(new NewLevelAction(gui));
         btnOpen.addActionListener(new OpenLevelAction(gui));
         btnPlayTest.addActionListener(new PlayLevelAction(gui));
         
         tbHighlightSprites.addActionListener(e -> {
-            Settings.setHighlightSprites(tbHighlightSprites.isSelected());
-            
+            Settings.highlightSprites = tbHighlightSprites.isSelected();            
             gui.getMapPanel().repaint();
         });
         
         tbShowSprites.addActionListener(e -> {
-            Settings.setShowSprites(tbShowSprites.isSelected());
+            Settings.showSprites = tbShowSprites.isSelected();
+            gui.getMapPanel().repaint();
+        });
+
+
+        tbShowBgSprites.addActionListener(e->{
+            Settings.showBgSprites = tbShowBgSprites.isSelected();
             gui.getMapPanel().repaint();
         });
         
@@ -110,6 +120,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         
         add(tbHighlightSprites);
         add(tbShowSprites);
+        add(tbShowBgSprites);
     }
     
     private void addListeners() {

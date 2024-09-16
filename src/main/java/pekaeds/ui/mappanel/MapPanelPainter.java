@@ -8,7 +8,6 @@ import pekaeds.pk2.level.PK2Level;
 import pekaeds.pk2.level.PK2LevelSector;
 import pekaeds.pk2.level.PK2TileArray;
 import pekaeds.pk2.sprite.ISpritePrototype;
-import pekaeds.settings.Settings;
 
 // TODO Optimize drawing
 public class MapPanelPainter {
@@ -108,7 +107,6 @@ public class MapPanelPainter {
             PK2LevelSector sector = mapPanel.getModel().getSector();
             PK2Level level = mapPanel.getModel().getLevel();
     
-            // TODO Don't use hard coded values
             for (int x = 0; x < sector.getWidth(); x++) {
                 for (int y = 0; y < sector.getHeight(); y++) {
                     int spriteTile = sector.getSpriteTile(x, y);
@@ -124,8 +122,31 @@ public class MapPanelPainter {
             }
         }
     }
-    
+
+
     public void drawForegroundSprites(Graphics2D g) {
+        if (mapPanel.getModel().getSector() != null) {
+
+            PK2LevelSector sector = mapPanel.getModel().getSector();
+            PK2Level level = mapPanel.getModel().getLevel();
+    
+            for (int x = 0; x < sector.getWidth(); x++) {
+                for (int y = 0; y < sector.getHeight(); y++) {
+                    int spriteTile = sector.getSpriteTile(x, y);
+
+                    if (spriteTile != 255 && spriteTile < level.getSpriteList().size()) {
+                        var spr = level.getSprite(spriteTile);
+                
+                        if (spr.getType() == ISpritePrototype.TYPE_FOREGROUND) {
+                            drawSprite(g, spr, x * 32, y * 32);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public void drawRegularSprites(Graphics2D g) {
         PK2LevelSector sector = mapPanel.getModel().getSector();
         PK2Level level = mapPanel.getModel().getLevel();
         if (sector != null) {
@@ -138,8 +159,9 @@ public class MapPanelPainter {
 
                     if (tile != 255 && tile < level.getSpriteList().size()) {
                         var spr = level.getSprite(tile);
-                
-                        if (spr.getType() != ISpritePrototype.TYPE_BACKGROUND) {
+
+                        int type = spr.getType();
+                        if(type!=ISpritePrototype.TYPE_BACKGROUND && type!=ISpritePrototype.TYPE_FOREGROUND){
                             drawSprite(g, spr, x * 32, y * 32);
                         }
                     }
@@ -149,9 +171,7 @@ public class MapPanelPainter {
     }
     
     public void drawSprite(Graphics2D g, ISpritePrototype spr, int x, int y) {
-        if (Settings.showSprites()) {
-            g.drawImage(spr.getImage(), x - (spr.getFrameWidth() / 2) + 16, y - (spr.getFrameHeight() - 32), null);
-        }
+        g.drawImage(spr.getImage(), x - (spr.getFrameWidth() / 2) + 16, y - (spr.getFrameHeight() - 32), null);
     }
     
     public void drawSpriteHighlights(Graphics2D g, Rectangle viewRect) {

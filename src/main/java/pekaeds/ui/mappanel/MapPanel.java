@@ -90,13 +90,23 @@ public class MapPanel extends JPanel implements ComponentListener, PK2LevelConsu
         g2.setTransform(transform);*/
         
         painter.drawBackground(g2);
-        painter.drawBackgroundSprites(g2);
-        
+
+        if(Settings.showBgSprites){
+            painter.drawBackgroundSprites(g2);
+        }       
+
+       
         if (model.getTilesetImage() != null) painter.drawLayers(g2);
+
+        if(Settings.showSprites){
+            painter.drawRegularSprites(g2);
+        }
+
+        if(Settings.showBgSprites){
+            painter.drawForegroundSprites(g2);
+        }
         
-        painter.drawForegroundSprites(g2);
-        
-        if (Settings.highlightSprites()) {
+        if (Settings.highlightSprites) {
             painter.drawSpriteHighlights(g2, model.getViewRect());
         }
         

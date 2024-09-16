@@ -29,7 +29,7 @@ public class SelectionTool extends Tool {
     
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (layerHandler.getSpriteAt(e.getPoint()) == 255 || !Settings.showSprites()) {
+        if (layerHandler.getSpriteAt(e.getPoint()) == 255 || !Settings.showSprites) {
             setMode(MODE_TILE);
     
             doTileSelection();
