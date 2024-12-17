@@ -4,8 +4,8 @@ import org.tinylog.Logger;
 
 import pekaeds.data.EditorConstants;
 import pekaeds.pk2.file.PK2FileSystem;
-import pekaeds.pk2.level.PK2Level;
-import pekaeds.pk2.level.PK2LevelIO;
+import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.map.PK2LevelIO;
 import pekaeds.ui.episodepanel.EpisodeChangeListener;
 import pekaeds.ui.mapposition.MapIcon;
 import pekaeds.util.GFXUtils;
@@ -101,7 +101,7 @@ public final class EpisodeManager {
     private void addIconToList(File file) {
 
         try{
-            PK2Level level = PK2LevelIO.loadLevel(file);
+            PK2Map level = PK2LevelIO.loadLevel(file);
             BufferedImage iconSheet = null;
 
             iconSheet = ImageIO.read( PK2FileSystem.getPK2StuffFile());

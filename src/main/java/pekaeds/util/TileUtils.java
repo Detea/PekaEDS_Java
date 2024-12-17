@@ -2,7 +2,7 @@ package pekaeds.util;
 
 import java.awt.*;
 
-import pekaeds.pk2.level.PK2LevelSector;
+import pekaeds.pk2.map.PK2MapSector;
 
 public final class TileUtils {
     private TileUtils() {}
@@ -15,7 +15,7 @@ public final class TileUtils {
      * @param selectionEnd
      * @return
      */
-    public static Rectangle calculateSelectionRectangle(Point selectionStart, Point selectionEnd, PK2LevelSector sector) {
+    public static Rectangle calculateSelectionRectangle(Point selectionStart, Point selectionEnd, int maxWidth, int maxHeight) {
         int startX = selectionStart.x;
         int startY = selectionStart.y;
     
@@ -43,8 +43,8 @@ public final class TileUtils {
         if (startX < 0) startX = 0;
         if (startY < 0) startY = 0;
 
-        if (endX >= sector.getWidth()) endX = sector.getWidth() - 1;
-        if (endY >= sector.getHeight()) endY = sector.getHeight() - 1;
+        if (endX >= maxWidth) endX = maxWidth - 1;
+        if (endY >= maxHeight) endY = maxHeight - 1;
 
         int selectionWidth = endX - startX;
         int selectionHeight = endY - startY;
@@ -58,8 +58,8 @@ public final class TileUtils {
      * @param selectionEnd
      * @return
      */
-    public static Rectangle calculateSelectionRectangleInScene(Point selectionStart, Point selectionEnd, PK2LevelSector sector) {
-        var r = calculateSelectionRectangle(selectionStart, selectionEnd, sector);
+    public static Rectangle calculateSelectionRectangleInScene(Point selectionStart, Point selectionEnd, int maxWidth, int maxHeight) {
+        var r = calculateSelectionRectangle(selectionStart, selectionEnd, maxWidth, maxHeight);
         
         r.x *= 32;
         r.y *= 32;
@@ -78,7 +78,46 @@ public final class TileUtils {
     
         return new Point(0, 0);
     }
-    
+
+    public static Rectangle calculateOffsets(final int[] layer, int layerWidth, int layerHeight) {
+        int startX = layerWidth;
+        int width = 0;
+        int startY = layerHeight;
+        int height = 0;
+
+        for (int y = 0; y < layerHeight; y++) {
+            for (int x = 0; x < layerWidth; x++) {
+                if (layer[layerWidth * y + x] != 255) {
+                    if (x < startX) {
+                        startX = x;
+                    }
+
+                    if (y < startY) {
+                        startY = y;
+                    }
+
+                    if (x > width) {
+                        width = x;
+                    }
+
+                    if (y > height) {
+                        height = y;
+                    }
+                }
+            }
+        }
+
+        if (width < startX || height < startY) {
+            startX = 0;
+            startY = 0;
+
+            height = 1;
+            width = 1;
+        }
+
+        return new Rectangle(startX, startY, width - startX, height - startY);
+    }
+
     /**
      * Calculate tile id from tile position in the tileset.
      * <p></p>

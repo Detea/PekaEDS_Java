@@ -1,15 +1,19 @@
 package pekaeds.filechooser;
 
 import net.miginfocom.swing.MigLayout;
-import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.file.PK2FileSystem;
+import pekaeds.pk2.sprite.SpritePrototype;
 import pekaeds.pk2.sprite.io.SpriteIO;
 import pekaeds.settings.Settings;
 import pekaeds.ui.misc.ImagePanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import org.tinylog.Logger;
+import pekaeds.util.GFXUtils;
 
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -91,9 +95,13 @@ public class SpriteFileChooser extends JFileChooser implements PropertyChangeLis
             var selectedFile = (File) e.getNewValue();
             
             if (selectedFile != null) {
-
                 try{
-                    ISpritePrototype spr = SpriteIO.loadSprite(selectedFile);
+                    SpritePrototype spr = SpriteIO.getSpriteReader(selectedFile).readSpriteFile(selectedFile);
+
+                    BufferedImage img = ImageIO.read(PK2FileSystem.findAsset(spr.getImageFile(), PK2FileSystem.SPRITES_DIR));
+                    GFXUtils.adjustSpriteColor(img, spr.getColor());
+                    img = GFXUtils.makeTransparent(img);
+                    spr.setImage(GFXUtils.getFirstSpriteFrame(spr, img));
 
                     imagePanel.setImage(spr.getImage(), true, 256, 200);
     

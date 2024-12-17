@@ -29,8 +29,6 @@ public class ToolsToolBar extends JToolBar {
     
     private Map<Class<? extends Tool>, JToggleButton> buttonMap = new LinkedHashMap<>();
     
-    private ButtonGroup buttonGroup;
-    
     public ToolsToolBar(PekaEDSGUI ui) {
         this.gui = ui;
         
@@ -47,13 +45,8 @@ public class ToolsToolBar extends JToolBar {
         buttonMap.put(FloodFillTool.class, new JToggleButton("Flood Fill"));
         buttonMap.put(CutTool.class, new JToggleButton("Cut"));
         
-        buttonGroup = new ButtonGroup();
         setLayout(new MigLayout("flowy"));
         
-        for (var btn : buttonMap.entrySet()) {
-            buttonGroup.add(btn.getValue());
-        }
-    
         for (var btn : buttonMap.entrySet()) {
             add(btn.getValue());
         }

@@ -29,6 +29,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
     
     private JToggleButton tbHighlightSprites;
     private JToggleButton tbShowSprites;
+    private JToggleButton tbShowFgSprites;
     private JToggleButton tbShowBgSprites;
     
     private final Settings settings;
@@ -58,10 +59,12 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         tbShowSprites = new JToggleButton("Show regular sprites");
         tbShowSprites.setSelected(Settings.showSprites);
 
-        tbShowBgSprites = new JToggleButton("Show BG/FG sprites");
+        tbShowBgSprites = new JToggleButton("Show BG sprites");
         tbShowBgSprites.setSelected(Settings.showBgSprites);
-        
-        
+
+        tbShowFgSprites = new JToggleButton("Show FG sprites");
+        tbShowFgSprites.setSelected(Settings.showFgSprites);
+
         btnNew.addActionListener(new NewLevelAction(gui));
         btnOpen.addActionListener(new OpenLevelAction(gui));
         btnPlayTest.addActionListener(new PlayLevelAction(gui));
@@ -76,12 +79,16 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
             gui.getMapPanel().repaint();
         });
 
-
         tbShowBgSprites.addActionListener(e->{
             Settings.showBgSprites = tbShowBgSprites.isSelected();
             gui.getMapPanel().repaint();
         });
-        
+
+        tbShowFgSprites.addActionListener(e->{
+            Settings.showFgSprites = tbShowFgSprites.isSelected();
+            gui.getMapPanel().repaint();
+        });
+
         lblLayer = new JLabel("Layer:");
         cbLayer = new JComboBox<>(settings.getLayerNames().toArray(new String[0]));
         
@@ -120,6 +127,7 @@ public class MainToolBar extends JToolBar implements PropertyChangeListener, Too
         
         add(tbHighlightSprites);
         add(tbShowSprites);
+        add(tbShowFgSprites);
         add(tbShowBgSprites);
     }
     

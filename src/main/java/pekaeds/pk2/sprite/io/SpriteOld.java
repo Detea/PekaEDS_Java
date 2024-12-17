@@ -4,18 +4,19 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.sprite.SpritePrototype;
 
-public class SpriteOld implements ISpritePrototype {
+// TODO CLEAN UP wtf is this mess
+public class SpriteOld implements SpritePrototype {
     protected static List<Integer> ID = new ArrayList<>();
-    
-    
-    
+
     protected String filename;
     
     private int type;
     
     protected String imageFile;
+    protected String imageFileIdentifier;
+
     protected String[] soundFiles = new String[7];
     
     protected int framesAmount;
@@ -121,6 +122,8 @@ public class SpriteOld implements ISpritePrototype {
     
     public void setImageFile(String imageFile) {
         this.imageFile = imageFile;
+
+        imageFileIdentifier = imageFile + color;
     }
     
     public String getFilename() {
@@ -206,7 +209,17 @@ public class SpriteOld implements ISpritePrototype {
     public int getHeight() {
         return height;
     }
-    
+
+    @Override
+    public String getImageFile() {
+        return imageFile;
+    }
+
+    @Override
+    public String getImageFileIdentifier() {
+        return imageFileIdentifier;
+    }
+
     public void setHeight(int height) {
         this.height = height;
     }

@@ -17,7 +17,7 @@ public class MapIconRenderer extends DefaultListCellRenderer {
         JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
     
         Icon icon = new ImageIcon(icons.get(value));
-   
+
         label.setIcon(icon);
     
         return label;

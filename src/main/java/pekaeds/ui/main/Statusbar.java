@@ -42,7 +42,7 @@ public class Statusbar extends JPanel implements ChangeListener {
         lblMouseYVal = new JLabel("0");
 
         var lblMouseTileX = new JLabel("TileX:");
-        var lblMouseTileY = new JLabel("TileX:");
+        var lblMouseTileY = new JLabel("TileY:");
 
         this.lblMouseTileXVal = new JLabel("0");
         this.lblMouseTileYVal = new JLabel("0");

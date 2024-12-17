@@ -1,16 +1,23 @@
 package pekaeds.tool.tools;
 
-import javax.swing.*;
-
 import pekaeds.data.Layer;
+import pekaeds.pk2.sprite.PK2Sprite;
 import pekaeds.tool.Tool;
 import pekaeds.tool.undomanager.ActionType;
 import pekaeds.tool.undomanager.UndoAction;
+import pekaeds.ui.listeners.CutToolListener;
 import pekaeds.util.TileUtils;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
+/*
+    TODO Decide how to handle resizing.
+        -> Only allow it when the selection has not been moved?
+        -> Only allow reducing dimensions?
+            Keep data, so when the user increases size again it gets restored?
+ */
 public final class CutTool extends Tool {
     private static final Cursor defaultCursor = new Cursor(Cursor.DEFAULT_CURSOR);
     private static final Cursor moveCursor = new Cursor(Cursor.MOVE_CURSOR);
@@ -23,10 +30,12 @@ public final class CutTool extends Tool {
     private int[][] backgroundLayer = new int[1][1];
     private int[][] spritesLayer = new int[1][1];
 
-    private Point selectionStart;//, selectionEnd;
+    private Point selectionStart, selectionEnd;
     private Rectangle selectionRect = new Rectangle();
     private boolean selecting = false;
     private boolean cutSelection = true;
+
+    private CutToolListener selectionListener;
 
     public CutTool() {
         useRightMouseButton = true;
@@ -41,8 +50,11 @@ public final class CutTool extends Tool {
         
         selectionRect.x = x;
         selectionRect.y = y;
+
+        selectionListener.selectionUpdated(selectionRect);
     }
 
+    // TODO Change from right click to left click?
     private int clickXOffset, clickYOffset;
     @Override
     public void mousePressed(MouseEvent e) {
@@ -58,6 +70,8 @@ public final class CutTool extends Tool {
     
                 selectionStart = e.getPoint();
             }
+
+            selectionListener.selectionUpdated(selectionRect);
         } else if (SwingUtilities.isLeftMouseButton(e)) {
             if (isSelectionPresent()) {
                 int mx = e.getX() / 32;
@@ -69,6 +83,8 @@ public final class CutTool extends Tool {
                     clickXOffset = mx - selectionRect.x;
                     clickYOffset = my - selectionRect.y;
                 }
+
+                selectionListener.selectionUpdated(selectionRect);
             }
         }
     }
@@ -78,8 +94,10 @@ public final class CutTool extends Tool {
         if (SwingUtilities.isLeftMouseButton(e)) {
             moveSelectionTo(e.getPoint(), clickXOffset, clickYOffset);
         } else if (SwingUtilities.isRightMouseButton(e)) {
-            if (selecting) selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, e.getPoint(), map);
+            if (selecting) selectionRect = TileUtils.calculateSelectionRectangle(selectionStart, e.getPoint(), selectedSector.getWidth(), selectedSector.getHeight());
         }
+
+        selectionListener.selectionUpdated(selectionRect);
     }
 
     @Override
@@ -113,7 +131,9 @@ public final class CutTool extends Tool {
                 }
     
                 getUndoManager().endBlock();
-    
+
+                selectionListener.selectionUpdated(selectionRect);
+
                 selecting = false;
     
                 if (isSelectionPresent()) {
@@ -132,6 +152,7 @@ public final class CutTool extends Tool {
             if (isSelectionPresent()) drawSelectionRect(g, selectionRect.x * 32, selectionRect.y * 32, selectionRect.width * 32, selectionRect.height * 32);
         } else if (isSelectionPresent()) {
             if (cutBackgroundLayer) drawLayer(g, backgroundLayer, selectionRect.x * 32, selectionRect.y * 32);
+            if (cutSpritesLayer) drawSelectedBackgroundSprites(g, selectionRect);
             if (cutForegroundLayer) drawLayer(g, foregroundLayer, selectionRect.x * 32, selectionRect.y * 32);
             if (cutSpritesLayer) drawSelectedSprites(g, selectionRect);
 
@@ -193,7 +214,9 @@ public final class CutTool extends Tool {
     
     private void resetCut() {
         selectionRect.setRect(0, 0, 0, 0);
-    
+
+        selectionListener.selectionUpdated(selectionRect);
+
         getMapPanelPainter().setCursor(defaultCursor);
     }
     
@@ -207,7 +230,6 @@ public final class CutTool extends Tool {
                 case CUT_TOOL_PLACE_FOREGROUND -> foregroundLayer = action.getNewTiles();
                 case CUT_TOOL_PLACE_BACKGROUND -> backgroundLayer = action.getNewTiles();
                 case CUT_TOOL_PLACE_SPRITES -> spritesLayer = action.getNewTiles();
-                default -> throw new IllegalArgumentException("Unexpected value: " + action.getType());
             }
     
             selectionRect.setRect(action.getX() / 32, action.getY() / 32, action.getNewTiles()[0].length, action.getNewTiles().length);
@@ -244,14 +266,58 @@ public final class CutTool extends Tool {
                 if (spritesLayer[y][x] != 255) {
                     var spr = level.getSprite(spritesLayer[y][x]);
 
-                    if (spr != null) {
+                    if (spr != null && spr.getType() != PK2Sprite.TYPE_BACKGROUND) {
                         getMapPanelPainter().drawSprite(g, spr,(selection.x + x) * 32, (selection.y + y) * 32);
                     }
                 }
             }
         }
     }
-    
+
+    private void drawSelectedBackgroundSprites(Graphics2D g, Rectangle selection) {
+        for (int x = 0; x < selection.width; x++) {
+            for (int y = 0; y < selection.height; y++) {
+                if (spritesLayer[y][x] != 255) {
+                    var spr = level.getSprite(spritesLayer[y][x]);
+
+                    if (spr != null && spr.getType() == PK2Sprite.TYPE_BACKGROUND) {
+                        getMapPanelPainter().drawSprite(g, spr,(selection.x + x) * 32, (selection.y + y) * 32);
+                    }
+                }
+            }
+        }
+    }
+
+    public void setSelectionX(int newX) {
+        selectionRect.x = newX;
+
+        getMapPanelPainter().repaint();
+    }
+
+    public void setSelectionY(int newY) {
+        selectionRect.y = newY;
+
+        getMapPanelPainter().repaint();
+    }
+
+    // TODO Make changing dimensions work! How should it work after the selection has been moved?
+    public void setSelectionWidth(int newWidth) {
+        selectionRect.width = newWidth;
+
+        getMapPanelPainter().repaint();
+    }
+
+    // TODO Make changing dimensions work! How should it work after the selection has been moved?
+    public void setSelectionHeight(int newHeight) {
+        selectionRect.height = newHeight;
+
+        getMapPanelPainter().repaint();
+    }
+
+    public void setSelectionListener(CutToolListener listener) {
+        selectionListener = listener;
+    }
+
     private boolean isSelectionPresent() {
         return selectionRect.width > 0 && selectionRect.height > 0;
     }

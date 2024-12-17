@@ -21,15 +21,16 @@ public class SelectionTool extends Tool {
             selection.setStart(e.getPoint());
             selection.setEnd(e.getPoint());
 
-            selectionRect = TileUtils.calculateSelectionRectangle(e.getPoint(), e.getPoint(), map);
+            selectionRect = TileUtils.calculateSelectionRectangle(e.getPoint(), e.getPoint(), selectedSector.getWidth(), selectedSector.getHeight());
             
             if (getMode() == Tool.MODE_TILE) selectingTiles = true;
+            if (getMode() == Tool.MODE_SPRITE) selectingTiles = false;
         }
     }
     
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (layerHandler.getSpriteAt(e.getPoint()) == 255 || !Settings.showSprites) {
+        if (selectingTiles) {
             setMode(MODE_TILE);
     
             doTileSelection();
@@ -55,15 +56,15 @@ public class SelectionTool extends Tool {
             if (selection.getEnd().x < 0) selection.getEnd().x = 0;
             if (selection.getEnd().y < 0) selection.getEnd().y = 0;
             
-            if (selection.getEnd().x >= map.getWidth() * 32) selection.getEnd().x = (map.getWidth() * 32) - 32;
-            if (selection.getEnd().y >= map.getHeight() * 32) selection.getEnd().y = (map.getHeight() * 32) - 32;
+            if (selection.getEnd().x >= selectedSector.getWidth() * 32) selection.getEnd().x = (selectedSector.getWidth() * 32) - 32;
+            if (selection.getEnd().y >= selectedSector.getHeight() * 32) selection.getEnd().y = (selectedSector.getHeight() * 32) - 32;
             
-            selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), map);
+            selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), selectedSector.getWidth(), selectedSector.getHeight());
         }
     }
     
     private void doTileSelection() {
-        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), map);
+        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(),  selectedSector.getWidth(), selectedSector.getHeight());
 
         selection.setTileSelection(layerHandler.getTilesFromRect(selectionRect, selectedLayer));
 
@@ -76,9 +77,9 @@ public class SelectionTool extends Tool {
     }
     
     private void doSpriteSelection() {
-        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), map);
+        selectionRect = TileUtils.calculateSelectionRectangle(selection.getStart(), selection.getEnd(), selectedSector.getWidth(), selectedSector.getHeight());
 
-        selection.setSelectionSprites(new int[][]{{ layerHandler.getSpriteAt(selection.getStart().x, selection.getStart().y) }}); // TODO Fix multiselection of sprites
+        selection.setSelectionSprites(layerHandler.getSpritesFromRect(selectionRect));
     }
 
     @Override

@@ -133,7 +133,7 @@ public class PanelGeneral extends JPanel implements ISettingsPanel {
         
         cbShowTileNumbers.setSelected(Settings.showTilesetNumberInTileset());
         
-        cbHighlightSelection.setSelected(Settings.highlistSelection());
+        cbHighlightSelection.setSelected(Settings.highlightSelection());
         
         spAutosaveInterval.setValue((Settings.getAutosaveInterval() / 1000) / 60);
         spAutosaveFileCount.setValue(Settings.getAutosaveFileCount());

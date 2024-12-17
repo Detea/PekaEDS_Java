@@ -6,36 +6,36 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import pekaeds.pk2.level.PK2Level;
-import pekaeds.pk2.level.PK2LevelSector;
-import pekaeds.ui.listeners.PK2LevelConsumer;
+import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.map.PK2MapSector;
+import pekaeds.ui.listeners.PK2MapConsumer;
 import pekaeds.ui.listeners.PK2SectorConsumer;
 import pekaeds.ui.listeners.RepaintListener;
 
 public class PekaEDSGUIModel {
     private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     
-    private PK2Level currentLevel;
-    private PK2LevelSector currentSector;
+    private PK2Map currentLevel;
+    private PK2MapSector currentSector;
 
     private File currentMapFile = null;
     
     private int currentLayer;
     private int currentMode;
     
-    private final List<PK2LevelConsumer> mapConsumers = new ArrayList<>();
+    private final List<PK2MapConsumer> mapConsumers = new ArrayList<>();
     private final List<PK2SectorConsumer> sectorConsumers = new ArrayList<>();
     private final List<RepaintListener> repaintListeners = new ArrayList<>();
     
-    public PK2Level getCurrentLevel() {
+    public PK2Map getCurrentLevel() {
         return this.currentLevel;
     }
 
-    public PK2LevelSector getCurrentLevelSector(){
+    public PK2MapSector getCurrentLevelSector(){
         return this.currentSector;
     }
 
-    public void setCurrentLevel(PK2Level level) {
+    public void setCurrentMap(PK2Map level) {
         this.currentLevel = level;
         if(level.sectors.size()>0){
             this.currentSector = level.sectors.get(0);
@@ -47,15 +47,15 @@ public class PekaEDSGUIModel {
         return currentMapFile;
     }
     
-    List<PK2LevelConsumer> getMapConsumers() {
+    List<PK2MapConsumer> getMapConsumers() {
         return mapConsumers;
     }
     
-    public void addMapConsumer(PK2LevelConsumer mapHolder) {
+    public void addMapConsumer(PK2MapConsumer mapHolder) {
         if (!mapConsumers.contains(mapHolder)) mapConsumers.add(mapHolder);
     }
     
-    public void removeMapConsumer(PK2LevelConsumer mapHolder) {
+    public void removeMapConsumer(PK2MapConsumer mapHolder) {
         mapConsumers.remove(mapHolder);
     }
 

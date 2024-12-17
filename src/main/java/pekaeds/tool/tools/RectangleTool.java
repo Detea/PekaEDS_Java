@@ -67,7 +67,7 @@ public class RectangleTool extends Tool {
     }
     
     private void placeRectangle() {
-        rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd, map);
+        rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd, selectedSector.getWidth(), selectedSector.getHeight());
         
         for (int x = rect.x; x < rect.x + rect.width; x++) {
             for (int y = rect.y; y < rect.y + rect.height; y++) {
@@ -92,7 +92,7 @@ public class RectangleTool extends Tool {
     public void draw(Graphics2D g) {
         if (getMode() == MODE_TILE) {
             if (selectionStart.x != -1 && selectionStart.y != -1) {
-                rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd, map);
+                rect = TileUtils.calculateSelectionRectangle(selectionStart, selectionEnd, selectedSector.getWidth(),selectedSector.getHeight());
         
                 for (int x = rect.x; x < rect.x + rect.width; x++) {
                     for (int y = rect.y; y < rect.y + rect.height; y++) {
@@ -108,7 +108,7 @@ public class RectangleTool extends Tool {
                     }
                 }
                 
-                if (Settings.highlistSelection()) {
+                if (Settings.highlightSelection()) {
                     drawSelectionRect(g, rect.x * 32, rect.y * 32, rect.width * 32, rect.height * 32);
                     
                     // Draw inner outlines when not filled
@@ -132,7 +132,7 @@ public class RectangleTool extends Tool {
             } else {
                 getMapPanelPainter().drawTile(g, getMousePosition().x, getMousePosition().y, selection.getTileSelection(selectedLayer)[0][0]);
     
-                if (Settings.highlistSelection()) {
+                if (Settings.highlightSelection()) {
                     drawSelectionRect(g, getMousePosition().x, getMousePosition().y, 32, 32);
                 }
             }

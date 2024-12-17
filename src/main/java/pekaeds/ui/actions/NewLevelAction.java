@@ -20,10 +20,10 @@ public class NewLevelAction extends AbstractAction {
             int result = UnsavedChangesDialog.show(gui);
     
             if (result != JOptionPane.CANCEL_OPTION && result != JOptionPane.CLOSED_OPTION) {
-                gui.newLevel();
+                gui.newMap();
             }
         } else {
-            gui.newLevel();
+            gui.newMap();
         }
     }
 }

@@ -32,7 +32,7 @@ public final class UnsavedChangesDialog {
      * @return The selected JOptionPane option.
      */
     public static int show(PekaEDSGUI gui, boolean close) {
-        int result = JOptionPane.showConfirmDialog(null, "Unsaved changes. Save?");
+        int result = JOptionPane.showConfirmDialog(null, "Save changes?", "Unsaved changes...", JOptionPane.YES_NO_CANCEL_OPTION);
         
         if (result != JOptionPane.CANCEL_OPTION && result != JOptionPane.CLOSED_OPTION) {
             if (result == JOptionPane.YES_OPTION) {

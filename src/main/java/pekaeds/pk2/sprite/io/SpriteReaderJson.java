@@ -13,7 +13,7 @@ import org.json.JSONObject;
 import pekaeds.pk2.sprite.PK2Sprite;
 import pekaeds.pk2.sprite.PK2SpriteAnimation;
 
-public class SpriteReaderJson implements ISpriteReader {
+public class SpriteReaderJson implements SpriteReader {
 
     @Override
     public PK2Sprite readSpriteFile(File file) throws IOException, JSONException {

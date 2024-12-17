@@ -23,7 +23,7 @@ import java.awt.event.ActionEvent;
 
 public class PlayLevelAction extends AbstractAction {
     private static final String WINDOWS_EXECUTABLE = "pk2.exe";
-    private static final String LINUX_AND_MAC_EXECUTABLE = "./bin/pekka-kana-2";
+    private static final String LINUX_AND_MAC_EXECUTABLE = "./pekka-kana-2";
     private static boolean isWindows(){
         String osname = System.getProperty("os.name").toLowerCase();
         return osname.contains("win");
@@ -119,7 +119,7 @@ public class PlayLevelAction extends AbstractAction {
             builder.command(commands);
             process = builder.start();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             Logger.error(e);
         }
     }

@@ -2,7 +2,7 @@ package pekaeds.ui.tilesetpanel;
 
 import javax.swing.*;
 
-import pekaeds.pk2.level.PK2LevelSector;
+import pekaeds.pk2.map.PK2MapSector;
 import pekaeds.settings.Settings;
 import pekaeds.ui.listeners.PK2SectorConsumer;
 import pekaeds.ui.listeners.RepaintListener;
@@ -141,13 +141,13 @@ public class TilesetPanel extends JPanel implements PK2SectorConsumer, RepaintLi
     }
     
     @Override
-    public void setSector(PK2LevelSector map) {
+    public void setSector(PK2MapSector map) {
         model.setMap(map);
         
         repaint();
     }
 
-    public PK2LevelSector getSector(){
+    public PK2MapSector getSector(){
         return model.getMap();
     }
     

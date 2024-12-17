@@ -12,61 +12,52 @@ import java.awt.event.*;
  */
 public class MapPanelView extends JScrollPane implements ComponentListener {
     private MapPanel mapPanel;
-    //private JScrollPane scrollPane;
-    
+
     public MapPanelView(MapPanel panel) {
         this.mapPanel = panel;
-        
-        /*
-        // TODO Write a custom LayeredPane that allows me to choose when to update what panel
-        scrollPane = new JScrollPane(mapPanel);
-        scrollPane.setOpaque(false);
-        mapPanel.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        setLayout(new BorderLayout());
-        add(mapPanelBackground, BorderLayout.CENTER, 1);
-        add(scrollPane, BorderLayout.CENTER, 0);
-        */
-        
+
         setViewportView(mapPanel);
-        
+
         mapPanel.setView(this);
-        
+
+        // Note: The use of the scrollBars here is intentional, because a changeListener on the viewport results in jittery scrolling!
         getHorizontalScrollBar().addAdjustmentListener(l -> {
             mapPanel.setViewX(getHorizontalScrollBar().getValue());
-    
+
+            // TODO Only set the x position
             Tool.setViewRect(getViewport().getViewRect());
         });
-        
+
         getVerticalScrollBar().addAdjustmentListener(l -> {
             mapPanel.setViewY(getVerticalScrollBar().getValue());
-    
+
+            // TODO Only set the y position
             Tool.setViewRect(getViewport().getViewRect());
         });
-        
+
         getViewport().addComponentListener(this);
     }
-    
+
     @Override
     public void componentResized(ComponentEvent e) {
-        mapPanel.getModel().setViewSize(getViewport().getWidth(), getViewport().getHeight());
-        //mapPanelBackground.setViewSize(getViewport().getWidth(), getViewport().getHeight());
-    
+        mapPanel.updateViewportSize(getViewportBorderBounds());
+
+        // TODO Only update the size?
         Tool.setViewRect(getViewport().getViewRect());
     }
-    
+
     @Override
     public void componentMoved(ComponentEvent e) {
-    
+
     }
-    
+
     @Override
     public void componentShown(ComponentEvent e) {
-    
+
     }
-    
+
     @Override
     public void componentHidden(ComponentEvent e) {
-    
+
     }
 }

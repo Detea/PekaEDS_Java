@@ -7,10 +7,10 @@ public class LevelTestingSettings {
         
     public boolean customWorkingDirectory = false;
     
-    public String workingDirectory = "/home/saturnin/c++/pk2_greta";
+    public String workingDirectory = "";
 
     public boolean customExecutable = false;
-    public String executable = "./bin/pekka-kana-2";
+    public String executable = "";
 
     public void load(DataInputStream in) throws IOException{
         this.devMode = in.readBoolean();

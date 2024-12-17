@@ -4,9 +4,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import pekaeds.data.Layer;
-import pekaeds.pk2.level.PK2Level;
-import pekaeds.pk2.level.PK2LevelSector;
-import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.map.PK2Map;
+import pekaeds.pk2.map.PK2MapSector;
+import pekaeds.pk2.sprite.SpritePrototype;
 import pekaeds.tool.undomanager.ToolUndoManager;
 import pekaeds.tool.undomanager.UndoAction;
 import pekaeds.ui.listeners.SpritePlacementListener;
@@ -38,8 +38,8 @@ public abstract class Tool {
     public static final int MODE_TILE = 0;
     public static final int MODE_SPRITE = 1;
     
-    protected static PK2LevelSector map;
-    protected static PK2Level level;
+    protected static PK2MapSector selectedSector;
+    protected static PK2Map level;
 
     private MapPanelPainter mapPainter;
     
@@ -133,15 +133,15 @@ public abstract class Tool {
         return mapPainter;
     }
 
-    public static void setLevel(PK2Level m){
+    public static void setLevel(PK2Map m){
         level = m;
         layerHandler.setLevel(m);
     }
 
-    public static void setSector(PK2LevelSector m) {
-        map = m;
+    public static void setSector(PK2MapSector m) {
+        selectedSector = m;
 
-        layerHandler.setSector(m);
+        layerHandler.setSector(selectedSector);
         //undoManager.setMap(m);
 
         reset();
@@ -165,22 +165,7 @@ public abstract class Tool {
     
     }
     
-    // Delete this
-    /*@Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getSource() instanceof MapPanelModel) {
-            if (evt.getPropertyName().equals("selectedLayer")) {
-
-                selectedLayer = (int) evt.getNewValue();
-            }
-        } else if (evt.getSource() instanceof PK2Map) {
-            if (evt.getPropertyName().equals("map")) {
-                map = (PK2Map) evt.getNewValue();
-            }
-        }
-    }*/
-
-    public static void setSelectedSprite(ISpritePrototype newSprite) {
+    public static void setSelectedSprite(SpritePrototype newSprite) {
         // TODO Change grid size to size of selected sprite?
 
         for (int i = 0; i < level.getSpriteList().size(); i++) {
@@ -191,7 +176,11 @@ public abstract class Tool {
             }
         }
     }
-    
+
+    public static void setSelectedSpriteByIndex(int index) {
+        selection.setSelectionSprites(new int[][] {{ index }});
+    }
+
     public static void setToolInformationListener(ChangeListener listener) {
         toolInformationListener = listener;
     }
@@ -207,8 +196,8 @@ public abstract class Tool {
         toolInformation.setSpriteId(sprId);
         
         String sprFilename = "none";
-        if (sprId != 255) {
-            if (map != null) {
+        if (sprId != 255 && sprId < level.getSpriteList().size()) {
+            if (selectedSector != null) {
                 sprFilename = level.getSpriteList().get(sprId).getFilename();
             }
         }
@@ -274,7 +263,6 @@ public abstract class Tool {
             case PLACE_SPRITE,
                     CUT_TOOL_PLACE_SPRITES,
                     CUT_TOOL_CUT_SPRITES -> layerHandler.placeSpritesScreen(action.getX(), action.getY(), action.getOldTiles());
-            default -> throw new IllegalArgumentException("Unexpected value: " + action.getType());
         }
     
         action.changeIntoRedo();
@@ -291,7 +279,6 @@ public abstract class Tool {
             case PLACE_SPRITE,
                     CUT_TOOL_PLACE_SPRITES,
                     CUT_TOOL_CUT_SPRITES -> layerHandler.placeSpritesScreen(action.getX(), action.getY(), action.getNewTiles());
-            default -> throw new IllegalArgumentException("Unexpected value: " + action.getType());
         }
         
         action.changeIntoUndo();

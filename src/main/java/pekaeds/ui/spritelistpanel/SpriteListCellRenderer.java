@@ -1,15 +1,16 @@
 package pekaeds.ui.spritelistpanel;
 
 import net.miginfocom.swing.MigLayout;
-import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.map.PK2MapSector;
+import pekaeds.pk2.sprite.SpritePrototype;
 import pekaeds.settings.Settings;
 import pekaeds.ui.misc.ImagePanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<ISpritePrototype> {
-    private ISpritePrototype sprite;
+public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<SpritePrototype> {
+    private SpritePrototype sprite;
     private ImagePanel imgPanel;
     private JLabel spriteName;
     private JLabel filename;
@@ -19,12 +20,18 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<I
     
     private JLabel lblPlacedText;
     private JLabel lblPlacedAmount;
+
+    private static PK2MapSector sector;
     
     public SpriteListCellRenderer() {
         setup();
     }
+
+    public static void setSector(PK2MapSector newSector) {
+        sector = newSector;
+    }
     
-    public void setSprite(ISpritePrototype spr) {
+    public void setSprite(SpritePrototype spr) {
         this.sprite = spr;
         
         setValues();
@@ -75,7 +82,7 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<I
     }
     
     private void setValues() {
-        imgPanel.setImage(sprite.getImage(), true, 64, 64);
+        imgPanel.setImage(sprite, sector, true, 64, 64);
 
         spriteName.setText(sprite.getName());
         filename.setText("(" + sprite.getFilename() + ")");
@@ -97,7 +104,7 @@ public class SpriteListCellRenderer extends JPanel implements ListCellRenderer<I
     }
     
     @Override
-    public Component getListCellRendererComponent(JList<? extends ISpritePrototype> list, ISpritePrototype value, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList<? extends SpritePrototype> list, SpritePrototype value, int index, boolean isSelected, boolean cellHasFocus) {
         setSprite(value);
         setSelected(isSelected);
         

@@ -9,7 +9,7 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PK2Sprite implements ISpritePrototype {
+public class PK2Sprite implements SpritePrototype {
     public static final byte[] VERSION_13 = {0x31, 0x2E, 0x33, 0x00};
     
     private final ChangeEvent changeEvent = new ChangeEvent(this);
@@ -21,6 +21,11 @@ public class PK2Sprite implements ISpritePrototype {
     private int type;
     
     protected String imageFile = "";
+
+    // This string contains whatever is contained in imageFile and color
+    // Let's say the image file is "rooster.bmp" and the color is 64, so imageFileIdentifier will be rooster.bmp64
+    // This is used to cache the correctly recolored/palette shifted sprite sheet
+    protected String imageFileIdentifier = "";
     
     protected String[] soundFiles = new String[7];
     protected List<String> soundFilesList = new ArrayList<>();
@@ -210,12 +215,15 @@ public class PK2Sprite implements ISpritePrototype {
         return imageFile;
     }
 
-    public String getTextureName(){
-        return this.getImageFile();
+    @Override
+    public String getImageFileIdentifier() {
+        return imageFileIdentifier;
     }
-    
+
     public void setImageFile(String imageFile) {
         this.imageFile = imageFile;
+
+        imageFileIdentifier = imageFile + color;
         
         fireChanges();
     }
@@ -731,7 +739,7 @@ public class PK2Sprite implements ISpritePrototype {
     }
 
     /**
-     * For levels editor
+     * For level editor
      */
 
     int placedAmount = 0;

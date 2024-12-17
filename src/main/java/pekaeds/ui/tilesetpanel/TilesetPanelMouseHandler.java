@@ -28,11 +28,14 @@ public final class TilesetPanelMouseHandler extends MouseAdapter {
     @Override
     public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
-            tilesetPanel.resetSelection();
-            tilesetPanel.setSelectionRect(e.getX(), e.getY(), 1, 1);
-            
             selectionStart = e.getPoint();
             selectionEnd = e.getPoint();
+
+            tilesetPanel.resetSelection();
+            tilesetPanel.setSelectionRect(e.getX(), e.getY(), 1, 1);
+
+            tilesetPanel.setMousePosition(e.getPoint());
+            tilesetPanel.repaint();
         }
     }
     
@@ -44,8 +47,7 @@ public final class TilesetPanelMouseHandler extends MouseAdapter {
             
             keepSelectionInBounds();
             
-            tilesetPanel.setSelectionRect(TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd, tilesetPanel.getSector()));
-    
+            tilesetPanel.setSelectionRect(TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd, tilesetPanel.getWidth(), tilesetPanel.getHeight()));
             tilesetPanel.repaint();
         }
     }
@@ -53,7 +55,7 @@ public final class TilesetPanelMouseHandler extends MouseAdapter {
     @Override
     public void mouseReleased(MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)) {
-            var rect = TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd, tilesetPanel.getSector());
+            var rect = TileUtils.calculateSelectionRectangleInScene(selectionStart, selectionEnd, tilesetPanel.getWidth(), tilesetPanel.getHeight());
             
             int[][] selection = new int[0][];
             

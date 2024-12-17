@@ -2,17 +2,18 @@ package pekaeds;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 
-import pekaeds.data.PekaEDSVersion;
 import pekaeds.pk2.file.PK2FileSystem;
 import pekaeds.settings.Settings;
 import pekaeds.ui.main.PekaEDSGUI;
-import pekaeds.ui.misc.SetPathDialog;
+import pekaeds.ui.misc.InitialSetupDialog;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.util.Locale;
 import org.tinylog.Logger;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 
@@ -20,7 +21,8 @@ import javax.swing.*;
 
 public class PekaEDS {
 
-    private final static SetPathDialog pathDialog = new SetPathDialog();
+    private static InitialSetupDialog initialSetupDialog;
+
     public static void main(String[] args) {
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
@@ -43,19 +45,15 @@ public class PekaEDS {
 
         System.setProperty("sun.java2d.noddraw", "true");
         Locale.setDefault(Locale.ENGLISH);
-        
-        launch();
-    
+
         Thread.setDefaultUncaughtExceptionHandler((t, e) -> {
-            Logger.info(e, "Uncaught exception");
+            Logger.info(e, "TODO: Log Uncaught exception");
         });
-        
-        Logger.info("Version: " + PekaEDSVersion.VERSION_STRING);
+
+        launch();
     }
 
-
-    public static void launch(){
-
+    private static boolean loadSettings() {
         boolean success = false;
         File settingsFile = new File("settings.dat");
 
@@ -65,6 +63,7 @@ public class PekaEDS {
 
                 File file = new File(Settings.getBasePath());
                 /**
+                 * TODO ??? Should an exception be thrown here?
                  * If there's something wrong (e.g nota  PK2 directory), it throws an exception
                  */
                 PK2FileSystem.setAssetsPath(file);
@@ -76,29 +75,22 @@ public class PekaEDS {
             }
         }
 
-        while (!success) {
+        return success;
+    }
 
-            File selectedFile = pathDialog.showDialog();
+    public static void launch() {
+        if (!loadSettings()) {
+            initialSetupDialog = new InitialSetupDialog(null);
 
-            try{
-                PK2FileSystem.setAssetsPath(selectedFile);
+            if (initialSetupDialog.setupCompleted()) {
+                // TODO Does it make sense to check if the settings were able to be loaded again, what then? Prompt the user again? Or just set default settings? Probably the latter
+                loadSettings();
+                SwingUtilities.invokeLater(PekaEDSGUI::new);
+            }
 
-                Settings.reset();
-                Settings.setBasePath(selectedFile.getPath());
-                Settings.save();
-                success = true;
-            }
-            catch(FileNotFoundException e){
-                JOptionPane.showMessageDialog(null,
-                "The selected directory does not contain the necessary Pekka Kana 2 content.",
-                "Invalid path", JOptionPane.ERROR_MESSAGE);
-            }
-            catch(Exception e){
-                Logger.error(e);
-                return;
-            }
+            initialSetupDialog.dispose();
+        } else {
+            SwingUtilities.invokeLater(PekaEDSGUI::new);
         }
-
-        SwingUtilities.invokeLater(PekaEDSGUI::new);
     }
 }

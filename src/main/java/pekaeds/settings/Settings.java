@@ -16,13 +16,13 @@ import pekaeds.profile.LevelProfile;
 import pekaeds.profile.SpriteProfile;
 
 /**
- * This class was a mistake. Every class that uses it depends on it, because I made everything static and I just realized why that was a bad idea.
- * It works, though. So rewriting the code base isn't worth it, in my opinion.
+ * TODO: This class shouldn't have anything static in it.
+ * It being static will cause problems with initialization!
  */
 public class Settings {
     private static final List<String> layerNames = new ArrayList<>();
 
-    static{
+    static {
         layerNames.add("Both");
         layerNames.add("Foreground");
         layerNames.add("Background");
@@ -49,13 +49,14 @@ public class Settings {
     private static final Map<String, KeyStroke> keyboardShortcuts = new HashMap<>();
     
     private static int defaultStartupBehavior = StartupBehavior.NEW_MAP;
-    
+
     private static int autosaveInterval = 120000; // 2 minutes
     private static int autosaveFileCount = 3;
     
     public static boolean showSprites = true;
+    public static boolean showFgSprites = true;
     public static boolean showBgSprites = true;
-    
+
     private static boolean highlightSelection = true;
     
     
@@ -104,8 +105,9 @@ public class Settings {
             highlightSprites = dis.readBoolean();
             showTileNumberInTileset = dis.readBoolean();
             showSprites = dis.readBoolean();
+            showFgSprites = dis.readBoolean();
             showBgSprites = dis.readBoolean();
-            
+
             highlightSelection = dis.readBoolean();
             
             defaultStartupBehavior = dis.readInt();
@@ -113,7 +115,6 @@ public class Settings {
             autosaveInterval = dis.readInt();
             autosaveFileCount = dis.readInt();
 
-           
             int shortcutAmount = dis.readInt();
             for (int i = 0; i < shortcutAmount; i++) {
                 setKeyboardShortcutFor(dis.readUTF(), KeyStroke.getKeyStroke(dis.readInt(), dis.readInt()));
@@ -142,6 +143,7 @@ public class Settings {
             dos.writeBoolean(highlightSprites);
             dos.writeBoolean(showTileNumberInTileset);
             dos.writeBoolean(showSprites);
+            dos.writeBoolean(showFgSprites);
             dos.writeBoolean(showBgSprites);
             dos.writeBoolean(highlightSelection);
             
@@ -164,7 +166,6 @@ public class Settings {
     }
     
     public static void reset() {
-    
         defaultTileset = "tiles01.bmp";
         defaultBackground = "castle.bmp";
     
@@ -308,7 +309,7 @@ public class Settings {
         highlightSelection = highlight;
     }
     
-    public static boolean highlistSelection() {
+    public static boolean highlightSelection() {
         return highlightSelection;
     }
 }

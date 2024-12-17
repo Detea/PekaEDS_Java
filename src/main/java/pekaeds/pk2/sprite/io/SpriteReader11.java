@@ -2,13 +2,13 @@ package pekaeds.pk2.sprite.io;
 
 import java.io.*;
 
-import pekaeds.pk2.sprite.ISpritePrototype;
+import pekaeds.pk2.sprite.SpritePrototype;
 import pekaeds.util.file.PK2FileUtils;
 
-public class SpriteReader11 implements ISpriteReader {
+public class SpriteReader11 implements SpriteReader {
 
     @Override
-    public ISpritePrototype readSpriteFile(File file) throws IOException {
+    public SpritePrototype readSpriteFile(File file) throws IOException {
         var spr = new SpriteOld();
         
         DataInputStream in = new DataInputStream(new BufferedInputStream(new FileInputStream(file)));

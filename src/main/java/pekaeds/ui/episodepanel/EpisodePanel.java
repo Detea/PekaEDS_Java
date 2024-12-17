@@ -46,10 +46,10 @@ public final class EpisodePanel extends JPanel implements EpisodeChangeListener 
         pButtons.add(btnRemove);
         
         setLayout(new MigLayout());
+        add(pButtons, "dock north");
         add(lblEpisodeName, "dock north");
-        add(lstFiles, "dock center");
-        add(pButtons, "dock south");
-        
+        add(new JScrollPane(lstFiles), "dock center");
+
         setListeners();
     }
     
@@ -110,10 +110,10 @@ public final class EpisodePanel extends JPanel implements EpisodeChangeListener 
                                         }
                                     }
             
-                                    eds.loadLevel(file);
+                                    eds.loadMap(file);
                                 }
                             } else {
-                                eds.loadLevel(file);
+                                eds.loadMap(file);
                             }
                         } else {
                             var result = JOptionPane.showConfirmDialog(null, "Selected file doesn't exist. Remove it from episode?", "File not found", JOptionPane.YES_NO_OPTION);

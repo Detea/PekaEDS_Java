@@ -35,7 +35,7 @@ public class OpenLevelAction extends AbstractAction {
     
     private void showFileChooser(JFileChooser fc) {
         if (fc.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            gui.loadLevel(fc.getSelectedFile());
+            gui.loadMap(fc.getSelectedFile());
         }
     }
 }
