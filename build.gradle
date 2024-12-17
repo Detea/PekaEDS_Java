@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'pekaeds'
-version '0.14J'
+version '0.15'
 
 repositories {
     mavenCentral()
@@ -16,7 +16,7 @@ dependencies {
 
     implementation 'org.tinylog:tinylog-api:2.6.0'
     implementation 'org.tinylog:tinylog-impl:2.6.0'
-    implementation 'com.formdev:flatlaf:2.6'
+    implementation 'com.formdev:flatlaf:3.5.2'
     implementation 'com.miglayout:miglayout-swing:11.0'
     implementation 'org.json:json:20231013'
 
