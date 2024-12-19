@@ -79,7 +79,7 @@ public final class TileUtils {
         return new Point(0, 0);
     }
 
-    public static Rectangle calculateOffsets(final int[] layer, int layerWidth, int layerHeight) {
+    public static Rectangle calculateOffsets(final int[][] layer, int layerWidth, int layerHeight) {
         int startX = layerWidth;
         int width = 0;
         int startY = layerHeight;
@@ -87,7 +87,7 @@ public final class TileUtils {
 
         for (int y = 0; y < layerHeight; y++) {
             for (int x = 0; x < layerWidth; x++) {
-                if (layer[layerWidth * y + x] != 255) {
+                if (layer[x][y] != 255) {
                     if (x < startX) {
                         startX = x;
                     }

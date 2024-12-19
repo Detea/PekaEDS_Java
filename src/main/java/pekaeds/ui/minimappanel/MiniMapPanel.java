@@ -47,7 +47,7 @@ public class MiniMapPanel extends JPanel implements
         repaint();
     }
     
-    private void paintLayer(Graphics g, final int[] layer, boolean bg) {
+    private void paintLayer(Graphics g, int[][] layer, boolean bg) {
         if (currentSector.tilesetImage != null) { // && layer.getWidth() == currentSector.getWidth() && layer.getHeight() == 224) {
             g.setColor(Color.DARK_GRAY);
             g.fillRect(0, 0, currentSector.getWidth(), currentSector.getHeight());
@@ -55,7 +55,7 @@ public class MiniMapPanel extends JPanel implements
 
             for (int x = 0; x < currentSector.getWidth(); x++) {
                 for (int y = 0; y < currentSector.getHeight(); y++) {
-                    int tile = layer[currentSector.getWidth() * y + x]; //map.getLayers().get(layer)[y][x];
+                    int tile = layer[x][y];
             
                     if (tile >= 0 && tile <= 149) { // The tileid should not be able to go out of these bounds, but for some reason one custom map does that?
                         int tileX = (tile % 10) * 32;
