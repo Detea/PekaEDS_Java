@@ -107,16 +107,16 @@ public class MapPanel extends JComponent implements
             int sh = sectorResizeRect.height;
 
             // left of selection
-            g2.fillRect(0, 0, sx, sector().getHeight() * 32);
+            g2.fillRect(0, 0, sx, sectorResizeRect.width * 32);
 
             // right of selection
-            g2.fillRect(sx + sw, 0, (sector().getWidth() * 32) - sx, sector().getHeight() * 32);
+            g2.fillRect(sx + sw, 0, (sectorResizeRect.width * 32) - sx, sectorResizeRect.height * 32);
 
             // top of selection
             g2.fillRect(sx, 0, sw, sy);
 
             // bottom of selection
-            g2.fillRect(sx, sy + sh, sw, sector().getHeight() * 32);
+            g2.fillRect(sx, sy + sh, sw, sectorResizeRect.height * 32);
 
             g2.setComposite(compAlphaFull);
 
